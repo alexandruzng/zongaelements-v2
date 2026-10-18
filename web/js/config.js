@@ -7,6 +7,6 @@
    Mientras estén vacías, las herramientas guardan solo en este navegador.
    ========================================================= */
 window.ZE_CONFIG = {
-  url: "",
-  anonKey: ""
+  url: "https://kzlhjyvayrrqvviczhlo.supabase.co",
+  anonKey: "sb_publishable_Y6zUE8n6KkLLqiyTs5yLEw_U48_q00d"
 };

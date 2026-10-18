@@ -12,6 +12,11 @@ create table if not exists public.user_data (
   primary key (user_id, tool)
 );
 
+-- Acceso desde la web solo para usuarios con sesión iniciada
+-- (el proyecto se crea con "Automatically expose new tables" desactivado).
+revoke all on public.user_data from anon;
+grant select, insert, update, delete on public.user_data to authenticated;
+
 -- Seguridad: cada persona solo puede ver y tocar sus propios datos.
 alter table public.user_data enable row level security;
 
