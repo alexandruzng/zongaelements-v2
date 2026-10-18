@@ -17,7 +17,7 @@
 
   /* ---------- textos ---------- */
   const TX = {
-    es: { title: "Entra para guardar tu progreso", sub: "Tus tareas y hábitos se guardan en tu cuenta y los tienes en cualquier dispositivo.",
+    es: { title: "Entra en ZongaElements", sub: "Inicia sesión o crea tu cuenta para usar las herramientas. Todo se guarda en tu cuenta y lo tienes en cualquier dispositivo.",
       login: "Iniciar sesión", signup: "Crear cuenta", email: "Email", pass: "Contraseña", passHint: "Mínimo 6 caracteres",
       goLogin: "Entrar", goSignup: "Crear mi cuenta", or: "o", google: "Continuar con Google", forgot: "¿Olvidaste tu contraseña?",
       needEmail: "Escribe tu email y vuelve a pulsar.", resetSent: "Te hemos enviado un email para cambiar la contraseña.",
@@ -26,7 +26,7 @@
       notConfirmed: "Confirma tu email antes de entrar (revisa tu bandeja de entrada).", rate: "Demasiados intentos. Espera un momento y vuelve a probar.",
       newPassT: "Nueva contraseña", newPassP: "Escribe tu nueva contraseña.", save: "Guardar", passOk: "Contraseña actualizada.",
       synced: "Guardado en la nube", saving: "Guardando…", offline: "Sin conexión · se guardará al volver", logout: "Cerrar sesión", account: "Tu cuenta", net: "No se pudo conectar. Revisa tu conexión e inténtalo de nuevo." },
-    en: { title: "Sign in to save your progress", sub: "Your tasks and habits are saved to your account and available on any device.",
+    en: { title: "Sign in to ZongaElements", sub: "Sign in or create your account to use the tools. Everything is saved to your account and available on any device.",
       login: "Sign in", signup: "Create account", email: "Email", pass: "Password", passHint: "At least 6 characters",
       goLogin: "Sign in", goSignup: "Create my account", or: "or", google: "Continue with Google", forgot: "Forgot your password?",
       needEmail: "Type your email and tap again.", resetSent: "We've sent you an email to change your password.",
@@ -35,7 +35,7 @@
       notConfirmed: "Confirm your email before signing in (check your inbox).", rate: "Too many attempts. Wait a moment and try again.",
       newPassT: "New password", newPassP: "Type your new password.", save: "Save", passOk: "Password updated.",
       synced: "Saved to the cloud", saving: "Saving…", offline: "Offline · will save when back", logout: "Sign out", account: "Your account", net: "Couldn't connect. Check your connection and try again." },
-    ro: { title: "Intră ca să-ți salvezi progresul", sub: "Sarcinile și obiceiurile se salvează în contul tău și le ai pe orice dispozitiv.",
+    ro: { title: "Intră în ZongaElements", sub: "Autentifică-te sau creează-ți contul ca să folosești instrumentele. Totul se salvează în contul tău și îl ai pe orice dispozitiv.",
       login: "Autentificare", signup: "Creează cont", email: "Email", pass: "Parolă", passHint: "Minimum 6 caractere",
       goLogin: "Intră", goSignup: "Creează-mi contul", or: "sau", google: "Continuă cu Google", forgot: "Ți-ai uitat parola?",
       needEmail: "Scrie emailul și apasă din nou.", resetSent: "Ți-am trimis un email pentru schimbarea parolei.",
@@ -246,7 +246,7 @@
     const wrap = document.createElement("div"); wrap.className = "ze-acc";
     wrap.innerHTML = `<button class="ze-av" aria-label="${t("account")}">${meta.avatar_url ? `<img src="${esc(meta.avatar_url)}" alt="" referrerpolicy="no-referrer">` : esc(initial)}</button>
       <div class="ze-menu"><span class="mono">${t("account")}</span><b>${esc(user.email || "")}</b><div class="ze-st"><i></i><span></span></div><button type="button" data-out>${t("logout")}</button></div>`;
-    container.insertBefore(wrap, container.firstChild);
+    container.appendChild(wrap);
     const paint = s => {
       const col = s === "offline" ? "#E5484D" : s === "saving" ? "#FFC24B" : "#12B76A";
       wrap.style.setProperty("--zs", col); wrap.querySelector(".ze-st span").textContent = t(s);

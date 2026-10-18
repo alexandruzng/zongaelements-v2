@@ -445,6 +445,66 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
   .soon{height:380px} .soon.tool-live{min-height:380px} .live-dial{width:120px;height:120px;margin:10px 0} .ov-switch button{padding:14px 20px;font-size:14px}
 }
 @media (max-width:360px){ .brand b{display:none} }
+/* ============ MÓVIL (solo pantallas ≤900px; escritorio sin cambios) ============ */
+@media (hover:none){ .cursor,.cursor-dot{display:none} }
+@media (max-width:900px){
+  /* cabecera */
+  .brand{font-size:16px}
+  /* hero: contenido centrado + mini panel de métricas */
+  .hero{display:grid;grid-template-columns:1fr 1fr;align-content:center;justify-items:center;gap:10px;min-height:100svh;padding:104px 16px 48px}
+  .hero-tag,.wordmark,.hero-sub{grid-column:1/-1}
+  .hero-tag{margin-bottom:18px}
+  .hero-tag .txt{font-size:13px}
+  .hero-sub{margin:20px 0 22px;gap:14px;text-align:center}
+  .hero-sub p{font-size:17px}
+  .float{display:block;position:relative;left:auto;right:auto;top:auto;bottom:auto;width:100%;padding:14px;border-radius:18px;transform:none!important}
+  .float .bob{animation:none}
+  .f3{display:none}
+  .f4{grid-column:1/-1}
+  .f-val{font-size:24px;gap:6px;flex-wrap:wrap}
+  .f-val small{font-size:11px}
+  .scroll-hint{display:none}
+  .glow{width:380px;height:380px;filter:blur(90px)}
+  .glow.b{left:-160px;top:6%} .glow.r{right:-160px;bottom:4%}
+  /* qué es: sección normal, sin el efecto de scroll de 3 pantallas */
+  .manifesto{height:auto}
+  .manifesto .sticky{position:relative;height:auto;padding:96px 16px 40px;gap:28px;overflow:visible}
+  .m-kicker{margin-bottom:22px}
+  .m-text{font-size:clamp(26px,7.4vw,40px);line-height:1.14}
+  .m-text .w{opacity:1!important;filter:none!important;transform:none!important}
+  .m-text .w.o{color:var(--blue)} .m-text .w.a{color:var(--red)}
+  .m-text .w.o::after,.m-text .w.a::after{transform:scaleX(1)}
+  .m-side{display:flex}
+  .m-item{opacity:1!important;transform:none!important;padding:16px 18px}
+  .m-progress{display:none}
+  /* cinta */
+  .marquee{padding:24px 0;margin:24px 0}
+  .mq-row span{font-size:36px;padding:0 16px;gap:32px}
+  .mq-row span::after{font-size:18px}
+  .mq-row.t1{padding:10px 0}
+  /* herramientas */
+  .chooser{padding:80px 16px 100px}
+  .ch-head{margin-bottom:34px;gap:16px}
+  .ch-head h2{font-size:clamp(40px,11.5vw,64px)}
+  .ch-head p{font-size:16px}
+  .ch-grid{gap:16px}
+  .path{height:auto;min-height:500px;padding:26px;border-radius:28px}
+  .path.p{height:auto;min-height:520px}
+  .p-title{font-size:clamp(52px,15vw,72px);margin-top:auto;padding-top:210px}
+  .path.p .p-title{padding-top:210px}
+  .p-desc{font-size:15px;margin-top:14px}
+  .p-foot{margin-top:22px;gap:12px}
+  .p-open .arr{width:52px;height:52px}
+  .p-art,.path.p .p-art{display:block;top:58px;right:16px;transform:scale(.6);transform-origin:top right}
+  .path.p .p-art{margin-top:0;top:70px;transform:scale(.56)}
+  /* pie */
+  footer{padding:70px 16px 32px}
+  .ft-top{flex-direction:column;gap:24px}
+  .ft-top p{font-size:16px}
+  .ft-word{margin-top:56px}
+  .ft-bot{flex-direction:column;gap:8px;margin-top:28px}
+}
+@media (max-width:420px){ .brand b{display:none} }
 </style>
 </head>
 <body>
@@ -929,5 +989,10 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
   applyLang(lang);
 })();
 </script>
+<!-- Cuenta: inicio de sesión obligatorio al entrar + icono de perfil -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cuenta.js"></script>
+<script>ZE.requireUser().then(() => ZE.mountAccount(document.querySelector("header .controls")));</script>
 </body>
 </html>
