@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-10-19-proteccion-datos",
+    "date": "2026-10-19",
+    "type": "mejora",
+    "title": {
+      "es": "Tus datos, más protegidos que nunca",
+      "en": "Your data, better protected than ever",
+      "ro": "Datele tale, mai protejate ca niciodată"
+    },
+    "items": {
+      "es": [
+        "Copias de seguridad automáticas: si algo se borra o se estropea, recupéralo desde tu foto de perfil → «Copias de seguridad».",
+        "Si usas la web en dos dispositivos a la vez, te avisamos y eliges qué versión conservar. Ya no se pisan los cambios.",
+        "Si te quedas sin conexión, tus cambios se guardan en el dispositivo y se suben solos al volver."
+      ],
+      "en": [
+        "Automatic backups: if something gets deleted or broken, restore it from your profile picture → “Backups”.",
+        "If you use the site on two devices at once, we let you know and you choose which version to keep. Changes no longer overwrite each other.",
+        "If you lose your connection, your changes stay on your device and upload automatically when you're back."
+      ],
+      "ro": [
+        "Copii de siguranță automate: dacă ceva se șterge sau se strică, recuperează-l din poza de profil → „Copii de siguranță”.",
+        "Dacă folosești site-ul pe două dispozitive în același timp, te anunțăm și alegi ce versiune păstrezi. Modificările nu se mai suprascriu.",
+        "Dacă rămâi fără conexiune, modificările rămân pe dispozitiv și se încarcă singure când revii."
+      ]
+    }
+  },
+  {
     "id": "2026-10-18-aviso-novedades",
     "date": "2026-10-18",
     "type": "arreglo",
