@@ -231,6 +231,8 @@ nav.menu a:hover{background:var(--fg);color:var(--bg)}
 .ch-head h2{font-family:var(--display);font-weight:800;font-size:min(6vw,96px);line-height:.92;letter-spacing:-.05em;max-width:900px}
 .ch-head h2 em{font-style:normal;background:linear-gradient(90deg,var(--blue),var(--red));-webkit-background-clip:text;background-clip:text;color:transparent}
 .ch-head p{max-width:340px;color:var(--muted);font-size:17px;line-height:1.55}
+.news{padding-top:40px}
+.news .ch-head h2 em{background-image:linear-gradient(90deg,#12B76A,#2B63FF)}
 .ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;perspective:1600px}
 .path{position:relative;height:620px;border-radius:36px;overflow:hidden;text-align:left;display:flex;flex-direction:column;padding:40px;color:#fff;isolation:isolate;
   transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s;box-shadow:var(--shadow)}
@@ -533,6 +535,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
     <a href="#tools" data-open="organic" data-i18n="nav.organic" data-hover>Orgánico</a>
     <a href="#tools" data-open="ads" data-i18n="nav.ads" data-hover>Ads</a>
     <a href="#tools" data-open="prod" data-i18n="nav.prod" data-hover>Productividad</a>
+    <a href="#novedades" data-i18n="nav.news" data-hover>Novedades</a>
   </nav>
   <div class="controls">
     <button class="ctrl theme-btn" id="themeBtn" aria-label="Cambiar tema" data-hover>
@@ -681,6 +684,15 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
   </div>
 </section>
 
+<!-- NOVEDADES -->
+<section class="chooser news" id="novedades">
+  <div class="ch-head">
+    <h2 class="rv"><span data-zn="h1">Lo último</span><br><em data-zn="h2">en ZongaElements.</em></h2>
+    <p class="rv d1" data-zn="p">Todo lo que vamos añadiendo y mejorando en la web, de lo más nuevo a lo más antiguo.</p>
+  </div>
+  <div class="rv" id="znList"></div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="ft-top">
@@ -732,7 +744,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
       "ov.st1":"En camino","ov.st2":"Disponibles","ov.div":"Próximas herramientas","ov.div2":"Herramientas","ov.pLive":"Ya tienes herramientas listas en esta sección. Las siguientes llegan muy pronto.",
       avail:"Disponible", openTool:"Abrir herramienta", "tp.name":"Planificador del día", "tp.desc":"Calcula tus horas reales de trabajo, ordena tus tareas por importancia y cierra cada día con tus estadísticas.", "th.name":"Rueda de hábitos", "th.desc":"Hasta 9 hábitos en una rueda mensual: marca cada día, mantén tu racha y revisa cómo te fue cada mes.",
       tools:"Herramientas", organic:"Orgánico", ads:"Ads", prod:"Productividad", crumbO:"Sección 01 — Orgánico", crumbA:"Sección 02 — Ads", crumbP:"Sección 03 — Productividad personal",
-      "nav.prod":"Productividad","c.b3":"Rinde más cada día","c.pt1":"Produc\u00ADtividad","c.pt2":"personal","c.pd":"Planificación, foco, hábitos y control de tu tiempo para que rindas al máximo como dropshipper.",
+      "nav.prod":"Productividad","nav.news":"Novedades","c.b3":"Rinde más cada día","c.pt1":"Produc\u00ADtividad","c.pt2":"personal","c.pd":"Planificación, foco, hábitos y control de tu tiempo para que rindas al máximo como dropshipper.",
       "c.tg1":"Foco","c.tg2":"Hábitos","c.tg3":"Agenda","c.tasks":"Tareas hoy · 3/5","c.t_a":"Grabar 3 vídeos","c.t_b":"Responder DMs","c.t_c":"Revisar métricas",
       soon:"Pronto", tool:"Herramienta", loadingS:"Cargando", dev:"En desarrollo", goTo:"Ir a", note:"",
       typing:["Hook: \"Nadie te cuenta esto…\"","Ángulo: problema → solución","CTA: \"Consíguelo hoy\""] },
@@ -751,7 +763,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
       "ov.st1":"On the way","ov.st2":"Available","ov.div":"Upcoming tools","ov.div2":"Tools","ov.pLive":"There are tools ready in this section. The next ones are coming very soon.",
       avail:"Available", openTool:"Open tool", "tp.name":"Daily planner", "tp.desc":"Work out your real work hours, sort your tasks by importance and close each day with your stats.", "th.name":"Habit wheel", "th.desc":"Up to 9 habits on a monthly wheel: mark each day, keep your streak and look back at every month.",
       tools:"Tools", organic:"Organic", ads:"Ads", prod:"Productivity", crumbO:"Section 01 — Organic", crumbA:"Section 02 — Ads", crumbP:"Section 03 — Personal productivity",
-      "nav.prod":"Productivity","c.b3":"Get more done every day","c.pt1":"Personal","c.pt2":"produc\u00ADtivity","c.pd":"Planning, focus, habits and time control so you perform at your best as a dropshipper.",
+      "nav.prod":"Productivity","nav.news":"What's new","c.b3":"Get more done every day","c.pt1":"Personal","c.pt2":"produc\u00ADtivity","c.pd":"Planning, focus, habits and time control so you perform at your best as a dropshipper.",
       "c.tg1":"Focus","c.tg2":"Habits","c.tg3":"Schedule","c.tasks":"Today's tasks · 3/5","c.t_a":"Film 3 videos","c.t_b":"Reply to DMs","c.t_c":"Check metrics",
       soon:"Soon", tool:"Tool", loadingS:"Loading", dev:"In development", goTo:"Go to",
       typing:["Hook: \"Nobody tells you this…\"","Angle: problem → solution","CTA: \"Get yours today\""] },
@@ -770,7 +782,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
       "ov.st1":"Pe drum","ov.st2":"Disponibile","ov.div":"Instrumente viitoare","ov.div2":"Instrumente","ov.pLive":"Ai deja instrumente gata în această secțiune. Următoarele vin foarte curând.",
       avail:"Disponibil", openTool:"Deschide instrumentul", "tp.name":"Planificatorul zilei", "tp.desc":"Calculează-ți orele reale de muncă, ordonează sarcinile după importanță și încheie fiecare zi cu statisticile tale.", "th.name":"Roata obiceiurilor", "th.desc":"Până la 9 obiceiuri pe o roată lunară: bifează fiecare zi, păstrează-ți seria și vezi cum a mers fiecare lună.",
       tools:"Instrumente", organic:"Organic", ads:"Ads", prod:"Productivitate", crumbO:"Secțiunea 01 — Organic", crumbA:"Secțiunea 02 — Ads", crumbP:"Secțiunea 03 — Productivitate personală",
-      "nav.prod":"Productivitate","c.b3":"Randament mai mare zilnic","c.pt1":"Produc\u00ADtivitate","c.pt2":"personală","c.pd":"Planificare, concentrare, obiceiuri și controlul timpului ca să dai tot ce e mai bun ca dropshipper.",
+      "nav.prod":"Productivitate","nav.news":"Noutăți","c.b3":"Randament mai mare zilnic","c.pt1":"Produc\u00ADtivitate","c.pt2":"personală","c.pd":"Planificare, concentrare, obiceiuri și controlul timpului ca să dai tot ce e mai bun ca dropshipper.",
       "c.tg1":"Focus","c.tg2":"Obiceiuri","c.tg3":"Agendă","c.tasks":"Sarcini azi · 3/5","c.t_a":"Filmează 3 clipuri","c.t_b":"Răspunde la DM-uri","c.t_c":"Verifică metricile",
       soon:"În curând", tool:"Instrument", loadingS:"Se încarcă", dev:"În dezvoltare", goTo:"Mergi la",
       typing:["Hook: \"Nimeni nu-ți spune asta…\"","Unghi: problemă → soluție","CTA: \"Ia-l azi\""] }
@@ -919,6 +931,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
     document.querySelectorAll("[data-lang]").forEach(b => b.classList.toggle("active", b.dataset.lang === l));
     document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
     buildManifesto(); buildOverlay(); ci = 0; del = false;
+    if (window.ZN) ZN.renderSection();
   }
   document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => applyLang(b.dataset.lang)));
 
@@ -996,6 +1009,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/cuenta.js"></script>
-<script>ZE.requireUser().then(() => ZE.mountAccount(document.querySelector("header .controls")));</script>
+<script src="js/novedades.js"></script>
+<script>ZE.requireUser().then(() => { ZE.mountAccount(document.querySelector("header .controls")); setTimeout(() => ZN.popup(), 1600); });</script>
 </body>
 </html>
