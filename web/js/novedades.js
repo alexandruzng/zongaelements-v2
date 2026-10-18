@@ -8,6 +8,15 @@
 (() => {
   const UPDATES = [
     {
+      id: "2026-10-18-favicon", date: "2026-10-18", type: "mejora",
+      title: { es: "Nuevo icono de la web y foto de perfil mejorada", en: "New site icon and improved profile picture", ro: "Pictogramă nouă a site-ului și poză de profil îmbunătățită" },
+      items: {
+        es: ["La pestaña del navegador y el acceso directo del móvil ya muestran el icono de ZongaElements.", "El punto verde de «conectado» ya se ve entero junto a tu foto de perfil."],
+        en: ["Your browser tab and phone shortcut now show the ZongaElements icon.", "The green “online” dot now shows in full next to your profile picture."],
+        ro: ["Fila browserului și scurtătura de pe telefon arată acum pictograma ZongaElements.", "Punctul verde „conectat” se vede acum întreg lângă poza de profil."]
+      }
+    },
+    {
       id: "2026-10-18-novedades", date: "2026-10-18", type: "nuevo",
       title: { es: "Sección de novedades", en: "What's new section", ro: "Secțiunea de noutăți" },
       items: {

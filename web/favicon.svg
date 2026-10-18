@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <defs>
+    <radialGradient id="b" cx="0.12" cy="0.12" r="0.75"><stop offset="0" stop-color="#2450D6"/><stop offset="1" stop-color="#2450D6" stop-opacity="0"/></radialGradient>
+    <radialGradient id="r" cx="0.92" cy="0.92" r="0.8"><stop offset="0" stop-color="#C8202F"/><stop offset="1" stop-color="#C8202F" stop-opacity="0"/></radialGradient>
+    <linearGradient id="e" x1="654" x2="1057" y1="0" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3F5BEF"/><stop offset=".5" stop-color="#B0447F"/><stop offset="1" stop-color="#FF2D3F"/></linearGradient>
+    <clipPath id="c"><rect width="1200" height="1200" rx="260"/></clipPath>
+  </defs>
+  <g clip-path="url(#c)">
+    <rect width="1200" height="1200" fill="#0A0A0D"/>
+    <rect width="1200" height="1200" fill="url(#b)"/>
+    <rect width="1200" height="1200" fill="url(#r)"/>
+    <g transform="translate(600 600) scale(1.18) translate(-601.5 -600)">
+      <path fill="#fff" d="M146 472H570V548L318 652H570V728H146V652L398 548H146Z"/>
+      <path fill="url(#e)" d="M654 472H1057V548H754V580H1002V620H754V652H1057V728H654Z"/>
+    </g>
+  </g>
+</svg>

@@ -95,9 +95,10 @@
 .ze-msg.ok{background:var(--accent-soft);color:var(--accent)}
 .ze-spin{width:18px;height:18px;border-radius:50%;border:2.5px solid currentColor;border-right-color:transparent;animation:zeSpin .7s linear infinite}
 .ze-acc{position:relative}
-.ze-av{width:40px;height:40px;border-radius:50%;border:1px solid var(--line-2);background:var(--accent);color:#fff;font-weight:800;font-size:15px;display:grid;place-items:center;overflow:hidden;position:relative}
-.ze-av img{width:100%;height:100%;object-fit:cover}
-.ze-av::after{content:"";position:absolute;right:1px;bottom:1px;width:10px;height:10px;border-radius:50%;background:var(--zs,#12B76A);box-shadow:0 0 0 2px var(--card)}
+.ze-av{width:40px;height:40px;border-radius:50%;border:1px solid var(--line-2);background:var(--accent);color:#fff;font-weight:800;font-size:15px;display:grid;place-items:center;position:relative;padding:0;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.ze-av:hover{transform:scale(1.06)}
+.ze-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.ze-av::after{content:"";position:absolute;right:-2px;bottom:-2px;width:12px;height:12px;border-radius:50%;background:var(--zs,#12B76A);box-shadow:0 0 0 2.5px var(--bg)}
 .ze-menu{position:absolute;right:0;top:calc(100% + 10px);width:260px;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line-2);box-shadow:var(--shadow);z-index:120;
   opacity:0;transform:translateY(-6px) scale(.97);transform-origin:top right;pointer-events:none;transition:opacity .2s,transform .25s}
 .ze-acc.open .ze-menu{opacity:1;transform:none;pointer-events:auto}
