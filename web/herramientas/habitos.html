@@ -607,33 +607,12 @@ const t = (k, v={}) => String(T[lang][k] ?? T.es[k] ?? k).replace(/\{(\w+)\}/g, 
 
 /* =========================================================
    CAPA DE DATOS
-   Con sesión iniciada, los datos viven en Supabase (ver ../js/cuenta.js)
-   y se guarda una copia en el navegador por si no hay conexión.
-   Sin config de Supabase, solo se guardan en el navegador.
+   Todo el guardado (nube, copia local, conflictos entre dispositivos y
+   copias de seguridad) lo hace ../js/cuenta.js → ZE.sync().
    ========================================================= */
 const DB = {
-  tool: "habits",
-  base: "ze-habits-v1",
-  key(){ return ZE.user ? `${this.base}:${ZE.user.id}` : this.base; },
-  local(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } },
-  async load(){
-    if (!ZE.user) return this.local(this.key());
-    try {
-      const remote = await ZE.load(this.tool);
-      if (remote) return remote;
-    } catch(e){ return this.local(this.key()); }
-    // primera vez en la nube: se sube lo que hubiera en este navegador
-    const local = this.local(this.key()) || this.local(this.base);
-    if (local){
-      try { localStorage.setItem(this.key(), JSON.stringify(local)); localStorage.removeItem(this.base); } catch(e){}
-      ZE.save(this.tool, local, true);
-    }
-    return local;
-  },
-  save(state, now){
-    try { localStorage.setItem(this.key(), JSON.stringify(state)); } catch(e){}
-    ZE.save(this.tool, state, now);
-  }
+  load(){ return ZE.sync("habits").load(); },
+  save(state, now){ ZE.sync("habits").save(state, now); }
 };
 
 /* =========================================================

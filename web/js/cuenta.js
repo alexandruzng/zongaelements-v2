@@ -25,7 +25,7 @@
       badLogin: "Email o contraseña incorrectos.", exists: "Ya existe una cuenta con este email. Inicia sesión.", short: "La contraseña debe tener al menos 6 caracteres.",
       notConfirmed: "Confirma tu email antes de entrar (revisa tu bandeja de entrada).", rate: "Demasiados intentos. Espera un momento y vuelve a probar.",
       newPassT: "Nueva contraseña", newPassP: "Escribe tu nueva contraseña.", save: "Guardar", passOk: "Contraseña actualizada.",
-      synced: "Guardado en la nube", saving: "Guardando…", offline: "Sin conexión · se guardará al volver", logout: "Cerrar sesión", account: "Tu cuenta", net: "No se pudo conectar. Revisa tu conexión e inténtalo de nuevo." },
+      synced: "Guardado en la nube", saving: "Guardando…", offline: "Sin conexión · se guardará al volver", logout: "Cerrar sesión", account: "Tu cuenta", cfT: "Tienes cambios en dos dispositivos", cfP: "Has cambiado cosas aquí y también desde otro dispositivo. ¿Qué versión quieres conservar?", cfRemote: "La del otro dispositivo (la nube)", cfLocal: "La de este dispositivo", cfNote: "La versión que no elijas queda guardada en «Copias de seguridad» durante unas horas.", bkT: "Copias de seguridad", bkP: "Guardamos automáticamente versiones anteriores de tus datos. Si algo se ha borrado o estropeado, puedes volver a una de ellas.", bkEmpty: "Aún no hay copias. Se crean solas a medida que usas las herramientas.", bkRestore: "Restaurar", bkConfirm: "¿Restaurar esta copia? Tus datos actuales se guardarán como otra copia, por si te arrepientes.", close: "Cerrar", toolPlanner: "Planificador del día", toolHabits: "Rueda de hábitos", refreshed: "Actualizado con los cambios de tu otro dispositivo", restored: "Copia restaurada", net: "No se pudo conectar. Revisa tu conexión e inténtalo de nuevo." },
     en: { title: "Sign in to ZongaElements", sub: "Sign in or create your account to use the tools. Everything is saved to your account and available on any device.",
       login: "Sign in", signup: "Create account", email: "Email", pass: "Password", passHint: "At least 6 characters",
       goLogin: "Sign in", goSignup: "Create my account", or: "or", google: "Continue with Google", forgot: "Forgot your password?",
@@ -34,7 +34,7 @@
       badLogin: "Wrong email or password.", exists: "An account with this email already exists. Sign in.", short: "The password must be at least 6 characters.",
       notConfirmed: "Confirm your email before signing in (check your inbox).", rate: "Too many attempts. Wait a moment and try again.",
       newPassT: "New password", newPassP: "Type your new password.", save: "Save", passOk: "Password updated.",
-      synced: "Saved to the cloud", saving: "Saving…", offline: "Offline · will save when back", logout: "Sign out", account: "Your account", net: "Couldn't connect. Check your connection and try again." },
+      synced: "Saved to the cloud", saving: "Saving…", offline: "Offline · will save when back", logout: "Sign out", account: "Your account", cfT: "You have changes on two devices", cfP: "You changed things here and on another device too. Which version do you want to keep?", cfRemote: "The other device's (the cloud)", cfLocal: "This device's", cfNote: "The version you don't pick stays in “Backups” for a few hours.", bkT: "Backups", bkP: "We automatically keep previous versions of your data. If something got deleted or broken, you can go back to one of them.", bkEmpty: "No backups yet. They are created automatically as you use the tools.", bkRestore: "Restore", bkConfirm: "Restore this backup? Your current data will be kept as another backup, in case you change your mind.", close: "Close", toolPlanner: "Daily planner", toolHabits: "Habit wheel", refreshed: "Updated with the changes from your other device", restored: "Backup restored", net: "Couldn't connect. Check your connection and try again." },
     ro: { title: "Intră în ZongaElements", sub: "Autentifică-te sau creează-ți contul ca să folosești instrumentele. Totul se salvează în contul tău și îl ai pe orice dispozitiv.",
       login: "Autentificare", signup: "Creează cont", email: "Email", pass: "Parolă", passHint: "Minimum 6 caractere",
       goLogin: "Intră", goSignup: "Creează-mi contul", or: "sau", google: "Continuă cu Google", forgot: "Ți-ai uitat parola?",
@@ -43,7 +43,7 @@
       badLogin: "Email sau parolă greșite.", exists: "Există deja un cont cu acest email. Autentifică-te.", short: "Parola trebuie să aibă cel puțin 6 caractere.",
       notConfirmed: "Confirmă emailul înainte să intri (verifică inboxul).", rate: "Prea multe încercări. Așteaptă puțin și încearcă din nou.",
       newPassT: "Parolă nouă", newPassP: "Scrie parola nouă.", save: "Salvează", passOk: "Parola a fost actualizată.",
-      synced: "Salvat în cloud", saving: "Se salvează…", offline: "Fără conexiune · se salvează la revenire", logout: "Deconectare", account: "Contul tău", net: "Nu s-a putut conecta. Verifică conexiunea și încearcă din nou." }
+      synced: "Salvat în cloud", saving: "Se salvează…", offline: "Fără conexiune · se salvează la revenire", logout: "Deconectare", account: "Contul tău", cfT: "Ai modificări pe două dispozitive", cfP: "Ai schimbat lucruri aici și pe alt dispozitiv. Ce versiune vrei să păstrezi?", cfRemote: "Cea de pe celălalt dispozitiv (cloud)", cfLocal: "Cea de pe acest dispozitiv", cfNote: "Versiunea pe care n-o alegi rămâne în „Copii de siguranță” câteva ore.", bkT: "Copii de siguranță", bkP: "Păstrăm automat versiuni anterioare ale datelor tale. Dacă ceva s-a șters sau s-a stricat, poți reveni la una dintre ele.", bkEmpty: "Încă nu există copii. Se creează singure pe măsură ce folosești instrumentele.", bkRestore: "Restaurează", bkConfirm: "Restaurezi această copie? Datele actuale vor fi păstrate ca altă copie, în caz că te răzgândești.", close: "Închide", toolPlanner: "Planificatorul zilei", toolHabits: "Roata obiceiurilor", refreshed: "Actualizat cu modificările de pe celălalt dispozitiv", restored: "Copie restaurată", net: "Nu s-a putut conecta. Verifică conexiunea și încearcă din nou." }
   };
   const lang = () => { try { return localStorage.getItem("ze-lang") || "es"; } catch (e) { return "es"; } };
   const t = k => (TX[lang()] || TX.es)[k] ?? TX.es[k];
@@ -108,6 +108,12 @@
 .ze-st i{width:8px;height:8px;border-radius:50%;background:var(--zs,#12B76A)}
 .ze-menu button{width:100%;height:44px;border-radius:12px;border:1px solid var(--line-2);font-weight:700;font-size:14px}
 .ze-menu button:hover{background:var(--fg);color:var(--bg)}
+.ze-dlg{background:rgba(5,5,8,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:700}
+.ze-dlg::before{display:none}
+.ze-dlg .ze-card{max-height:calc(100vh - 40px);overflow-y:auto}
+.ze-bk button{background:var(--card);color:var(--fg);cursor:pointer} .ze-bk button:hover{background:var(--fg);color:var(--bg)}
+.ze-flash{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));z-index:720;transform:translate(-50%,20px);opacity:0;padding:12px 18px;border-radius:100px;background:var(--fg);color:var(--bg);font-weight:700;font-size:14px;transition:all .45s cubic-bezier(.3,1.5,.5,1);max-width:calc(100% - 32px);text-align:center}
+.ze-flash.on{opacity:1;transform:translate(-50%,0)}
 @keyframes zeIn{from{opacity:0}} @keyframes zeUp{from{opacity:0;transform:translateY(30px)}} @keyframes zeSpin{to{transform:rotate(360deg)}}`;
     document.head.appendChild(st);
   }
@@ -208,33 +214,211 @@
     });
   }
 
-  /* ---------- datos ---------- */
+  /* ---------- datos ----------
+     Cada herramienta guarda todo su estado en una fila de user_data.
+     - Copia local en el navegador marcada como «pendiente» hasta que la nube confirma:
+       si se cierra la pestaña sin conexión, se sube la próxima vez.
+     - Cada guardado comprueba que nadie haya guardado antes desde otro dispositivo
+       (updated_at lo pone el servidor). Si ha pasado, se pregunta qué versión conservar.
+     - Al volver a la pestaña se comprueba si hay cambios de otro dispositivo.
+  */
+  const TOOLS = { planner: "ze-planner-v1", habits: "ze-habits-v1" };
   let status = "synced";
   const listeners = new Set();
   const setStatus = s => { status = s; listeners.forEach(f => f(s)); };
-  async function load(tool){
-    if (!user) return null;
-    const { data, error } = await sb.from("user_data").select("data").eq("tool", tool).maybeSingle();
-    if (error) throw error;
-    return data ? data.data : null;
+  const syncs = {};
+
+  function sync(tool){
+    if (syncs[tool]) return syncs[tool];
+    const base = TOOLS[tool];
+    const key = () => user ? `${base}:${user.id}` : base;
+    const readRaw = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+    // formato local: { __ze:1, state, dirty, rev }. Lo antiguo (estado suelto) se trata como ya sincronizado.
+    const wrap = x => !x ? null : x.__ze ? x : { __ze: 1, state: x, dirty: false, rev: null };
+    const writeLocal = obj => { try { localStorage.setItem(key(), JSON.stringify(obj)); } catch (e) {} };
+    let rev = null, pending = null, timer = 0, busy = false, retry = 0, blocked = false;
+
+    async function fetchRemote(){
+      const { data, error } = await sb.from("user_data").select("data,updated_at").eq("tool", tool).maybeSingle();
+      if (error) throw error;
+      return data;
+    }
+
+    async function load(){
+      let local = wrap(readRaw(key()));
+      if (!online || !user) return local && local.state;
+      if (!local){
+        // datos de antes de tener cuenta en este navegador: se suben a la cuenta
+        const legacy = wrap(readRaw(base));
+        if (legacy){ local = { ...legacy, dirty: true }; writeLocal(local); try { localStorage.removeItem(base); } catch (e) {} }
+      }
+      let remote;
+      try { remote = await fetchRemote(); }
+      catch (e){ setStatus("offline"); if (local && local.dirty){ pending = local.state; schedule(8000); } return local && local.state; }
+
+      if (!remote){
+        if (local){ pending = local.state; schedule(0); }
+        return local && local.state;
+      }
+      rev = remote.updated_at;
+      if (local && local.dirty){
+        if (local.rev === remote.updated_at){
+          // cambios hechos sin conexión sobre la misma versión: se suben
+          pending = local.state; schedule(0); return local.state;
+        }
+        // cambios sin subir aquí y, además, cambios en otro dispositivo
+        const pick = await chooseVersion();
+        if (pick === "local"){ await backup(remote.data); pending = local.state; schedule(0); return local.state; }
+        await backup(local.state);
+      }
+      writeLocal({ __ze: 1, state: remote.data, dirty: false, rev });
+      return remote.data;
+    }
+
+    function save(state, now){
+      if (blocked) return;
+      writeLocal({ __ze: 1, state, dirty: true, rev });
+      if (!online || !user) return;
+      pending = state; setStatus("saving");
+      schedule(now ? 0 : 900);
+    }
+    function schedule(ms){ clearTimeout(timer); timer = setTimeout(flush, ms); }
+
+    async function flush(){
+      if (busy || !pending || blocked){ if (busy && pending) schedule(400); return; }
+      busy = true;
+      const state = pending; pending = null;
+      try {
+        let res;
+        if (rev){
+          res = await sb.from("user_data").update({ data: state }).eq("user_id", user.id).eq("tool", tool).eq("updated_at", rev).select("updated_at");
+        } else {
+          res = await sb.from("user_data").insert({ user_id: user.id, tool, data: state }).select("updated_at");
+          if (res.error && res.error.code === "23505") res = { data: [] };   // ya existía: conflicto
+        }
+        if (res.error) throw res.error;
+        if (!res.data.length){ busy = false; return conflict(state); }
+        rev = res.data[0].updated_at; retry = 0;
+        if (!pending) writeLocal({ __ze: 1, state, dirty: false, rev });
+        if (!anyPending()) setStatus("synced");
+      } catch (e){
+        pending = pending || state; setStatus("offline");
+        retry = Math.min(retry + 1, 6); schedule(2000 * 2 ** retry);
+      }
+      busy = false;
+    }
+
+    // otro dispositivo guardó entre medias
+    async function conflict(mine){
+      const pick = await chooseVersion();
+      let remote = null;
+      try { remote = await fetchRemote(); } catch (e) {}
+      if (pick === "local"){
+        if (remote) await backup(remote.data);
+        rev = remote ? remote.updated_at : null;
+        pending = mine; return flush();
+      }
+      await backup(mine);
+      blocked = true;
+      if (remote) writeLocal({ __ze: 1, state: remote.data, dirty: false, rev: remote.updated_at });
+      location.reload();
+    }
+
+    // al volver a la pestaña: ¿hay cambios de otro dispositivo?
+    async function refresh(){
+      if (!user || busy || pending || blocked) return;
+      try {
+        const { data, error } = await sb.from("user_data").select("updated_at").eq("tool", tool).maybeSingle();
+        if (error || !data || !rev || data.updated_at === rev) return;
+        const remote = await fetchRemote();
+        blocked = true;
+        writeLocal({ __ze: 1, state: remote.data, dirty: false, rev: remote.updated_at });
+        try { sessionStorage.setItem("ze-refreshed", "1"); } catch (e) {}
+        location.reload();
+      } catch (e) {}
+    }
+
+    // guarda una versión en «Copias de seguridad» antes de descartarla
+    const backup = data => sb.rpc("add_backup", { p_tool: tool, p_data: data }).then(() => {}, () => {});
+    function cancel(){ clearTimeout(timer); pending = null; blocked = true; }
+    const hasPending = () => !!pending || busy;
+    return (syncs[tool] = { load, save, flush, refresh, cancel, hasPending });
   }
-  const pending = {}, timers = {};
-  function save(tool, data, now){
-    if (!user) return;
-    pending[tool] = data; setStatus("saving");
-    clearTimeout(timers[tool]); timers[tool] = setTimeout(() => flush(tool), now ? 0 : 900);
-  }
-  async function flush(tool){
-    const data = pending[tool]; if (!data) return;
-    delete pending[tool];
-    const { error } = await sb.from("user_data").upsert({ user_id: user.id, tool, data, updated_at: new Date().toISOString() });
-    if (error){ pending[tool] = pending[tool] || data; setStatus("offline"); setTimeout(() => flush(tool), 8000); return; }
-    if (!Object.keys(pending).length) setStatus("synced");
-  }
-  const flushAll = () => Promise.all(Object.keys(pending).map(flush));
-  addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushAll(); });
+  const anyPending = () => Object.values(syncs).some(x => x.hasPending());
+  const flushAll = () => Promise.all(Object.values(syncs).map(x => x.flush()));
+  addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushAll();
+    else Object.values(syncs).forEach(x => x.refresh());
+  });
   addEventListener("pagehide", flushAll);
   addEventListener("online", flushAll);
+
+  /* compatibilidad: ZE.load / ZE.save directos */
+  const load = tool => sync(tool).load();
+  const save = (tool, data, now) => sync(tool).save(data, now);
+
+  /* ---------- diálogos propios (conflicto y copias) ---------- */
+  function dialog(html){
+    injectCss();
+    const el = document.createElement("div"); el.className = "ze-gate ze-dlg";
+    el.innerHTML = `<div class="ze-card">${html}</div>`;
+    document.body.appendChild(el);
+    return el;
+  }
+  function chooseVersion(){
+    return new Promise(res => {
+      const el = dialog(`<div class="ze-mark"><i></i><i></i></div><h2>${t("cfT")}</h2><p>${t("cfP")}</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:22px">
+          <button class="ze-btn main" type="button" data-v="remote">${t("cfRemote")}</button>
+          <button class="ze-btn google" type="button" data-v="local">${t("cfLocal")}</button></div>
+        <p style="font-size:13px;margin-top:14px;color:var(--muted)">${t("cfNote")}</p>`);
+      el.addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b){ el.remove(); res(b.dataset.v); } });
+    });
+  }
+
+  const TOOL_NAME = { planner: "toolPlanner", habits: "toolHabits" };
+  async function openBackups(){
+    const el = dialog(`<div class="ze-mark"><i></i><i></i></div><h2>${t("bkT")}</h2><p>${t("bkP")}</p><div class="ze-bk" style="margin-top:18px"><span class="ze-spin"></span></div>
+      <button class="ze-btn google" type="button" data-close style="margin-top:18px">${t("close")}</button>`);
+    el.addEventListener("click", async e => {
+      if (e.target === el || e.target.closest("[data-close]")) return el.remove();
+      const b = e.target.closest("[data-id]"); if (!b) return;
+      if (!confirm(t("bkConfirm"))) return;
+      b.disabled = true; b.innerHTML = '<span class="ze-spin"></span>';
+      const ok = await restore(b.dataset.tool, +b.dataset.id);
+      if (!ok){ b.disabled = false; b.textContent = t("bkRestore"); alert(t("net")); }
+    });
+    const { data, error } = await sb.from("user_data_history").select("id,tool,saved_at").order("saved_at", { ascending: false }).limit(60);
+    const box = el.querySelector(".ze-bk");
+    if (error){ box.innerHTML = `<div class="ze-msg err">${esc(niceError(error))}</div>`; return; }
+    if (!data.length){ box.innerHTML = `<div class="ze-msg ok">${t("bkEmpty")}</div>`; return; }
+    const fmt = iso => new Date(iso).toLocaleString(lang(), { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+    box.innerHTML = Object.keys(TOOLS).map(tool => {
+      const rows = data.filter(r => r.tool === tool); if (!rows.length) return "";
+      return `<div class="ze-f"><label>${t(TOOL_NAME[tool])}</label>${rows.map(r => `
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
+          <span style="font-size:14px;font-weight:600;text-transform:capitalize">${esc(fmt(r.saved_at))}</span>
+          <button type="button" data-id="${r.id}" data-tool="${tool}" style="height:36px;padding:0 14px;border-radius:100px;border:1px solid var(--line-2);font-weight:700;font-size:13px">${t("bkRestore")}</button>
+        </div>`).join("")}</div>`;
+    }).join("");
+  }
+  async function restore(tool, id){
+    try {
+      const { data: snap, error } = await sb.from("user_data_history").select("data").eq("id", id).single();
+      if (error) throw error;
+      if (syncs[tool]) syncs[tool].cancel();
+      await sb.rpc("add_backup", { p_tool: tool });   // lo actual queda como copia, por si te arrepientes
+      const { data: cur } = await sb.from("user_data").select("updated_at").eq("tool", tool).maybeSingle();
+      const res = cur
+        ? await sb.from("user_data").update({ data: snap.data }).eq("user_id", user.id).eq("tool", tool).select("updated_at")
+        : await sb.from("user_data").insert({ user_id: user.id, tool, data: snap.data }).select("updated_at");
+      if (res.error) throw res.error;
+      try { localStorage.setItem(`${TOOLS[tool]}:${user.id}`, JSON.stringify({ __ze: 1, state: snap.data, dirty: false, rev: res.data[0].updated_at })); } catch (e) {}
+      try { sessionStorage.setItem("ze-restored", "1"); } catch (e) {}
+      location.reload();
+      return true;
+    } catch (e){ return false; }
+  }
 
   async function signOut(){ await flushAll(); await sb.auth.signOut(); }
 
@@ -246,7 +430,7 @@
     const initial = (meta.full_name || user.email || "?").trim()[0].toUpperCase();
     const wrap = document.createElement("div"); wrap.className = "ze-acc";
     wrap.innerHTML = `<button class="ze-av" aria-label="${t("account")}">${meta.avatar_url ? `<img src="${esc(meta.avatar_url)}" alt="" referrerpolicy="no-referrer">` : esc(initial)}</button>
-      <div class="ze-menu"><span class="mono">${t("account")}</span><b>${esc(user.email || "")}</b><div class="ze-st"><i></i><span></span></div><button type="button" data-out>${t("logout")}</button></div>`;
+      <div class="ze-menu"><span class="mono">${t("account")}</span><b>${esc(user.email || "")}</b><div class="ze-st"><i></i><span></span></div><button type="button" data-bk style="margin-bottom:8px">${t("bkT")}</button><button type="button" data-out>${t("logout")}</button></div>`;
     container.appendChild(wrap);
     const paint = s => {
       const col = s === "offline" ? "#E5484D" : s === "saving" ? "#FFC24B" : "#12B76A";
@@ -256,7 +440,19 @@
     wrap.querySelector(".ze-av").addEventListener("click", e => { e.stopPropagation(); wrap.classList.toggle("open"); paint(status); });
     document.addEventListener("click", e => { if (!wrap.contains(e.target)) wrap.classList.remove("open"); });
     wrap.querySelector("[data-out]").addEventListener("click", signOut);
+    wrap.querySelector("[data-bk]").addEventListener("click", () => { wrap.classList.remove("open"); openBackups(); });
+    // avisos tras recargar por sincronización o restauración
+    const note = k => { try { const v = sessionStorage.getItem(k); sessionStorage.removeItem(k); return v; } catch (e) { return null; } };
+    if (note("ze-refreshed")) flash(t("refreshed"));
+    if (note("ze-restored")) flash(t("restored"));
+  }
+  function flash(msg){
+    injectCss();
+    const el = document.createElement("div"); el.className = "ze-flash"; el.textContent = msg;
+    document.body.appendChild(el);
+    requestAnimationFrame(() => el.classList.add("on"));
+    setTimeout(() => { el.classList.remove("on"); setTimeout(() => el.remove(), 500); }, 3500);
   }
 
-  window.ZE = { online, requireUser, load, save, flushAll, signOut, mountAccount, get user(){ return user; } };
+  window.ZE = { online, requireUser, sync, load, save, flushAll, signOut, mountAccount, openBackups, get user(){ return user; } };
 })();
