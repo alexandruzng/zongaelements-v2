@@ -1,76 +1,20 @@
 /* =========================================================
    ZongaElements · Novedades
-   Para anunciar una actualización: añade un objeto AL PRINCIPIO de UPDATES
-   con un "id" nuevo. Al publicarlo, todo el mundo verá el pop-up una vez
+   Para anunciar una actualización: añade un objeto AL PRINCIPIO de
+   /novedades.json con un "id" nuevo. Al publicarlo, todo el mundo verá el pop-up una vez
    y la novedad aparecerá en la sección «Novedades» de la portada.
    tipo: "nuevo" | "mejora" | "arreglo"
    ========================================================= */
 (() => {
-  const UPDATES = [
-    {
-      id: "2026-10-18-favicon", date: "2026-10-18", type: "mejora",
-      title: { es: "Nuevo icono de la web y foto de perfil mejorada", en: "New site icon and improved profile picture", ro: "Pictogramă nouă a site-ului și poză de profil îmbunătățită" },
-      items: {
-        es: ["La pestaña del navegador y el acceso directo del móvil ya muestran el icono de ZongaElements.", "El punto verde de «conectado» ya se ve entero junto a tu foto de perfil."],
-        en: ["Your browser tab and phone shortcut now show the ZongaElements icon.", "The green “online” dot now shows in full next to your profile picture."],
-        ro: ["Fila browserului și scurtătura de pe telefon arată acum pictograma ZongaElements.", "Punctul verde „conectat” se vede acum întreg lângă poza de profil."]
-      }
-    },
-    {
-      id: "2026-10-18-novedades", date: "2026-10-18", type: "nuevo",
-      title: { es: "Sección de novedades", en: "What's new section", ro: "Secțiunea de noutăți" },
-      items: {
-        es: ["Nueva sección «Novedades» en la portada con todo lo que vamos mejorando.", "Cuando haya una actualización te avisaremos con un aviso como este."],
-        en: ["New “What's new” section on the home page with everything we improve.", "When there's an update we'll let you know with a notice like this one."],
-        ro: ["Secțiune nouă „Noutăți” pe pagina principală, cu tot ce îmbunătățim.", "Când apare o actualizare te anunțăm cu un mesaj ca acesta."]
-      }
-    },
-    {
-      id: "2026-10-18-movil", date: "2026-10-18", type: "mejora",
-      title: { es: "Portada rediseñada para móvil", en: "Home page redesigned for mobile", ro: "Pagina principală reproiectată pentru mobil" },
-      items: {
-        es: ["La portada se ve y se lee mucho mejor en el móvil.", "Mini panel de métricas al entrar y tarjetas de herramientas con su ilustración."],
-        en: ["The home page looks and reads much better on mobile.", "Mini metrics panel on arrival and tool cards with their illustration."],
-        ro: ["Pagina principală arată și se citește mult mai bine pe mobil.", "Mini panou de metrici la intrare și carduri de instrumente cu ilustrația lor."]
-      }
-    },
-    {
-      id: "2026-10-18-cuentas", date: "2026-10-18", type: "nuevo",
-      title: { es: "Tu cuenta y tus datos en la nube", en: "Your account and your data in the cloud", ro: "Contul tău și datele tale în cloud" },
-      items: {
-        es: ["Entra con tu email o con Google.", "Tus tareas y hábitos se guardan en tu cuenta y los tienes en cualquier dispositivo.", "Nueva dirección de la web: zongaecom.site."],
-        en: ["Sign in with your email or with Google.", "Your tasks and habits are saved to your account and available on any device.", "New web address: zongaecom.site."],
-        ro: ["Intră cu emailul sau cu Google.", "Sarcinile și obiceiurile se salvează în contul tău și le ai pe orice dispozitiv.", "Adresă nouă a site-ului: zongaecom.site."]
-      }
-    },
-    {
-      id: "2026-10-18-tipografia", date: "2026-10-18", type: "mejora",
-      title: { es: "Titulares más fáciles de leer", en: "Easier-to-read headlines", ro: "Titluri mai ușor de citit" },
-      items: {
-        es: ["Nueva tipografía en todos los titulares de la web y las herramientas."],
-        en: ["New typeface for every headline on the site and in the tools."],
-        ro: ["Font nou pentru toate titlurile site-ului și ale instrumentelor."]
-      }
-    },
-    {
-      id: "2026-10-18-habitos", date: "2026-10-18", type: "nuevo",
-      title: { es: "Nueva herramienta: Rueda de hábitos", en: "New tool: Habit wheel", ro: "Instrument nou: Roata obiceiurilor" },
-      items: {
-        es: ["Hasta 9 hábitos en una rueda mensual: marca cada día como cumplido, no hecho o «no toca».", "Racha, resumen del mes y notas. Está en Productividad personal."],
-        en: ["Up to 9 habits on a monthly wheel: mark each day as done, missed or “day off”.", "Streak, monthly summary and notes. Find it in Personal productivity."],
-        ro: ["Până la 9 obiceiuri pe o roată lunară: marchează fiecare zi ca îndeplinită, nefăcută sau „liberă”.", "Serie, rezumatul lunii și notițe. O găsești la Productivitate personală."]
-      }
-    },
-    {
-      id: "2026-10-18-planificador", date: "2026-10-18", type: "nuevo",
-      title: { es: "Nueva herramienta: Planificador del día", en: "New tool: Daily planner", ro: "Instrument nou: Planificatorul zilei" },
-      items: {
-        es: ["Calcula tus horas reales de trabajo y ordena tus tareas por importancia.", "Temporizadores opcionales y estadísticas de tus días completados."],
-        en: ["Work out your real work hours and sort your tasks by importance.", "Optional timers and stats for your completed days."],
-        ro: ["Calculează-ți orele reale de muncă și ordonează sarcinile după importanță.", "Cronometre opționale și statistici pentru zilele complete."]
-      }
-    }
-  ];
+  /* La lista vive en /novedades.json y se pide sin caché, para que el aviso
+     salga en cuanto publicamos (los .js los guarda el navegador 10 minutos). */
+  const here = (document.currentScript && document.currentScript.src) || location.href;
+  const DATA_URL = new URL("../novedades.json", here).href;
+  let UPDATES = [];
+  const ready = fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" })
+    .then(r => r.ok ? r.json() : [])
+    .then(list => { UPDATES = Array.isArray(list) ? list : []; renderSection(); })
+    .catch(() => {});
 
   /* ---------- textos ---------- */
   const TX = {
@@ -165,7 +109,8 @@
   }
 
   /* ---------- pop-up de actualización ---------- */
-  function popup({ newsUrl } = {}){
+  async function popup({ newsUrl } = {}){
+    await ready;
     const u = UPDATES[0];
     if (!u || store.get() === u.id) return;
     css();
@@ -202,6 +147,6 @@
     pop.querySelector('[data-a="see"]').onclick = () => close(true);
   }
 
-  window.ZN = { updates: UPDATES, renderSection, popup };
+  window.ZN = { get updates(){ return UPDATES; }, ready, renderSection, popup };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", renderSection); else renderSection();
 })();
