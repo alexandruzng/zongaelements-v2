@@ -453,8 +453,10 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
   /* hero: contenido centrado + mini panel de métricas */
   .hero{display:grid;grid-template-columns:1fr 1fr;align-content:center;justify-items:center;gap:10px;min-height:100svh;padding:104px 16px 48px}
   .hero-tag,.wordmark,.hero-sub{grid-column:1/-1}
-  .hero-tag{margin-bottom:18px}
-  .hero-tag .txt{font-size:13px}
+  .hero-tag{margin-bottom:16px;gap:7px;padding:4px 11px 4px 4px}
+  .hero-tag .pill{font-size:9px;padding:3px 7px}
+  .hero-tag .live{width:6px;height:6px}
+  .hero-tag .txt{font-size:11px}
   .hero-sub{margin:20px 0 22px;gap:14px;text-align:center}
   .hero-sub p{font-size:17px}
   .float{display:block;position:relative;left:auto;right:auto;top:auto;bottom:auto;width:100%;padding:14px;border-radius:18px;transform:none!important}
@@ -466,17 +468,18 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
   .scroll-hint{display:none}
   .glow{width:380px;height:380px;filter:blur(90px)}
   .glow.b{left:-160px;top:6%} .glow.r{right:-160px;bottom:4%}
-  /* qué es: sección normal, sin el efecto de scroll de 3 pantallas */
-  .manifesto{height:auto}
-  .manifesto .sticky{position:relative;height:auto;padding:96px 16px 40px;gap:28px;overflow:visible}
-  .m-kicker{margin-bottom:22px}
-  .m-text{font-size:clamp(26px,7.4vw,40px);line-height:1.14}
-  .m-text .w{opacity:1!important;filter:none!important;transform:none!important}
-  .m-text .w.o{color:var(--blue)} .m-text .w.a{color:var(--red)}
-  .m-text .w.o::after,.m-text .w.a::after{transform:scaleX(1)}
-  .m-side{display:flex}
-  .m-item{opacity:1!important;transform:none!important;padding:16px 18px}
-  .m-progress{display:none}
+  /* qué es: mantiene el revelado del texto al hacer scroll, más compacto */
+  .manifesto{height:230vh}
+  .manifesto .sticky{height:100svh;padding:72px 16px 56px;gap:20px;align-content:center}
+  .m-kicker{margin-bottom:16px}
+  .m-text{font-size:clamp(24px,6.6vw,40px);line-height:1.14}
+  .m-side{display:flex;gap:10px}
+  .m-item{padding:12px 14px;gap:12px;border-radius:16px}
+  .m-item b{font-size:15px;margin-bottom:2px}
+  .m-item span{font-size:13px}
+  .m-item .ic{width:32px;height:32px}
+  .m-progress{left:16px;bottom:22px}
+  .m-progress .track{width:140px}
   /* cinta */
   .marquee{padding:24px 0;margin:24px 0}
   .mq-row span{font-size:36px;padding:0 16px;gap:32px}
