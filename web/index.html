@@ -1012,7 +1012,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/cuenta.js"></script>
-<script src="js/novedades.js"></script>
-<script>ZE.requireUser().then(() => { ZE.mountAccount(document.querySelector("header .controls")); setTimeout(() => ZN.popup(), 1600); });</script>
+<script src="js/novedades.js?v=2"></script>
+<script>ZE.requireUser().then(() => { try { ZE.mountAccount(document.querySelector("header .controls")); } finally { setTimeout(() => ZN.popup(), 1600); } });</script>
 </body>
 </html>

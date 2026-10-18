@@ -542,7 +542,7 @@ textarea{width:100%;border-radius:16px;border:1px solid var(--line-2);background
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
 <script src="../js/config.js"></script>
 <script src="../js/cuenta.js"></script>
-<script src="../js/novedades.js"></script>
+<script src="../js/novedades.js?v=2"></script>
 <script>
 (async () => {
 /* =========================================================
@@ -1253,8 +1253,8 @@ addEventListener("keydown", e => {
 /* =========================================================
    ARRANQUE
    ========================================================= */
-ZE.mountAccount($(".controls"));
 setTimeout(() => ZN.popup({ newsUrl: "../#novedades" }), 1200);
+try { ZE.mountAccount($(".controls")); } catch (e) {}
 applyLang(lang);
 if (hasAny()) showApp(true); else showSetup();
 })();

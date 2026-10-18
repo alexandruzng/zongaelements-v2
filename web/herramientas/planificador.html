@@ -780,7 +780,7 @@ input:focus-visible+.sw{box-shadow:0 0 0 4px var(--accent-soft)}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
 <script src="../js/config.js"></script>
 <script src="../js/cuenta.js"></script>
-<script src="../js/novedades.js"></script>
+<script src="../js/novedades.js?v=2"></script>
 <script>
 (async () => {
 /* =========================================================
@@ -1804,8 +1804,8 @@ addEventListener("keydown", e => {
    ========================================================= */
 $$(".stage").forEach(s => s.classList.toggle("on", s.dataset.stage === D().stage));
 narrow.addEventListener("change", () => renderDock());
-ZE.mountAccount($(".controls"));
 setTimeout(() => ZN.popup({ newsUrl: "../#novedades" }), 1200);
+try { ZE.mountAccount($(".controls")); } catch (e) {}
 applyLang(lang);
 })();
 </script>
