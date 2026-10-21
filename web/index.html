@@ -360,6 +360,15 @@ nav.menu a:hover{background:var(--fg);color:var(--bg)}
 .live-wheel svg{width:100%;height:100%;transform:rotate(-90deg)}
 .live-wheel circle{opacity:0;transition:opacity .4s}
 .overlay.open .live-wheel circle{opacity:1}
+.live-conv{position:relative;width:200px;height:130px}
+.live-conv .f{position:absolute;top:28px;width:62px;height:78px;border-radius:13px;border:1px solid var(--line-2);background:var(--bg);display:flex;align-items:flex-end;padding:8px;font-family:var(--mono);font-size:11px;box-shadow:0 14px 24px -14px rgba(0,0,0,.35);opacity:0;transition:opacity .6s,transform .9s cubic-bezier(.2,.9,.2,1)}
+.live-conv .a{left:4px;transform:rotate(-10deg) translateY(16px);transition-delay:1.1s}
+.live-conv .b{left:34px;transform:rotate(-2deg) translateY(16px);transition-delay:1.2s}
+.live-conv .w{right:6px;top:18px;width:72px;height:92px;background:var(--accent);border-color:transparent;color:#fff;font-size:13px;transform:rotate(7deg) translateY(16px);transition-delay:1.4s}
+.live-conv .go{position:absolute;left:98px;top:52px;width:30px;height:30px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;z-index:2;opacity:0;transition:opacity .5s 1.3s}
+.live-conv .go svg{width:14px;height:14px}
+.overlay.open .live-conv .f,.overlay.open .live-conv .go{opacity:1}
+.overlay.open .live-conv .a{transform:rotate(-10deg)} .overlay.open .live-conv .b{transform:rotate(-2deg)} .overlay.open .live-conv .w{transform:rotate(7deg)}
 .live-dial b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:34px;letter-spacing:-.04em}
 .s-name{font-family:var(--display);font-weight:800;font-size:30px;line-height:1;letter-spacing:-.04em}
 .s-desc{color:var(--muted);font-size:14px;line-height:1.5;margin-top:10px}
@@ -745,7 +754,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
       "ft.p":"Hecho para dropshippers que valoran su tiempo.","ft.top":"Volver arriba",
       "ov.close":"Cerrar","ov.status":"En construcción","ov.p":"Estamos construyendo las primeras herramientas de esta sección. Muy pronto estarán aquí.",
       "ov.st1":"En camino","ov.st2":"Disponibles","ov.div":"Próximas herramientas","ov.div2":"Herramientas","ov.pLive":"Ya tienes herramientas listas en esta sección. Las siguientes llegan muy pronto.",
-      avail:"Disponible", openTool:"Abrir herramienta", "tp.name":"Planificador del día", "tp.desc":"Calcula tus horas reales de trabajo, ordena tus tareas por importancia y cierra cada día con tus estadísticas.", "th.name":"Rueda de hábitos", "th.desc":"Hasta 9 hábitos en una rueda mensual: marca cada día, mantén tu racha y revisa cómo te fue cada mes.",
+      avail:"Disponible", openTool:"Abrir herramienta", "tp.name":"Planificador del día", "tp.desc":"Calcula tus horas reales de trabajo, ordena tus tareas por importancia y cierra cada día con tus estadísticas.", "th.name":"Rueda de hábitos", "th.desc":"Hasta 9 hábitos en una rueda mensual: marca cada día, mantén tu racha y revisa cómo te fue cada mes.", "tc.name":"Conversor WebP", "tc.desc":"Pasa tus fotos a WebP y comprime tus vídeos sin perder calidad. Tu tienda carga más rápido y convierte más.",
       tools:"Herramientas", organic:"Orgánico", ads:"Ads", prod:"Productividad", crumbO:"Sección 01 — Orgánico", crumbA:"Sección 02 — Ads", crumbP:"Sección 03 — Productividad personal",
       "nav.prod":"Productividad","nav.news":"Novedades","c.b3":"Rinde más cada día","c.pt1":"Produc\u00ADtividad","c.pt2":"personal","c.pd":"Planificación, foco, hábitos y control de tu tiempo para que rindas al máximo como dropshipper.",
       "c.tg1":"Foco","c.tg2":"Hábitos","c.tg3":"Agenda","c.tasks":"Tareas hoy · 3/5","c.t_a":"Grabar 3 vídeos","c.t_b":"Responder DMs","c.t_c":"Revisar métricas",
@@ -764,7 +773,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
       "ft.p":"Made for dropshippers who value their time.","ft.top":"Back to top",
       "ov.close":"Close","ov.status":"Under construction","ov.p":"We are building the first tools for this section. They will be here very soon.",
       "ov.st1":"On the way","ov.st2":"Available","ov.div":"Upcoming tools","ov.div2":"Tools","ov.pLive":"There are tools ready in this section. The next ones are coming very soon.",
-      avail:"Available", openTool:"Open tool", "tp.name":"Daily planner", "tp.desc":"Work out your real work hours, sort your tasks by importance and close each day with your stats.", "th.name":"Habit wheel", "th.desc":"Up to 9 habits on a monthly wheel: mark each day, keep your streak and look back at every month.",
+      avail:"Available", openTool:"Open tool", "tp.name":"Daily planner", "tp.desc":"Work out your real work hours, sort your tasks by importance and close each day with your stats.", "th.name":"Habit wheel", "th.desc":"Up to 9 habits on a monthly wheel: mark each day, keep your streak and look back at every month.", "tc.name":"WebP converter", "tc.desc":"Turn your photos into WebP and compress your videos with no quality loss. Your store loads faster and converts more.",
       tools:"Tools", organic:"Organic", ads:"Ads", prod:"Productivity", crumbO:"Section 01 — Organic", crumbA:"Section 02 — Ads", crumbP:"Section 03 — Personal productivity",
       "nav.prod":"Productivity","nav.news":"What's new","c.b3":"Get more done every day","c.pt1":"Personal","c.pt2":"produc\u00ADtivity","c.pd":"Planning, focus, habits and time control so you perform at your best as a dropshipper.",
       "c.tg1":"Focus","c.tg2":"Habits","c.tg3":"Schedule","c.tasks":"Today's tasks · 3/5","c.t_a":"Film 3 videos","c.t_b":"Reply to DMs","c.t_c":"Check metrics",
@@ -783,7 +792,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
       "ft.p":"Creat pentru dropshipperii care își prețuiesc timpul.","ft.top":"Înapoi sus",
       "ov.close":"Închide","ov.status":"În construcție","ov.p":"Construim primele instrumente din această secțiune. Vor fi aici foarte curând.",
       "ov.st1":"Pe drum","ov.st2":"Disponibile","ov.div":"Instrumente viitoare","ov.div2":"Instrumente","ov.pLive":"Ai deja instrumente gata în această secțiune. Următoarele vin foarte curând.",
-      avail:"Disponibil", openTool:"Deschide instrumentul", "tp.name":"Planificatorul zilei", "tp.desc":"Calculează-ți orele reale de muncă, ordonează sarcinile după importanță și încheie fiecare zi cu statisticile tale.", "th.name":"Roata obiceiurilor", "th.desc":"Până la 9 obiceiuri pe o roată lunară: bifează fiecare zi, păstrează-ți seria și vezi cum a mers fiecare lună.",
+      avail:"Disponibil", openTool:"Deschide instrumentul", "tp.name":"Planificatorul zilei", "tp.desc":"Calculează-ți orele reale de muncă, ordonează sarcinile după importanță și încheie fiecare zi cu statisticile tale.", "th.name":"Roata obiceiurilor", "th.desc":"Până la 9 obiceiuri pe o roată lunară: bifează fiecare zi, păstrează-ți seria și vezi cum a mers fiecare lună.", "tc.name":"Convertor WebP", "tc.desc":"Transformă pozele în WebP și comprimă clipurile fără pierdere de calitate. Magazinul se încarcă mai repede și convertește mai mult.",
       tools:"Instrumente", organic:"Organic", ads:"Ads", prod:"Productivitate", crumbO:"Secțiunea 01 — Organic", crumbA:"Secțiunea 02 — Ads", crumbP:"Secțiunea 03 — Productivitate personală",
       "nav.prod":"Productivitate","nav.news":"Noutăți","c.b3":"Randament mai mare zilnic","c.pt1":"Produc\u00ADtivitate","c.pt2":"personală","c.pd":"Planificare, concentrare, obiceiuri și controlul timpului ca să dai tot ce e mai bun ca dropshipper.",
       "c.tg1":"Focus","c.tg2":"Obiceiuri","c.tg3":"Agendă","c.tasks":"Sarcini azi · 3/5","c.t_a":"Filmează 3 clipuri","c.t_b":"Răspunde la DM-uri","c.t_c":"Verifică metricile",
@@ -856,7 +865,8 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
   ];
   const SECTIONS = {
     organic:{ crumb:"crumbO", name:"organic", color:"var(--blue)", next:"ads" },
-    ads:    { crumb:"crumbA", name:"ads",     color:"var(--red)",  next:"prod" },
+    ads:    { crumb:"crumbA", name:"ads",     color:"var(--red)",  next:"prod",
+              live:[ { href:"herramientas/conversor.html", name:"tc.name", desc:"tc.desc", art:"conv" } ] },
     prod:   { crumb:"crumbP", name:"prod",    color:"var(--green)", next:"organic",
               live:[ { href:"herramientas/planificador.html", name:"tp.name", desc:"tp.desc", art:"dial" },
                     { href:"herramientas/habitos.html", name:"th.name", desc:"th.desc", art:"wheel" } ] }
@@ -868,6 +878,8 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
         return `<circle cx="70" cy="70" r="${r}" fill="none" stroke="${col}" stroke-width="9" stroke-dasharray="${len} ${c-len}" stroke-dashoffset="${-k*c/n}" style="transition-delay:${1.1 + k*.05 + i*.08}s"/>`; }).join(""); };
     return `<div class="live-wheel"><svg viewBox="0 0 140 140">${[60,49,38].map(seg).join("")}</svg></div>`;
   }
+  /* mini conversor para la tarjeta */
+  const convArt = () => `<div class="live-conv"><span class="f a">JPG</span><span class="f b">MOV</span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="f w">.webp</span></div>`;
   function buildOverlay(){
     const sec = SECTIONS[current] || SECTIONS.organic;
     ov.dataset.palette = current;
@@ -883,7 +895,7 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
     document.getElementById("soonGrid").innerHTML = [0,1,2].map(i => live[i] ? `
       <a class="soon tool-live" href="${live[i].href}" data-hover>
         <div class="s-top"><span class="s-tag">${t("tool")} 0${i+1}</span><span class="s-status tool-live"><i></i>${t("avail")}</span></div>
-        <div class="s-visual">${live[i].art === "wheel" ? wheelArt() : `<div class="live-dial"><svg viewBox="0 0 140 140"><circle class="t" cx="70" cy="70" r="60"/><circle class="p" cx="70" cy="70" r="60"/></svg><b>13h</b></div>`}</div>
+        <div class="s-visual">${live[i].art === "wheel" ? wheelArt() : live[i].art === "conv" ? convArt() : `<div class="live-dial"><svg viewBox="0 0 140 140"><circle class="t" cx="70" cy="70" r="60"/><circle class="p" cx="70" cy="70" r="60"/></svg><b>13h</b></div>`}</div>
         <div class="s-name">${t(live[i].name)}</div>
         <p class="s-desc">${t(live[i].desc)}</p>
         <div class="s-open"><span>${t("openTool")}</span><span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>

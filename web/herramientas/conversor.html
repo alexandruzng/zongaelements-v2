@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conversor WebP · ZongaElements</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Syne:wght@800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS (mismos que la web · paleta Ads) ============ */
+:root{
+  --bg:#F3F1EC; --bg-2:#E9E6DF; --card:#FFFFFF; --fg:#0D0D10; --muted:#6C6B72;
+  --line:rgba(13,13,16,.10); --line-2:rgba(13,13,16,.18);
+  --red:#FF2D3F; --red-2:#FF7A6B; --red-soft:rgba(255,45,63,.12);
+  --green:#12B76A; --green-soft:rgba(18,183,106,.12);
+  --accent:var(--red); --accent-2:var(--red-2); --accent-soft:var(--red-soft);
+  --grid:rgba(13,13,16,.06); --noise-op:.05; --shadow:0 30px 60px -30px rgba(20,20,40,.25);
+  --glass:color-mix(in srgb,var(--card) 72%,transparent);
+  --display:"Bricolage Grotesque",sans-serif; --logo:"Syne",sans-serif; --body:"Manrope",sans-serif; --mono:"JetBrains Mono",monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#09090B; --bg-2:#16161B; --card:#131318; --fg:#F2F0EB; --muted:#8D8C95;
+    --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+    --red-soft:rgba(255,45,63,.18); --green-soft:rgba(18,183,106,.18);
+    --grid:rgba(255,255,255,.045); --noise-op:.07; --shadow:0 30px 60px -30px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#09090B; --bg-2:#16161B; --card:#131318; --fg:#F2F0EB; --muted:#8D8C95;
+  --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+  --red-soft:rgba(255,45,63,.18); --green-soft:rgba(18,183,106,.18);
+  --grid:rgba(255,255,255,.045); --noise-op:.07; --shadow:0 30px 60px -30px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow-x:hidden;min-height:100vh;transition:background .5s,color .5s;-webkit-font-smoothing:antialiased}
+body.locked{overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input{font:inherit;color:inherit}
+::selection{background:var(--accent);color:#fff}
+svg{display:block}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+[hidden]{display:none!important}
+
+.noise{position:fixed;inset:-50%;pointer-events:none;z-index:500;opacity:var(--noise-op);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1s steps(4) infinite}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}100%{transform:translate(0,0)}}
+.bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bg .grid{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse at 50% 0%,#000 15%,transparent 65%)}
+.bg .g1{position:absolute;width:760px;height:760px;border-radius:50%;background:var(--accent);filter:blur(150px);opacity:.14;top:-420px;right:-220px;animation:drift 18s ease-in-out infinite}
+.bg .g2{position:absolute;width:520px;height:520px;border-radius:50%;background:var(--accent-2);filter:blur(140px);opacity:.1;bottom:-300px;left:-160px;animation:drift 22s ease-in-out infinite reverse}
+@keyframes drift{50%{transform:translate(-80px,60px)}}
+
+/* ============ HEADER ============ */
+.top{position:sticky;top:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;
+  background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid var(--line)}
+.back{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg);font-family:var(--logo);font-weight:800;font-size:17px;letter-spacing:-.02em}
+.back .arr{width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;transition:transform .4s cubic-bezier(.3,1.6,.5,1),background .3s,color .3s}
+.back:hover .arr{transform:translateX(-4px);background:var(--fg);color:var(--bg)}
+.back .arr svg{width:16px;height:16px}
+.brand-mark{width:30px;height:30px;position:relative;border-radius:9px;overflow:hidden;background:var(--fg);flex:none}
+.brand-mark span{position:absolute;width:60%;height:60%;border-radius:50%;filter:blur(2px)}
+.brand-mark span:nth-child(1){background:#2B63FF;top:-8%;left:-8%;animation:orbitA 6s linear infinite}
+.brand-mark span:nth-child(2){background:#FF2D3F;bottom:-8%;right:-8%;animation:orbitA 6s linear infinite reverse}
+@keyframes orbitA{50%{transform:translate(40%,40%) scale(.8)}}
+.back b{color:var(--muted);font-weight:500}
+.back .brand-txt{display:none}
+.tool-name{display:none;align-items:center;gap:10px;padding:9px 16px;border:1px solid var(--line);border-radius:100px;background:var(--glass)}
+.tool-name i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.controls{display:flex;gap:6px;align-items:center}
+.ctrl{height:40px;min-width:40px;border:1px solid var(--line-2);border-radius:100px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px;
+  background:var(--glass);font-weight:700;font-size:14px;transition:border-color .3s,transform .3s,background .3s,color .3s}
+.ctrl:hover{border-color:var(--fg)}
+.ctrl:active{transform:scale(.94)}
+.ctrl svg{width:18px;height:18px}
+.lang-btn{font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.theme-btn{width:66px;position:relative;justify-content:space-between;padding:0 7px}
+.theme-btn .knob{position:absolute;top:5px;left:5px;width:28px;height:28px;border-radius:50%;background:var(--fg);transition:transform .5s cubic-bezier(.7,-0.4,.3,1.4)}
+:root[data-theme="dark"] .theme-btn .knob{transform:translateX(26px)}
+.theme-btn svg{position:relative;z-index:1;width:15px;height:15px;transition:color .3s}
+.theme-btn .sun{color:var(--bg)} .theme-btn .moon{color:var(--muted)}
+:root[data-theme="dark"] .theme-btn .sun{color:var(--muted)} :root[data-theme="dark"] .theme-btn .moon{color:var(--bg)}
+
+/* ============ LAYOUT ============ */
+.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:22px 16px 140px}
+.rise{animation:rise .9s cubic-bezier(.2,.9,.2,1) both}
+.rise.d1{animation-delay:.07s}.rise.d2{animation-delay:.14s}.rise.d3{animation-delay:.21s}
+@keyframes rise{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+.kicker{display:flex;align-items:center;gap:12px;color:var(--muted);margin-bottom:18px}
+.kicker b{color:var(--accent);font-weight:500}
+.kicker i{width:40px;height:1px;background:var(--line-2)}
+.h1{font-family:var(--display);font-weight:800;font-size:clamp(46px,13vw,112px);line-height:.88;letter-spacing:-.055em}
+.h1 em{font-style:normal;color:var(--accent);position:relative;white-space:nowrap}
+.h1 .ext{display:inline-block;font-family:var(--mono);font-weight:500;font-size:.34em;letter-spacing:0;vertical-align:.95em;margin-left:.15em;padding:.18em .5em;border-radius:100px;background:var(--fg);color:var(--bg);transform:rotate(-6deg)}
+.lead{color:var(--muted);font-size:16px;line-height:1.55;max-width:560px;margin-top:20px}
+.lead b{color:var(--fg)}
+.private{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:8px 14px 8px 10px;border-radius:100px;background:var(--green-soft);color:var(--green);font-weight:700;font-size:13px}
+.private svg{width:16px;height:16px}
+.head{margin-bottom:28px}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.main-col,.side{display:flex;flex-direction:column;gap:18px;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:var(--shadow)}
+
+/* ============ DROPZONE ============ */
+.drop{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:34px 18px 0;border-radius:30px;cursor:pointer;overflow:hidden;
+  background:var(--card);border:2px dashed var(--line-2);transition:border-color .3s,transform .4s cubic-bezier(.3,1.5,.5,1),background .3s;outline:none}
+.drop:hover,.drop:focus-visible{border-color:var(--accent)}
+.drop:active{transform:scale(.985)}
+.drop.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--card));transform:scale(1.01)}
+.drop input{display:none}
+.stack{position:relative;width:250px;height:132px;margin-bottom:14px}
+.fcard{position:absolute;top:14px;width:84px;height:104px;border-radius:16px;border:1px solid var(--line-2);background:var(--bg);display:flex;flex-direction:column;justify-content:flex-end;padding:10px;box-shadow:0 18px 30px -18px rgba(0,0,0,.35)}
+.fcard::before{content:"";position:absolute;top:0;right:0;width:22px;height:22px;border-bottom-left-radius:10px;background:var(--bg-2);border-left:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.fcard b{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em;text-align:left}
+.fcard i{display:block;height:5px;border-radius:5px;background:var(--line-2);margin-bottom:6px;width:70%}
+.fcard i+i{width:46%}
+.fcard.a{left:0;transform:rotate(-10deg);animation:fa 4s ease-in-out infinite}
+.fcard.b{left:40px;transform:rotate(-2deg);animation:fb 4s ease-in-out infinite}
+.fcard.w{right:0;top:6px;width:96px;height:118px;background:var(--accent);border-color:transparent;color:#fff;transform:rotate(7deg);animation:fw 4s ease-in-out infinite}
+.fcard.w::before{background:color-mix(in srgb,#fff 28%,var(--accent));border-color:transparent}
+.fcard.w i{background:rgba(255,255,255,.4)}
+.fcard.w b{font-size:15px}
+.flow{position:absolute;left:132px;top:52px;width:36px;height:36px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;z-index:2;animation:pulse 2s ease-in-out infinite}
+.flow svg{width:16px;height:16px}
+@keyframes fa{50%{transform:rotate(-14deg) translate(-4px,-6px)}}
+@keyframes fb{50%{transform:rotate(1deg) translate(3px,-4px)}}
+@keyframes fw{50%{transform:rotate(4deg) translate(0,-8px)}}
+@keyframes pulse{50%{box-shadow:0 0 0 10px var(--accent-soft)}}
+.drop h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,7vw,38px);letter-spacing:-.04em;line-height:1}
+.drop p{color:var(--muted);font-size:15px}
+.drop .pick{margin-top:14px}
+.drop .hint-paste{display:none}
+.marq{width:calc(100% + 36px);margin-top:28px;border-top:1px solid var(--line);overflow:hidden;padding:13px 0;color:var(--muted)}
+.marq div{display:flex;gap:28px;width:max-content;animation:mq 26s linear infinite}
+.marq span{white-space:nowrap}
+.marq span.v{color:var(--accent)}
+@keyframes mq{to{transform:translateX(-50%)}}
+.drag-veil{position:fixed;inset:0;z-index:400;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 88%,transparent);color:#fff;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s;pointer-events:none}
+.drag-veil b{font-family:var(--display);font-weight:800;font-size:clamp(40px,10vw,110px);letter-spacing:-.05em}
+body.dragging .drag-veil{opacity:1;visibility:visible;transition:opacity .3s}
+
+/* ============ BUTTONS / CHIPS ============ */
+.btn{height:54px;border-radius:100px;padding:0 24px;font-weight:800;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap;text-decoration:none;
+  transition:transform .35s cubic-bezier(.3,1.6,.5,1),background .3s,color .3s,box-shadow .3s,opacity .3s;position:relative;overflow:hidden}
+.btn svg{width:18px;height:18px;flex:none}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.96)}
+.btn.primary{background:var(--fg);color:var(--bg)}
+.btn.accent{background:var(--accent);color:#fff;box-shadow:0 14px 30px -12px color-mix(in srgb,var(--accent) 70%,transparent)}
+.btn.ghost{border:1px solid var(--line-2)}
+.btn.ghost:hover{border-color:var(--fg)}
+.btn.full{width:100%}
+.btn.sm{height:42px;padding:0 16px;font-size:14px}
+.btn:disabled{opacity:.3;pointer-events:none}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-100%);transition:transform .7s}
+.btn:hover::after{transform:translateX(100%)}
+
+.seg{display:flex;padding:4px;border-radius:100px;background:var(--bg);border:1px solid var(--line)}
+.seg button{flex:1;min-width:0;height:40px;border-radius:100px;font-weight:700;font-size:13.5px;padding:0 6px;transition:all .3s;white-space:nowrap}
+.seg button.on{background:var(--fg);color:var(--bg)}
+.seg button small{display:block;font-size:10.5px;font-weight:600;opacity:.6;margin-top:-2px}
+.seg.tall button{height:52px;line-height:1.15}
+
+/* ============ AJUSTES ============ */
+.set-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.set-head h3{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.03em}
+.set-toggle{display:none}
+.grp{padding:18px 0;border-top:1px solid var(--line)}
+.grp:first-of-type{border-top:0;padding-top:10px}
+.grp-t{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-weight:800;font-size:15px}
+.grp-t .ic{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.grp-t .ic svg{width:17px;height:17px}
+.fld{margin-bottom:16px}
+.fld:last-child{margin-bottom:0}
+.fld-l{display:flex;justify-content:space-between;align-items:baseline;color:var(--muted);margin-bottom:9px}
+.fld-l output{font-family:var(--display);font-weight:800;font-size:20px;color:var(--fg);letter-spacing:-.03em}
+.note{color:var(--muted);font-size:12.5px;line-height:1.45;margin-top:8px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;background:transparent;cursor:pointer;--p:60%}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:8px;background:linear-gradient(90deg,var(--accent) var(--p),var(--bg-2) var(--p))}
+input[type=range]::-moz-range-track{height:8px;border-radius:8px;background:linear-gradient(90deg,var(--accent) var(--p),var(--bg-2) var(--p))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--card);border:3px solid var(--accent);margin-top:-9px;box-shadow:0 6px 14px -4px rgba(0,0,0,.3);transition:transform .25s}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--card);border:3px solid var(--accent)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15)}
+.input{width:100%;height:50px;border-radius:15px;border:1px solid var(--line-2);background:var(--bg);padding:0 16px;font-size:16px;font-weight:600;outline:none;transition:border-color .3s,box-shadow .3s}
+.input::placeholder{color:var(--muted);font-weight:500;opacity:.8}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.tgl{display:flex;align-items:center;gap:12px;cursor:pointer;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:var(--bg)}
+.tgl input{position:absolute;opacity:0;pointer-events:none}
+.tgl span.txt{flex:1;font-weight:700;font-size:14px;line-height:1.3}
+.tgl small{display:block;color:var(--muted);font-weight:500;font-size:12.5px;margin-top:2px}
+.sw{width:46px;height:28px;border-radius:100px;background:var(--bg-2);border:1px solid var(--line-2);position:relative;flex:none;transition:background .3s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--card);box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.tgl input:checked+.sw{background:var(--accent);border-color:var(--accent)}
+.tgl input:checked+.sw::after{transform:translateX(18px)}
+.apply{margin-top:4px}
+
+/* ============ RESUMEN ============ */
+.sum{position:relative;overflow:hidden;background:var(--fg);color:var(--bg);border:0}
+.sum::before{content:"";position:absolute;width:280px;height:280px;border-radius:50%;background:var(--accent);filter:blur(80px);opacity:.45;right:-120px;top:-140px}
+.sum>*{position:relative}
+.sum .mono{opacity:.6}
+.big{font-family:var(--display);font-weight:800;font-size:clamp(64px,18vw,104px);letter-spacing:-.06em;line-height:.9;margin:12px 0 4px;display:flex;align-items:flex-start}
+.big small{font-size:.42em;margin-top:.14em;margin-left:.04em}
+.sum-sub{font-size:15px;opacity:.75}
+.sum-sub b{opacity:1;color:var(--bg)}
+.bars{display:grid;gap:10px;margin:22px 0}
+.bar-row{display:grid;grid-template-columns:62px minmax(0,1fr) 78px;align-items:center;gap:10px;font-size:13px}
+.bar-row .mono{opacity:.6;font-size:10px}
+.bar-row .tr{height:10px;border-radius:10px;background:color-mix(in srgb,var(--bg) 14%,transparent);overflow:hidden}
+.bar-row .tr i{display:block;height:100%;border-radius:10px;background:color-mix(in srgb,var(--bg) 55%,transparent);transition:width 1s cubic-bezier(.2,.9,.2,1)}
+.bar-row.after .tr i{background:var(--accent)}
+.bar-row b{text-align:right;font-family:var(--mono);font-weight:500;font-size:12.5px}
+.sum .btn.accent{box-shadow:none}
+.sum .btn.ghost{border-color:color-mix(in srgb,var(--bg) 25%,transparent);color:var(--bg);margin-top:10px}
+.sum .btn.ghost:hover{border-color:var(--bg)}
+
+/* ============ LISTA ============ */
+.list-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 4px 0}
+.list-head h3{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.03em;display:flex;align-items:baseline;gap:10px}
+.list-head h3 small{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:500}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center;padding:12px;border-radius:22px;background:var(--card);border:1px solid var(--line);position:relative;overflow:hidden;animation:popIn .55s cubic-bezier(.3,1.5,.5,1)}
+@keyframes popIn{from{opacity:0;transform:translateY(14px) scale(.97)}}
+.item.out{opacity:0;transform:translateX(40px) scale(.96);transition:all .3s}
+.thumb{width:64px;height:64px;border-radius:15px;background:var(--bg-2);overflow:hidden;position:relative;display:grid;place-items:center;color:var(--muted)}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
+.thumb svg{width:24px;height:24px}
+.thumb .kind{position:absolute;left:5px;bottom:5px;width:20px;height:20px;border-radius:7px;background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center}
+.thumb .kind svg{width:11px;height:11px}
+button.thumb{cursor:zoom-in}
+.info{min-width:0;display:flex;flex-direction:column;gap:6px}
+.name{font-weight:800;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fmt{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:3px 7px;border-radius:7px;background:var(--bg-2);color:var(--fg)}
+.tag.new{background:var(--accent);color:#fff}
+.fmt svg{width:12px;height:12px}
+.sizes{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
+.sizes s{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.sizes b{font-weight:800}
+.save{font-family:var(--mono);font-size:11px;font-weight:500;padding:3px 8px;border-radius:100px;background:var(--green-soft);color:var(--green)}
+.save.up{background:var(--bg-2);color:var(--muted)}
+.state{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.state.err{color:var(--red)}
+.state .spin{width:14px;height:14px;border-radius:50%;border:2px solid var(--line-2);border-top-color:var(--accent);animation:spin .8s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.prog{position:absolute;left:0;bottom:0;height:3px;background:var(--accent);transition:width .3s;border-radius:0 3px 3px 0}
+.acts{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;margin-top:-2px}
+.ibtn{height:38px;min-width:38px;border-radius:100px;border:1px solid var(--line-2);display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 12px;font-weight:700;font-size:13px;color:var(--fg);text-decoration:none;transition:all .3s cubic-bezier(.3,1.6,.5,1)}
+.ibtn svg{width:15px;height:15px}
+.ibtn:hover{border-color:var(--fg);transform:translateY(-2px)}
+.ibtn.dl{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.ibtn.x{padding:0;width:38px;color:var(--muted)}
+.ibtn.x:hover{background:var(--red-soft);color:var(--red);border-color:transparent;transform:rotate(90deg)}
+.ibtn[aria-disabled="true"]{opacity:.3;pointer-events:none}
+.item .stale{color:var(--accent)}
+
+/* ============ MÓVIL: barra inferior ============ */
+.dock{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:90;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 18px;border-radius:100px;
+  background:var(--fg);color:var(--bg);box-shadow:0 20px 40px -14px rgba(0,0,0,.5);transform:translateY(140%);transition:transform .6s cubic-bezier(.3,1.3,.5,1)}
+.dock.on{transform:none}
+.dock .d-txt{flex:1;min-width:0;line-height:1.15}
+.dock .d-txt b{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.03em;display:block}
+.dock .d-txt span{font-size:12px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.dock .btn{height:48px;padding:0 20px}
+
+/* ============ MODAL COMPARAR ============ */
+.scrim{position:fixed;inset:0;z-index:300;background:rgba(5,5,8,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .4s,visibility 0s .4s}
+.scrim.on{opacity:1;visibility:visible;transition:opacity .4s}
+.viewer{position:fixed;left:50%;top:50%;z-index:320;width:min(920px,calc(100% - 24px));max-height:calc(100% - 24px);display:flex;flex-direction:column;gap:14px;padding:16px;
+  transform:translate(-50%,-46%) scale(.95);opacity:0;visibility:hidden;transition:opacity .3s,transform .45s cubic-bezier(.3,1.5,.5,1),visibility 0s .4s}
+.viewer.on{opacity:1;visibility:visible;transform:translate(-50%,-50%);transition:opacity .3s,transform .45s cubic-bezier(.3,1.5,.5,1)}
+.v-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.v-head b{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmp{position:relative;border-radius:18px;overflow:hidden;background:repeating-conic-gradient(var(--bg-2) 0 25%,var(--bg) 0 50%) 0 0/22px 22px;display:grid;place-items:center;min-height:200px;user-select:none;touch-action:none}
+.cmp img,.cmp video{display:block;max-width:100%;max-height:calc(100vh - 220px);object-fit:contain}
+.cmp-in{position:relative;line-height:0;max-width:100%}
+.cmp .after{position:absolute;inset:0;width:100%;height:100%;max-height:none;clip-path:inset(0 0 0 var(--cut,50%))}
+.cmp .line{position:absolute;top:0;bottom:0;left:var(--cut,50%);width:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.2);pointer-events:none}
+.cmp .line::after{content:"";position:absolute;top:50%;left:50%;width:40px;height:40px;border-radius:50%;transform:translate(-50%,-50%);background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230D0D10' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M9 6l-6 6 6 6M15 6l6 6-6 6'/%3E%3C/svg%3E") center/20px no-repeat;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+.cmp .lbl{position:absolute;top:12px;padding:6px 10px;border-radius:100px;background:rgba(0,0,0,.6);color:#fff;pointer-events:none}
+.cmp .lbl.l{left:12px} .cmp .lbl.r{right:12px;background:var(--accent)}
+.cmp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.v-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.v-foot .sizes{font-size:14px}
+
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));z-index:450;transform:translate(-50%,20px);opacity:0;pointer-events:none;max-width:calc(100% - 32px);
+  display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:100px;background:var(--fg);color:var(--bg);font-weight:700;font-size:14px;transition:all .45s cubic-bezier(.3,1.5,.5,1)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:899px){
+  .main-col,.side{display:contents}
+  .drop{order:1} .settings{order:2} #listWrap{order:3}
+  .set-toggle{display:inline-flex}
+  .settings:not(.open) .set-body{display:none}
+  .settings:not(.open) .set-head{margin-bottom:0}
+  .side .sum{display:none}
+}
+@media (min-width:600px){
+  .top{padding:14px 28px}
+  .back .brand-txt{display:inline}
+  .wrap{padding:30px 28px 120px}
+  .card{padding:26px}
+  .item{grid-template-columns:72px minmax(0,1fr) auto;padding:12px 14px 12px 12px}
+  .thumb{width:72px;height:72px}
+  .acts{grid-column:auto;margin:0}
+}
+@media (min-width:900px){
+  .tool-name{display:flex}
+  .top{padding:16px 40px}
+  .wrap{padding:36px 40px 100px}
+  .layout{grid-template-columns:minmax(0,1fr) 380px;align-items:start;gap:26px}
+  .side{position:sticky;top:96px}
+  .dock{display:none}
+  .drop{padding-top:46px}
+  .drop .hint-paste{display:inline}
+  .stack{transform:scale(1.12);margin:8px 0 22px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="bg"><div class="grid"></div><div class="g1"></div><div class="g2"></div></div>
+<div class="drag-veil"><b data-i18n="veil">Suéltalos aquí</b></div>
+
+<header class="top">
+  <a class="back" href="../index.html#tools" aria-label="ZongaElements">
+    <span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+    <span class="brand-mark"><span></span><span></span></span><span class="brand-txt">Zonga<b>Elements</b></span>
+  </a>
+  <div class="tool-name mono"><i></i><span data-i18n="tool">Conversor WebP</span></div>
+  <div class="controls">
+    <button class="ctrl lang-btn" id="langBtn" data-i18n-aria="langA">ES</button>
+    <button class="ctrl theme-btn" id="themeBtn" aria-label="Tema">
+      <span class="knob"></span>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <div class="kicker mono rise"><b>01</b><i></i><span data-i18n="kick">Conversor · Ads</span></div>
+    <h1 class="h1 rise d1"><span data-i18n="h1a">Pesa menos.</span><br><em data-i18n="h1b">Carga antes.</em><span class="ext">.webp</span></h1>
+    <p class="lead rise d2" data-i18n-html="lead">Arrastra fotos y vídeos de cualquier formato. Las imágenes salen en <b>WebP</b> y los vídeos, comprimidos en <b>WebM</b>, sin perder calidad visible.</p>
+    <div class="private rise d3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span data-i18n="private">Todo se hace en tu dispositivo: no se sube nada</span></div>
+  </div>
+
+  <div class="layout">
+    <div class="main-col">
+      <label class="drop rise d2" id="drop" tabindex="0">
+        <input type="file" id="fileIn" multiple accept="image/*,video/*,.heic,.heif,.mov,.mkv,.avif">
+        <div class="stack" aria-hidden="true">
+          <div class="fcard a"><i></i><i></i><b id="fcA">JPG</b></div>
+          <div class="fcard b"><i></i><i></i><b id="fcB">MOV</b></div>
+          <div class="flow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          <div class="fcard w"><i></i><i></i><b id="fcW">.webp</b></div>
+        </div>
+        <h2 data-i18n="dropT">Suelta aquí tus archivos</h2>
+        <p><span data-i18n="dropP">Fotos y vídeos, todos a la vez.</span> <span class="hint-paste" data-i18n="paste">También puedes pegar con Ctrl+V.</span></p>
+        <span class="btn accent pick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="pick">Elegir archivos</span></span>
+        <div class="marq mono" aria-hidden="true"><div id="marq"></div></div>
+      </label>
+
+      <div id="listWrap" hidden>
+        <div class="list-head">
+          <h3><span data-i18n="files">Archivos</span> <small id="count"></small></h3>
+          <button class="btn ghost sm" id="clearAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg><span data-i18n="clear">Vaciar</span></button>
+        </div>
+        <div class="list" id="list" style="margin-top:14px"></div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="card settings rise d3" id="settings">
+        <div class="set-head">
+          <h3 data-i18n="settings">Ajustes</h3>
+          <button class="btn ghost sm set-toggle" id="setToggle"><span data-i18n="edit">Cambiar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        </div>
+        <div class="set-body">
+          <div class="grp">
+            <div class="grp-t"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></span><span data-i18n="imgs">Imágenes → WebP</span></div>
+            <div class="fld">
+              <div class="fld-l"><span class="mono" data-i18n="quality">Calidad</span><output id="qOut">82</output></div>
+              <input type="range" id="q" min="50" max="100" step="1" value="82">
+              <p class="note" id="qNote"></p>
+            </div>
+            <div class="fld">
+              <div class="fld-l"><span class="mono" data-i18n="maxSize">Tamaño máximo</span></div>
+              <div class="seg" id="maxImg"><button data-v="0" data-i18n="orig">Original</button><button data-v="2048">2048</button><button data-v="1600">1600</button><button data-v="1080">1080</button></div>
+              <p class="note" data-i18n="maxNote">Lado más largo en píxeles. 2048 es lo que recomienda Shopify para fotos de producto.</p>
+            </div>
+          </div>
+          <div class="grp">
+            <div class="grp-t"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="15" height="14" rx="3"/><path d="m17 10 5-3v10l-5-3"/></svg></span><span data-i18n="vids">Vídeos</span></div>
+            <div class="fld">
+              <div class="fld-l"><span class="mono" data-i18n="format">Formato</span></div>
+              <div class="seg tall" id="vFmt"><button data-v="webm">WebM<small data-i18n="lighter">más ligero</small></button><button data-v="mp4">MP4<small data-i18n="compat">más compatible</small></button></div>
+            </div>
+            <div class="fld">
+              <div class="fld-l"><span class="mono" data-i18n="quality">Calidad</span></div>
+              <div class="seg" id="vQ"><button data-v="high" data-i18n="qHigh">Alta</button><button data-v="medium" data-i18n="qMed">Equilibrada</button><button data-v="low" data-i18n="qLow">Ligera</button></div>
+            </div>
+            <div class="fld">
+              <div class="fld-l"><span class="mono" data-i18n="res">Resolución</span></div>
+              <div class="seg" id="vRes"><button data-v="0" data-i18n="orig">Original</button><button data-v="1080">1080p</button><button data-v="720">720p</button></div>
+              <p class="note" data-i18n="resNote">1080p se ve perfecto en el móvil y pesa mucho menos que 4K.</p>
+            </div>
+            <div class="fld">
+              <label class="tgl"><span class="txt"><span data-i18n="mute">Quitar el sonido</span><small data-i18n="muteS">Ideal para loops de la landing.</small></span><input type="checkbox" id="mute"><span class="sw"></span></label>
+            </div>
+          </div>
+          <div class="grp">
+            <div class="grp-t"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></span><span data-i18n="naming">Nombre de los archivos</span></div>
+            <input class="input" id="prefix" maxlength="60" autocomplete="off" data-i18n-ph="prefixPh" placeholder="Ej: lampara-lunar (opcional)">
+            <p class="note" data-i18n="prefixNote">Se numeran solos: lampara-lunar-1.webp… Ayuda al SEO de tu tienda.</p>
+          </div>
+          <button class="btn accent full apply" id="applyBtn" hidden></button>
+        </div>
+      </div>
+
+      <div class="card sum" id="sumCard" hidden>
+        <span class="mono" data-i18n="saved">Ahorro total</span>
+        <div class="big"><span id="pct">0</span><small>%</small></div>
+        <p class="sum-sub" id="sumSub"></p>
+        <div class="bars">
+          <div class="bar-row"><span class="mono" data-i18n="before">Antes</span><span class="tr"><i id="barB" style="width:100%"></i></span><b id="szB">—</b></div>
+          <div class="bar-row after"><span class="mono" data-i18n="after">Después</span><span class="tr"><i id="barA" style="width:0"></i></span><b id="szA">—</b></div>
+        </div>
+        <button class="btn accent full" id="zipBtn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="zip">Descargar todo (.zip)</span></button>
+        <button class="btn ghost full" id="moreBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="more">Añadir más</span></button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="dock" id="dock">
+  <div class="d-txt"><b id="dPct">−0%</b><span id="dSub"></span></div>
+  <button class="btn accent" id="dZip" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>ZIP</span></button>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="card viewer" id="viewer" role="dialog" aria-modal="true">
+  <div class="v-head"><b id="vName"></b><button class="ctrl" id="vClose" data-i18n-aria="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="cmp" id="cmp"></div>
+  <div class="v-foot"><div class="sizes" id="vSizes"></div><a class="btn primary sm" id="vDl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="download">Descargar</span></a></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/cuenta.js"></script>
+<script src="../js/novedades.js?v=2"></script>
+<script>
+(async () => {
+/* =========================================================
+   TEXTOS (ES / EN / RO) — mismo idioma que la web (ze-lang)
+   ========================================================= */
+const T = {
+es:{ tool:"Conversor WebP", kick:"Conversor · Ads", h1a:"Pesa menos.", h1b:"Carga antes.",
+  lead:"Arrastra fotos y vídeos de cualquier formato. Las imágenes salen en <b>WebP</b> y los vídeos, comprimidos en <b>WebM</b>, sin perder calidad visible.",
+  private:"Todo se hace en tu dispositivo: no se sube nada", veil:"Suéltalos aquí", langA:"Cambiar idioma", close:"Cerrar",
+  dropT:"Suelta aquí tus archivos", dropP:"Fotos y vídeos, todos a la vez.", paste:"También puedes pegar con Ctrl+V.", pick:"Elegir archivos",
+  files:"Archivos", clear:"Vaciar", settings:"Ajustes", edit:"Cambiar",
+  imgs:"Imágenes → WebP", quality:"Calidad", maxSize:"Tamaño máximo", orig:"Original",
+  maxNote:"Lado más largo en píxeles. 2048 es lo que recomienda Shopify para fotos de producto.",
+  qN1:"Máxima calidad, pero pesa bastante más.", qN2:"El punto ideal: se ve igual y pesa mucho menos.", qN3:"Muy ligero. Puede notarse en fotos con detalle.",
+  vids:"Vídeos", format:"Formato", lighter:"más ligero", compat:"más compatible", qHigh:"Alta", qMed:"Equilibrada", qLow:"Ligera",
+  res:"Resolución", resNote:"1080p se ve perfecto en el móvil y pesa mucho menos que 4K.", mute:"Quitar el sonido", muteS:"Ideal para loops de la landing.",
+  naming:"Nombre de los archivos", prefixPh:"Ej: lampara-lunar (opcional)", prefixNote:"Se numeran solos: lampara-lunar-1.webp… Ayuda al SEO de tu tienda.",
+  apply:"Aplicar a {n} vídeo(s)", saved:"Ahorro total", before:"Antes", after:"Después", zip:"Descargar todo (.zip)", more:"Añadir más", download:"Descargar",
+  sumSub:"Has ahorrado <b>{s}</b> en {n} archivo(s).", dSub:"{s} ahorrados · {n} archivo(s)",
+  queued:"En cola", working:"Convirtiendo…", loadingEngine:"Preparando el motor de vídeo…", videoWork:"Comprimiendo {p} % · no cierres esta pestaña", done:"Listo", stale:"Ajustes cambiados",
+  bigger:"El original ya era más ligero", gif:"GIF animado: se guarda el primer fotograma", noAudio:"Sin sonido: este navegador no puede codificar audio",
+  usedMp4:"Este navegador no crea WebM: se ha usado MP4",
+  eOpen:"No se puede abrir en este navegador. Si es HEIC, prueba desde Safari.", eVideo:"Este navegador no puede comprimir vídeo. Usa Chrome, Edge o Safari actualizados.",
+  eVideoRead:"No se ha podido leer este vídeo.", eType:"No es una imagen ni un vídeo.", eGeneric:"Algo ha fallado al convertirlo.",
+  added:"{n} archivo(s) añadido(s)", zipping:"Preparando el ZIP…", zipDone:"ZIP descargado", remove:"Quitar", compare:"Comparar" },
+en:{ tool:"WebP converter", kick:"Converter · Ads", h1a:"Weigh less.", h1b:"Load faster.",
+  lead:"Drop in photos and videos in any format. Images come out as <b>WebP</b> and videos compressed to <b>WebM</b>, with no visible quality loss.",
+  private:"Everything runs on your device: nothing is uploaded", veil:"Drop them here", langA:"Change language", close:"Close",
+  dropT:"Drop your files here", dropP:"Photos and videos, all at once.", paste:"You can also paste with Ctrl+V.", pick:"Choose files",
+  files:"Files", clear:"Clear", settings:"Settings", edit:"Change",
+  imgs:"Images → WebP", quality:"Quality", maxSize:"Max size", orig:"Original",
+  maxNote:"Longest side in pixels. 2048 is what Shopify recommends for product photos.",
+  qN1:"Top quality, but noticeably heavier.", qN2:"The sweet spot: looks the same, weighs much less.", qN3:"Very light. May show on detailed photos.",
+  vids:"Videos", format:"Format", lighter:"lighter", compat:"more compatible", qHigh:"High", qMed:"Balanced", qLow:"Light",
+  res:"Resolution", resNote:"1080p looks perfect on phones and weighs far less than 4K.", mute:"Remove sound", muteS:"Great for landing page loops.",
+  naming:"File names", prefixPh:"E.g. moon-lamp (optional)", prefixNote:"Numbered automatically: moon-lamp-1.webp… Helps your store's SEO.",
+  apply:"Apply to {n} video(s)", saved:"Total saved", before:"Before", after:"After", zip:"Download all (.zip)", more:"Add more", download:"Download",
+  sumSub:"You saved <b>{s}</b> across {n} file(s).", dSub:"{s} saved · {n} file(s)",
+  queued:"Queued", working:"Converting…", loadingEngine:"Loading the video engine…", videoWork:"Compressing {p} % · keep this tab open", done:"Done", stale:"Settings changed",
+  bigger:"The original was already lighter", gif:"Animated GIF: the first frame is kept", noAudio:"No sound: this browser can't encode audio",
+  usedMp4:"This browser can't create WebM: MP4 was used",
+  eOpen:"Can't open this in this browser. If it's HEIC, try Safari.", eVideo:"This browser can't compress video. Use an up-to-date Chrome, Edge or Safari.",
+  eVideoRead:"This video couldn't be read.", eType:"It's not an image or a video.", eGeneric:"Something went wrong converting it.",
+  added:"{n} file(s) added", zipping:"Preparing the ZIP…", zipDone:"ZIP downloaded", remove:"Remove", compare:"Compare" },
+ro:{ tool:"Convertor WebP", kick:"Convertor · Ads", h1a:"Cântărește puțin.", h1b:"Se încarcă rapid.",
+  lead:"Trage poze și clipuri în orice format. Imaginile ies în <b>WebP</b>, iar clipurile comprimate în <b>WebM</b>, fără pierdere vizibilă de calitate.",
+  private:"Totul se face pe dispozitivul tău: nu se încarcă nimic", veil:"Lasă-le aici", langA:"Schimbă limba", close:"Închide",
+  dropT:"Lasă fișierele aici", dropP:"Poze și clipuri, toate odată.", paste:"Poți și să lipești cu Ctrl+V.", pick:"Alege fișiere",
+  files:"Fișiere", clear:"Golește", settings:"Setări", edit:"Schimbă",
+  imgs:"Imagini → WebP", quality:"Calitate", maxSize:"Mărime maximă", orig:"Original",
+  maxNote:"Latura cea mai lungă în pixeli. 2048 e ce recomandă Shopify pentru pozele de produs.",
+  qN1:"Calitate maximă, dar cântărește mult mai mult.", qN2:"Punctul ideal: arată la fel și cântărește mult mai puțin.", qN3:"Foarte ușor. Se poate vedea la pozele cu detalii.",
+  vids:"Clipuri", format:"Format", lighter:"mai ușor", compat:"mai compatibil", qHigh:"Înaltă", qMed:"Echilibrată", qLow:"Ușoară",
+  res:"Rezoluție", resNote:"1080p arată perfect pe telefon și cântărește mult mai puțin decât 4K.", mute:"Elimină sunetul", muteS:"Ideal pentru loop-urile din landing.",
+  naming:"Numele fișierelor", prefixPh:"Ex: lampa-luna (opțional)", prefixNote:"Se numerotează singure: lampa-luna-1.webp… Ajută SEO-ul magazinului.",
+  apply:"Aplică la {n} clip(uri)", saved:"Economie totală", before:"Înainte", after:"După", zip:"Descarcă tot (.zip)", more:"Adaugă mai multe", download:"Descarcă",
+  sumSub:"Ai economisit <b>{s}</b> în {n} fișier(e).", dSub:"{s} economisiți · {n} fișier(e)",
+  queued:"În așteptare", working:"Se convertește…", loadingEngine:"Se pregătește motorul video…", videoWork:"Se comprimă {p} % · nu închide fila", done:"Gata", stale:"Setări schimbate",
+  bigger:"Originalul era deja mai ușor", gif:"GIF animat: se păstrează primul cadru", noAudio:"Fără sunet: browserul nu poate codifica audio",
+  usedMp4:"Browserul nu poate crea WebM: s-a folosit MP4",
+  eOpen:"Nu se poate deschide în acest browser. Dacă e HEIC, încearcă în Safari.", eVideo:"Browserul nu poate comprima video. Folosește Chrome, Edge sau Safari actualizat.",
+  eVideoRead:"Clipul nu a putut fi citit.", eType:"Nu e nici imagine, nici clip.", eGeneric:"Ceva n-a mers la conversie.",
+  added:"{n} fișier(e) adăugat(e)", zipping:"Se pregătește ZIP-ul…", zipDone:"ZIP descărcat", remove:"Elimină", compare:"Compară" }
+};
+const pref = { get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}} };
+let lang = pref.get("ze-lang") || "es"; if (!T[lang]) lang = "es";
+const t = (k, v={}) => String(T[lang][k] ?? T.es[k] ?? k).replace(/\{(\w+)\}/g, (_,x) => v[x] ?? "");
+const $ = (s, el=document) => el.querySelector(s), $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+await ZE.requireUser();
+
+/* =========================================================
+   AJUSTES (se recuerdan en este dispositivo)
+   ========================================================= */
+const DEF = { q:82, maxImg:2048, vFmt:"webm", vQ:"medium", vRes:1080, mute:false, prefix:"" };
+let S = { ...DEF };
+try { Object.assign(S, JSON.parse(pref.get("ze-conv") || "{}")); } catch (e) {}
+const saveS = () => pref.set("ze-conv", JSON.stringify(S));
+const imgSig = () => `${S.q}|${S.maxImg}`;
+const vidSig = () => `${S.vFmt}|${S.vQ}|${S.vRes}|${S.mute}`;
+
+/* =========================================================
+   UTILIDADES
+   ========================================================= */
+const fmtSize = b => {
+  const u = ["B","KB","MB","GB"]; let i = 0; while (b >= 1000 && i < 3) { b /= 1000; i++; }
+  return `${b.toLocaleString(lang, { maximumFractionDigits: b < 10 && i ? 1 : 0 })} ${u[i]}`;
+};
+const slug = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60);
+const baseName = n => n.replace(/\.[^.]+$/, "");
+const extOf = n => (n.match(/\.([^.]+)$/) || [, ""])[1].toUpperCase();
+const even = n => Math.max(2, Math.round(n / 2) * 2);
+const IMG_EXT = /\.(jpe?g|png|gif|webp|avif|bmp|tiff?|heic|heif|svg|ico)$/i;
+const VID_EXT = /\.(mp4|mov|m4v|webm|mkv|avi|3gp|ogv)$/i;
+const kindOf = f => f.type.startsWith("image/") || IMG_EXT.test(f.name) ? "image" : f.type.startsWith("video/") || VID_EXT.test(f.name) ? "video" : null;
+let toastT;
+function toast(msg){ const el = $("#toast"); el.textContent = msg; el.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("on"), 2600); }
+const ICON = {
+  img:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>',
+  vid:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+  dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  arr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>'
+};
+
+/* =========================================================
+   IMÁGENES → WEBP
+   El navegador codifica WebP directamente (Chrome, Edge, Firefox).
+   Si no puede (Safari), se usa libwebp en WebAssembly, que solo se
+   descarga en ese caso.
+   ========================================================= */
+const MAX_PIXELS = 16_000_000;   // límite de canvas en iPhone
+const nativeWebp = new Promise(res => {
+  const c = document.createElement("canvas"); c.width = c.height = 2;
+  try { c.toBlob(b => res(!!b && b.type === "image/webp"), "image/webp", .8); } catch (e) { res(false); }
+});
+const JSQ_URL = "https://cdn.jsdelivr.net/npm/@jsquash/webp@1.5.0/codec/enc/webp_enc_simd.js";
+const JSQ_OPTS = { quality:82, target_size:0, target_PSNR:0, method:4, sns_strength:50, filter_strength:60, filter_sharpness:0, filter_type:1, partitions:0, segments:4, pass:1,
+  show_compressed:0, preprocessing:0, autofilter:0, partition_limit:0, alpha_compression:1, alpha_filtering:1, alpha_quality:100, lossless:0, exact:0, image_hint:0,
+  emulate_jpeg_size:0, thread_level:0, low_memory:0, near_lossless:100, use_delta_palette:0, use_sharp_yuv:0 };
+let wasmEnc;
+async function wasmWebp(ctx, w, h, q){
+  wasmEnc ||= import(JSQ_URL).then(m => m.default({ noInitialRun:true }));
+  const mod = await wasmEnc, data = ctx.getImageData(0, 0, w, h);
+  const out = mod.encode(data.data, w, h, { ...JSQ_OPTS, quality:q });
+  if (!out) throw new Error("enc");
+  return new Blob([out], { type:"image/webp" });
+}
+async function decodeImage(file){
+  try { const b = await createImageBitmap(file, { imageOrientation:"from-image" }); return { src:b, w:b.width, h:b.height, close:() => b.close() }; }
+  catch (e) {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.src = url;
+    try { await img.decode(); } catch (er) { URL.revokeObjectURL(url); throw new Error("open"); }
+    const w = img.naturalWidth || 1600, h = img.naturalHeight || 1600;
+    return { src:img, w, h, close:() => URL.revokeObjectURL(url) };
+  }
+}
+async function convertImage(it){
+  const d = await decodeImage(it.file);
+  try {
+    let scale = 1;
+    const long = Math.max(d.w, d.h);
+    if (S.maxImg && long > S.maxImg) scale = S.maxImg / long;
+    if (d.w * d.h * scale * scale > MAX_PIXELS) scale = Math.sqrt(MAX_PIXELS / (d.w * d.h));
+    const w = Math.max(1, Math.round(d.w * scale)), h = Math.max(1, Math.round(d.h * scale));
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    const ctx = c.getContext("2d", { willReadFrequently: !(await nativeWebp) });
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(d.src, 0, 0, w, h);
+    const blob = await nativeWebp
+      ? await new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error("enc")), "image/webp", S.q / 100))
+      : await wasmWebp(ctx, w, h, S.q);
+    c.width = c.height = 0;
+    Object.assign(it, { out:blob, ext:"webp", meta:`${d.w}×${d.h}${scale < 1 ? ` → ${w}×${h}` : ""}`, codec:"WEBP" });
+  } finally { d.close(); }
+}
+
+/* =========================================================
+   VÍDEOS → WEBM (VP9 + Opus) o MP4 (H.264 + AAC)
+   Mediabunny usa los codificadores del propio navegador (WebCodecs):
+   rápido, con aceleración por hardware y sin subir nada.
+   ========================================================= */
+const MB_URL = "https://cdn.jsdelivr.net/npm/mediabunny@1.61.3/dist/bundles/mediabunny.min.mjs";
+let MBp;
+const loadMB = () => MBp ||= import(MB_URL);
+async function convertVideo(it){
+  if (!("VideoEncoder" in window)) throw new Error("video");
+  if (!MBp) { it.status = t("loadingEngine"); renderItem(it); }
+  const MB = await loadMB();
+  const input = new MB.Input({ source:new MB.BlobSource(it.file), formats:MB.ALL_FORMATS });
+  let vt, at;
+  try { vt = await input.getPrimaryVideoTrack(); at = S.mute ? null : await input.getPrimaryAudioTrack(); }
+  catch (e) { throw new Error("videoRead"); }
+  if (!vt) throw new Error("videoRead");
+  const sw = vt.displayWidth, sh = vt.displayHeight, short = Math.min(sw, sh);
+  const scale = S.vRes && short > S.vRes ? S.vRes / short : 1;
+  const W = even(sw * scale), H = even(sh * scale);
+  let fps = 30, srcBps = 0;
+  try { const st = await vt.computePacketStats(90); fps = st.averagePacketRate || 30; srcBps = st.averageBitrate || 0; } catch (e) {}
+
+  // Formato: WebM si el navegador puede crearlo; si no, MP4.
+  const plans = S.vFmt === "webm"
+    ? [["webm", ["vp9","vp8"], ["opus"]], ["mp4", ["avc","hevc"], ["aac","opus"]]]
+    : [["mp4", ["avc","hevc"], ["aac","opus"]], ["webm", ["vp9","vp8"], ["opus"]]];
+  let plan, vcodec;
+  for (const p of plans) {
+    vcodec = await MB.getFirstEncodableVideoCodec(p[1], { width:W, height:H });
+    if (vcodec) { plan = p; break; }
+  }
+  if (!plan) throw new Error("video");
+  const acodec = at ? await MB.getFirstEncodableAudioCodec(plan[2]) : null;
+  // Bitrate objetivo: referencia para 1080p a 30 fps con VP9, ajustada a la resolución,
+  // los fps y el códec. Nunca por encima del original, para que siempre pese menos.
+  const ref = { high:4.5e6, medium:2.6e6, low:1.5e6 }[S.vQ];
+  const px = Math.pow((W * H) / (1920 * 1080), .75), fr = Math.sqrt(Math.min(fps, 30) / 30);
+  const cf = { vp9:1, hevc:1.05, vp8:1.4, avc:1.45 }[vcodec] || 1.3;
+  let bitrate = Math.round(ref * px * fr * cf);
+  if (srcBps) bitrate = Math.min(bitrate, Math.round(srcBps * .8));
+  bitrate = Math.max(bitrate, 300e3);
+  const notes = [];
+  if (plan[0] !== S.vFmt && S.vFmt === "webm") notes.push(t("usedMp4"));
+  if (at && !acodec) notes.push(t("noAudio"));
+
+  const output = new MB.Output({
+    format: plan[0] === "webm" ? new MB.WebMOutputFormat() : new MB.Mp4OutputFormat({ fastStart:"in-memory" }),
+    target: new MB.BufferTarget()
+  });
+  const conv = await MB.Conversion.init({
+    input, output, tracks:"primary", showWarnings:false,
+    video:{ codec:vcodec, bitrate, forceTranscode:true, ...(scale < 1 ? { width:W, height:H, fit:"fill" } : {}), ...(fps > 31 ? { frameRate:30 } : {}) },
+    audio: acodec ? { codec:acodec, bitrate:S.vQ === "high" ? 128e3 : 96e3 } : { discard:true }
+  });
+  if (!conv.isValid) throw new Error("video");
+  it.cancel = () => conv.cancel();
+  conv.onProgress = p => { it.progress = p; it.status = t("videoWork", { p:Math.round(p * 100) }); renderItem(it, true); };
+  await conv.execute();
+  it.cancel = null;
+  const type = plan[0] === "webm" ? "video/webm" : "video/mp4";
+  Object.assign(it, { out:new Blob([output.target.buffer], { type }), ext:plan[0], meta:`${sw}×${sh}${scale < 1 ? ` → ${W}×${H}` : ""}`,
+    codec:`${plan[0].toUpperCase()} · ${vcodec.toUpperCase()}`, notes });
+}
+
+/* =========================================================
+   COLA DE CONVERSIÓN (de uno en uno, para no saturar el móvil)
+   ========================================================= */
+let items = [], uid = 0, busy = false;
+function addFiles(list){
+  const fresh = [...list].map(file => ({ id:++uid, file, kind:kindOf(file), state:"queued", progress:0 }));
+  if (!fresh.length) return;
+  for (const it of fresh) {
+    if (!it.kind) { it.state = "error"; it.err = t("eType"); }
+    else if (it.kind === "image") it.thumbUrl = URL.createObjectURL(it.file);
+    items.push(it); mountItem(it);
+  }
+  toast(t("added", { n:fresh.length }));
+  renderAll(); pump();
+}
+async function pump(){
+  if (busy) return;
+  const it = items.find(i => i.state === "queued");
+  if (!it) return;
+  busy = true; it.state = "working"; it.progress = 0; it.status = t("working"); it.notes = [];
+  const sig = it.kind === "image" ? imgSig() : vidSig();
+  renderItem(it);
+  try {
+    if (it.kind === "image") await convertImage(it); else await convertVideo(it);
+    if (!items.includes(it)) return;
+    it.sig = sig; it.state = "done";
+    if (it.kind === "image" && /\.gif$/i.test(it.file.name)) it.notes.push(t("gif"));
+    if (it.outUrl) URL.revokeObjectURL(it.outUrl);
+    it.outUrl = URL.createObjectURL(it.out);
+  } catch (e) {
+    if (items.includes(it)) {
+      it.state = "error";
+      it.err = t({ open:"eOpen", video:"eVideo", videoRead:"eVideoRead" }[e.message] || (it.kind === "video" ? "eVideoRead" : "eOpen"));
+      console.warn(e);
+    }
+  } finally {
+    busy = false;
+    renderItem(it); renderAll(); pump();
+  }
+}
+function removeItem(it){
+  if (it.cancel) it.cancel().catch(() => {});
+  items = items.filter(x => x !== it);
+  [it.thumbUrl, it.outUrl, it.vidUrl].forEach(u => u && URL.revokeObjectURL(u));
+  const el = it.el; el.classList.add("out"); setTimeout(() => el.remove(), 300);
+  renderAll();
+}
+
+/* =========================================================
+   NOMBRES DE SALIDA
+   ========================================================= */
+function outNames(){
+  const used = new Set(), pre = slug(S.prefix || ""), names = new Map();
+  let n = 0;
+  for (const it of items) {
+    if (it.state !== "done" && !it.out) continue;
+    n++;
+    let base = pre ? `${pre}-${n}` : (slug(baseName(it.file.name)) || "archivo"), name = `${base}.${it.ext}`, k = 2;
+    while (used.has(name)) name = `${base}-${k++}.${it.ext}`;
+    used.add(name); names.set(it, name);
+  }
+  return names;
+}
+
+/* =========================================================
+   PINTAR LA LISTA
+   ========================================================= */
+function mountItem(it){
+  const el = document.createElement("div");
+  el.className = "item"; it.el = el;
+  $("#list").prepend(el);
+  if (it.kind === "video") { it.vidUrl = URL.createObjectURL(it.file); }
+  renderItem(it);
+}
+function renderItem(it, light){
+  const el = it.el; if (!el) return;
+  if (light && el.querySelector(".state")) {
+    $(".state span", el).textContent = it.status;
+    $(".prog", el).style.width = `${(it.progress || 0) * 100}%`;
+    return;
+  }
+  const names = outNames(), name = names.get(it) || "";
+  const stale = it.state === "done" && it.sig !== (it.kind === "image" ? imgSig() : vidSig());
+  const thumb = it.kind === "image"
+    ? `<img src="${it.thumbUrl}" alt="" loading="lazy" onerror="this.replaceWith(document.createRange().createContextualFragment('${ICON.img.replace(/"/g, "&quot;")}'))">`
+    : `<video src="${it.vidUrl}#t=0.1" muted playsinline preload="metadata"></video>`;
+  const done = it.state === "done";
+  const pct = done ? Math.round((1 - it.out.size / it.file.size) * 100) : 0;
+  let line;
+  if (done) line = `<div class="sizes"><s>${fmtSize(it.file.size)}</s>${ICON.arr.replace("<svg", '<svg width="12" height="12"')}<b>${fmtSize(it.out.size)}</b><span class="save ${pct <= 0 ? "up" : ""}">${pct > 0 ? `−${pct} %` : t("bigger")}</span></div>`;
+  else if (it.state === "error") line = `<div class="state err"><span>${esc(it.err)}</span></div>`;
+  else line = `<div class="state">${it.state === "working" ? '<i class="spin"></i>' : ""}<span>${esc(it.state === "working" ? it.status : t("queued"))}</span></div>`;
+  const notes = [...(it.notes || []), ...(stale ? [t("stale")] : [])];
+  el.innerHTML = `
+    <${done ? `button class="thumb" data-act="view" aria-label="${t("compare")}"` : 'div class="thumb"'}>${thumb}<span class="kind">${it.kind === "video" ? ICON.vid : ICON.img}</span></${done ? "button" : "div"}>
+    <div class="info">
+      <div class="name" title="${esc(it.file.name)}">${esc(done ? name : it.file.name)}</div>
+      <div class="fmt"><span class="tag">${esc(extOf(it.file.name) || "?")}</span>${done ? `${ICON.arr.replace("<svg", '<svg width="12" height="12"')}<span class="tag new">${esc(it.codec)}</span><span>${esc(it.meta)}</span>` : `<span>${fmtSize(it.file.size)}</span>`}</div>
+      ${line}
+      ${notes.length ? `<div class="fmt ${stale ? "stale" : ""}">${notes.map(esc).join(" · ")}</div>` : ""}
+    </div>
+    <div class="acts">
+      ${done ? `<button class="ibtn" data-act="view" title="${t("compare")}">${ICON.eye}</button><a class="ibtn dl" href="${it.outUrl}" download="${esc(name)}">${ICON.dl}<span>${t("download")}</span></a>` : ""}
+      <button class="ibtn x" data-act="rm" aria-label="${t("remove")}">${ICON.x}</button>
+    </div>
+    ${it.state === "working" ? `<i class="prog" style="width:${(it.progress || 0) * 100}%"></i>` : ""}`;
+  $$("[data-act=rm]", el).forEach(b => b.onclick = () => removeItem(it));
+  $$("[data-act=view]", el).forEach(b => b.onclick = () => openViewer(it));
+}
+let shownPct = 0, pctAnim;
+function renderAll(){
+  const has = items.length > 0;
+  $("#listWrap").hidden = !has;
+  $("#sumCard").hidden = !has;
+  $("#count").textContent = String(items.length).padStart(2, "0");
+  const done = items.filter(i => i.state === "done");
+  const before = done.reduce((s, i) => s + i.file.size, 0), after = done.reduce((s, i) => s + i.out.size, 0);
+  const saved = Math.max(0, before - after), pct = before ? Math.max(0, Math.round(saved / before * 100)) : 0;
+  $("#szB").textContent = before ? fmtSize(before) : "—";
+  $("#szA").textContent = before ? fmtSize(after) : "—";
+  $("#barA").style.width = before ? `${Math.max(2, Math.min(100, after / before * 100))}%` : "0";
+  $("#sumSub").innerHTML = t("sumSub", { s:fmtSize(saved), n:done.length });
+  $("#dSub").textContent = t("dSub", { s:fmtSize(saved), n:done.length });
+  const canZip = done.length > 0 && !busy && !items.some(i => i.state === "queued");
+  $("#zipBtn").disabled = $("#dZip").disabled = !canZip;
+  $("#dock").classList.toggle("on", has);
+  // contador animado
+  cancelAnimationFrame(pctAnim);
+  const from = shownPct, t0 = performance.now();
+  (function step(now){ const k = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - k, 3);
+    shownPct = Math.round(from + (pct - from) * e);
+    $("#pct").textContent = shownPct; $("#dPct").textContent = `−${shownPct}%`;
+    if (k < 1) pctAnim = requestAnimationFrame(step); })(t0);
+  // botón «aplicar» para vídeos con ajustes antiguos (las imágenes se rehacen solas)
+  const staleV = items.filter(i => i.kind === "video" && i.state === "done" && i.sig !== vidSig()).length;
+  $("#applyBtn").hidden = !staleV;
+  $("#applyBtn").textContent = t("apply", { n:staleV });
+}
+
+/* =========================================================
+   COMPARADOR ANTES / DESPUÉS
+   ========================================================= */
+let viewing = null;
+function openViewer(it){
+  viewing = it;
+  const name = outNames().get(it) || "";
+  $("#vName").textContent = name;
+  const cmp = $("#cmp");
+  if (it.kind === "image") {
+    cmp.innerHTML = `<div class="cmp-in"><img src="${it.thumbUrl}" alt="${esc(t("before"))}"><img class="after" src="${it.outUrl}" alt="${esc(t("after"))}"><span class="line"></span>
+      <span class="lbl l mono">${t("before")}</span><span class="lbl r mono">${t("after")} · WebP</span><input type="range" min="0" max="100" value="50" aria-label="${t("compare")}"></div>`;
+    const r = $("input", cmp);
+    r.oninput = () => cmp.style.setProperty("--cut", r.value + "%");
+    cmp.style.setProperty("--cut", "50%");
+  } else {
+    cmp.innerHTML = `<video src="${it.outUrl}" controls playsinline autoplay muted loop></video>`;
+  }
+  const pct = Math.round((1 - it.out.size / it.file.size) * 100);
+  $("#vSizes").innerHTML = `<s>${fmtSize(it.file.size)}</s>${ICON.arr.replace("<svg", '<svg width="12" height="12"')}<b>${fmtSize(it.out.size)}</b>${pct > 0 ? `<span class="save">−${pct} %</span>` : ""}`;
+  $("#vDl").href = it.outUrl; $("#vDl").download = name;
+  $("#scrim").classList.add("on"); $("#viewer").classList.add("on"); document.body.classList.add("locked");
+}
+function closeViewer(){
+  $("#scrim").classList.remove("on"); $("#viewer").classList.remove("on"); document.body.classList.remove("locked");
+  setTimeout(() => { if (!$("#viewer").classList.contains("on")) $("#cmp").innerHTML = ""; }, 400);
+  viewing = null;
+}
+$("#vClose").onclick = closeViewer; $("#scrim").onclick = closeViewer;
+
+/* =========================================================
+   ZIP (sin compresión: WebP y WebM ya vienen comprimidos)
+   ========================================================= */
+const CRC = (() => { const tb = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; tb[n] = c >>> 0; } return tb; })();
+const crc32 = u8 => { let c = ~0; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 255] ^ (c >>> 8); return ~c >>> 0; };
+async function makeZip(files){
+  const enc = new TextEncoder(), parts = [], central = [], d = new Date();
+  const tm = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+  const dt = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  let off = 0;
+  for (const f of files) {
+    const data = new Uint8Array(await f.blob.arrayBuffer()), nm = enc.encode(f.name), crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+    lh.setUint16(10, tm, true); lh.setUint16(12, dt, true); lh.setUint32(14, crc, true);
+    lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, nm.length, true);
+    parts.push(lh, nm, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+    ch.setUint16(12, tm, true); ch.setUint16(14, dt, true); ch.setUint32(16, crc, true);
+    ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true); ch.setUint16(28, nm.length, true); ch.setUint32(42, off, true);
+    central.push(ch, nm);
+    off += 30 + nm.length + data.length;
+  }
+  const cs = central.reduce((s, p) => s + p.byteLength, 0), end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, cs, true); end.setUint32(16, off, true);
+  return new Blob([...parts, ...central, end], { type:"application/zip" });
+}
+async function downloadZip(){
+  const names = outNames(), files = items.filter(i => i.state === "done").map(i => ({ name:names.get(i), blob:i.out }));
+  if (!files.length) return;
+  if (files.length === 1) { const a = document.createElement("a"); a.href = items.find(i => i.state === "done").outUrl; a.download = files[0].name; a.click(); return; }
+  toast(t("zipping"));
+  const zip = await makeZip(files), url = URL.createObjectURL(zip), a = document.createElement("a");
+  a.href = url; a.download = `${slug(S.prefix || "") || "zongaelements"}-webp.zip`; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  toast(t("zipDone"));
+}
+$("#zipBtn").onclick = downloadZip; $("#dZip").onclick = downloadZip;
+
+/* =========================================================
+   ENTRADA DE ARCHIVOS: elegir, arrastrar y pegar
+   ========================================================= */
+const fileIn = $("#fileIn");
+fileIn.addEventListener("change", () => { addFiles(fileIn.files); fileIn.value = ""; });
+$("#drop").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileIn.click(); } });
+$("#moreBtn").onclick = () => fileIn.click();
+let dragN = 0;
+const hasFiles = e => [...(e.dataTransfer?.types || [])].includes("Files");
+addEventListener("dragenter", e => { if (!hasFiles(e)) return; e.preventDefault(); dragN++; document.body.classList.add("dragging"); });
+addEventListener("dragover", e => { if (hasFiles(e)) e.preventDefault(); });
+addEventListener("dragleave", () => { if (--dragN <= 0) { dragN = 0; document.body.classList.remove("dragging"); } });
+addEventListener("drop", e => { if (!hasFiles(e)) return; e.preventDefault(); dragN = 0; document.body.classList.remove("dragging"); addFiles(e.dataTransfer.files); });
+addEventListener("paste", e => { if (e.target.closest?.("input")) return; const f = [...(e.clipboardData?.files || [])]; if (f.length) addFiles(f); });
+$("#clearAll").onclick = () => [...items].forEach(removeItem);
+
+/* =========================================================
+   CONTROLES DE AJUSTES
+   ========================================================= */
+function bindSeg(id, key, num){
+  const el = $(id);
+  const paint = () => $$("button", el).forEach(b => b.classList.toggle("on", String(S[key]) === b.dataset.v));
+  el.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S[key] = num ? +b.dataset.v : b.dataset.v; paint(); changed(); });
+  paint();
+}
+bindSeg("#maxImg", "maxImg", true); bindSeg("#vFmt", "vFmt"); bindSeg("#vQ", "vQ"); bindSeg("#vRes", "vRes", true);
+const q = $("#q");
+const paintQ = () => { $("#qOut").textContent = S.q; q.style.setProperty("--p", `${(S.q - 50) * 2}%`); $("#qNote").textContent = t(S.q >= 92 ? "qN1" : S.q >= 72 ? "qN2" : "qN3"); };
+q.value = S.q; paintQ();
+q.addEventListener("input", () => { S.q = +q.value; paintQ(); changed(); });
+$("#mute").checked = S.mute; $("#mute").addEventListener("change", e => { S.mute = e.target.checked; changed(); });
+$("#prefix").value = S.prefix;
+$("#prefix").addEventListener("input", e => { S.prefix = e.target.value; saveS(); items.forEach(i => i.state === "done" && renderItem(i)); });
+$("#setToggle").onclick = () => $("#settings").classList.toggle("open");
+let reT;
+function changed(){
+  saveS();
+  // las imágenes son rápidas: se vuelven a convertir solas
+  clearTimeout(reT);
+  reT = setTimeout(() => {
+    items.forEach(i => { if (i.kind === "image" && i.state === "done" && i.sig !== imgSig()) i.state = "queued"; });
+    items.forEach(i => renderItem(i)); renderAll(); pump();
+  }, 450);
+  items.forEach(i => i.kind === "video" && renderItem(i)); renderAll();
+}
+$("#applyBtn").onclick = () => { items.forEach(i => { if (i.kind === "video" && i.state === "done" && i.sig !== vidSig()) i.state = "queued"; renderItem(i); }); renderAll(); pump(); };
+
+/* =========================================================
+   DETALLES VISUALES: formatos que rotan y cinta
+   ========================================================= */
+const FMTS = ["JPG","PNG","HEIC","AVIF","GIF","BMP"], VFMTS = ["MOV","MP4","MKV","AVI"];
+let fi = 0;
+setInterval(() => { fi++; $("#fcA").textContent = FMTS[fi % FMTS.length]; $("#fcB").textContent = VFMTS[fi % VFMTS.length]; $("#fcW").textContent = fi % 2 ? ".webm" : ".webp"; }, 1600);
+$("#marq").innerHTML = [...Array(2)].map(() => [...FMTS, ...VFMTS].map(f => `<span>${f}</span><span class="v">→</span><span class="v">${VFMTS.includes(f) ? "WEBM" : "WEBP"}</span>`).join("")).join("");
+
+/* =========================================================
+   IDIOMA, TEMA Y TECLADO
+   ========================================================= */
+const LANGS = ["es","en","ro"];
+function applyLang(l){
+  lang = T[l] ? l : "es"; pref.set("ze-lang", lang); document.documentElement.lang = lang;
+  document.title = `${t("tool")} · ZongaElements`;
+  $("#langBtn").textContent = lang.toUpperCase();
+  $$("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+  $$("[data-i18n-html]").forEach(el => el.innerHTML = t(el.dataset.i18nHtml));
+  $$("[data-i18n-ph]").forEach(el => el.placeholder = t(el.dataset.i18nPh));
+  $$("[data-i18n-aria]").forEach(el => el.setAttribute("aria-label", t(el.dataset.i18nAria)));
+  paintQ(); items.forEach(i => renderItem(i)); renderAll();
+}
+$("#langBtn").onclick = () => applyLang(LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]);
+const root = document.documentElement;
+root.dataset.theme = pref.get("ze-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+$("#themeBtn").addEventListener("click", () => { root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark"; pref.set("ze-theme", root.dataset.theme); });
+addEventListener("keydown", e => { if (e.key === "Escape" && viewing) closeViewer(); });
+addEventListener("beforeunload", e => { if (items.some(i => i.kind === "video" && i.state === "working")) e.preventDefault(); });
+
+/* =========================================================
+   ARRANQUE
+   ========================================================= */
+setTimeout(() => ZN.popup({ newsUrl: "../#novedades" }), 1200);
+try { ZE.mountAccount($(".controls")); } catch (e) {}
+applyLang(lang);
+})();
+</script>
+</body>
+</html>

@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-10-21-conversor-webp",
+    "date": "2026-10-21",
+    "type": "nuevo",
+    "title": {
+      "es": "Nueva herramienta: Conversor WebP",
+      "en": "New tool: WebP converter",
+      "ro": "Instrument nou: Convertor WebP"
+    },
+    "items": {
+      "es": [
+        "Arrastra fotos de cualquier formato y conviértelas a WebP: pesan hasta un 90 % menos y se ven igual.",
+        "También comprime tus vídeos (WebM o MP4) para que tu tienda y tus landings carguen mucho más rápido.",
+        "Compara antes y después, ponles nombre para el SEO y descárgalo todo en un ZIP. Nada se sube a internet: todo pasa en tu dispositivo."
+      ],
+      "en": [
+        "Drop in photos in any format and turn them into WebP: up to 90% lighter, same look.",
+        "It also compresses your videos (WebM or MP4) so your store and landing pages load much faster.",
+        "Compare before and after, name them for SEO and download everything as a ZIP. Nothing is uploaded: it all happens on your device."
+      ],
+      "ro": [
+        "Trage poze în orice format și transformă-le în WebP: până la 90% mai ușoare, arată la fel.",
+        "Comprimă și clipurile (WebM sau MP4), ca magazinul și landing-urile să se încarce mult mai repede.",
+        "Compară înainte și după, denumește-le pentru SEO și descarcă tot într-un ZIP. Nu se încarcă nimic: totul se face pe dispozitivul tău."
+      ]
+    }
+  },
+  {
     "id": "2026-10-19-proteccion-datos",
     "date": "2026-10-19",
     "type": "mejora",
