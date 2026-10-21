@@ -864,7 +864,8 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
     ic('<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>')
   ];
   const SECTIONS = {
-    organic:{ crumb:"crumbO", name:"organic", color:"var(--blue)", next:"ads" },
+    organic:{ crumb:"crumbO", name:"organic", color:"var(--blue)", next:"ads",
+              live:[ { href:"herramientas/conversor.html", name:"tc.name", desc:"tc.desc", art:"conv" } ] },
     ads:    { crumb:"crumbA", name:"ads",     color:"var(--red)",  next:"prod",
               live:[ { href:"herramientas/conversor.html", name:"tc.name", desc:"tc.desc", art:"conv" } ] },
     prod:   { crumb:"crumbP", name:"prod",    color:"var(--green)", next:"organic",
