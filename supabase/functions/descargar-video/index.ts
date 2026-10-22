@@ -134,7 +134,9 @@ async function viaRapid(code: string, url: string): Promise<Info | null> {
   if (!r || !r.ok) return null;
   const j = await r.json().catch(() => null);
   if (!j) return null;
-  const node = findKey(j, "shortcode_media") || findKey(j, "xdt_shortcode_media");
+  if (j.status === false) return null;
+  // Instagram Looter devuelve el post tal cual (como shortcode_media, sin envoltorio)
+  const node = findKey(j, "shortcode_media") || findKey(j, "xdt_shortcode_media") || (j.__typename || j.display_url ? j : null);
   if (node) { const i = fromNode(node, code, "rapidapi"); if (i) return i; }
   return deepInfo(j, code);
 }
