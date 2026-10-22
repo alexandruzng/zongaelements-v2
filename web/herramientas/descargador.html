@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Descargador de vídeos · ZongaElements</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Syne:wght@800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS (mismos que la web · paleta Orgánico) ============ */
+:root{
+  --bg:#F3F1EC; --bg-2:#E9E6DF; --card:#FFFFFF; --fg:#0D0D10; --muted:#6C6B72;
+  --line:rgba(13,13,16,.10); --line-2:rgba(13,13,16,.18);
+  --blue:#2B63FF; --blue-2:#6E9BFF; --blue-soft:rgba(43,99,255,.12);
+  --red:#FF2D3F; --red-soft:rgba(255,45,63,.12);
+  --green:#12B76A; --green-soft:rgba(18,183,106,.12);
+  --accent:var(--blue); --accent-2:var(--blue-2); --accent-soft:var(--blue-soft);
+  --grid:rgba(13,13,16,.06); --noise-op:.05; --shadow:0 30px 60px -30px rgba(20,20,40,.25);
+  --glass:color-mix(in srgb,var(--card) 72%,transparent);
+  --display:"Bricolage Grotesque",sans-serif; --logo:"Syne",sans-serif; --body:"Manrope",sans-serif; --mono:"JetBrains Mono",monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#09090B; --bg-2:#16161B; --card:#131318; --fg:#F2F0EB; --muted:#8D8C95;
+    --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+    --blue-soft:rgba(43,99,255,.2); --red-soft:rgba(255,45,63,.18); --green-soft:rgba(18,183,106,.18);
+    --grid:rgba(255,255,255,.045); --noise-op:.07; --shadow:0 30px 60px -30px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#09090B; --bg-2:#16161B; --card:#131318; --fg:#F2F0EB; --muted:#8D8C95;
+  --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+  --blue-soft:rgba(43,99,255,.2); --red-soft:rgba(255,45,63,.18); --green-soft:rgba(18,183,106,.18);
+  --grid:rgba(255,255,255,.045); --noise-op:.07; --shadow:0 30px 60px -30px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow-x:hidden;min-height:100vh;transition:background .5s,color .5s;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input{font:inherit;color:inherit}
+::selection{background:var(--accent);color:#fff}
+svg{display:block}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+[hidden]{display:none!important}
+
+.noise{position:fixed;inset:-50%;pointer-events:none;z-index:500;opacity:var(--noise-op);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1s steps(4) infinite}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}100%{transform:translate(0,0)}}
+.bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bg .grid{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse at 50% 0%,#000 15%,transparent 65%)}
+.bg .g1{position:absolute;width:760px;height:760px;border-radius:50%;background:var(--accent);filter:blur(150px);opacity:.14;top:-420px;right:-220px;animation:drift 18s ease-in-out infinite}
+.bg .g2{position:absolute;width:520px;height:520px;border-radius:50%;background:var(--accent-2);filter:blur(140px);opacity:.1;bottom:-300px;left:-160px;animation:drift 22s ease-in-out infinite reverse}
+@keyframes drift{50%{transform:translate(-80px,60px)}}
+
+/* ============ HEADER ============ */
+.top{position:sticky;top:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;
+  background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid var(--line)}
+.back{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg);font-family:var(--logo);font-weight:800;font-size:17px;letter-spacing:-.02em}
+.back .arr{width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;transition:transform .4s cubic-bezier(.3,1.6,.5,1),background .3s,color .3s}
+.back:hover .arr{transform:translateX(-4px);background:var(--fg);color:var(--bg)}
+.back .arr svg{width:16px;height:16px}
+.brand-mark{width:30px;height:30px;position:relative;border-radius:9px;overflow:hidden;background:var(--fg);flex:none}
+.brand-mark span{position:absolute;width:60%;height:60%;border-radius:50%;filter:blur(2px)}
+.brand-mark span:nth-child(1){background:#2B63FF;top:-8%;left:-8%;animation:orbitA 6s linear infinite}
+.brand-mark span:nth-child(2){background:#FF2D3F;bottom:-8%;right:-8%;animation:orbitA 6s linear infinite reverse}
+@keyframes orbitA{50%{transform:translate(40%,40%) scale(.8)}}
+.back b{color:var(--muted);font-weight:500}
+.back .brand-txt{display:none}
+.tool-name{display:none;align-items:center;gap:10px;padding:9px 16px;border:1px solid var(--line);border-radius:100px;background:var(--glass)}
+.tool-name i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.controls{display:flex;gap:6px;align-items:center}
+.ctrl{height:40px;min-width:40px;border:1px solid var(--line-2);border-radius:100px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px;
+  background:var(--glass);font-weight:700;font-size:14px;transition:border-color .3s,transform .3s,background .3s,color .3s}
+.ctrl:hover{border-color:var(--fg)}
+.ctrl:active{transform:scale(.94)}
+.ctrl svg{width:18px;height:18px}
+.lang-btn{font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.theme-btn{width:66px;position:relative;justify-content:space-between;padding:0 7px}
+.theme-btn .knob{position:absolute;top:5px;left:5px;width:28px;height:28px;border-radius:50%;background:var(--fg);transition:transform .5s cubic-bezier(.7,-0.4,.3,1.4)}
+:root[data-theme="dark"] .theme-btn .knob{transform:translateX(26px)}
+.theme-btn svg{position:relative;z-index:1;width:15px;height:15px;transition:color .3s}
+.theme-btn .sun{color:var(--bg)} .theme-btn .moon{color:var(--muted)}
+:root[data-theme="dark"] .theme-btn .sun{color:var(--muted)} :root[data-theme="dark"] .theme-btn .moon{color:var(--bg)}
+
+/* ============ LAYOUT ============ */
+.wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:22px 16px 120px}
+.rise{animation:rise .9s cubic-bezier(.2,.9,.2,1) both}
+.rise.d1{animation-delay:.07s}.rise.d2{animation-delay:.14s}.rise.d3{animation-delay:.21s}
+@keyframes rise{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+.kicker{display:flex;align-items:center;gap:12px;color:var(--muted);margin-bottom:18px}
+.kicker b{color:var(--accent);font-weight:500}
+.kicker i{width:40px;height:1px;background:var(--line-2)}
+.h1{font-family:var(--display);font-weight:800;font-size:clamp(44px,12.5vw,112px);line-height:.88;letter-spacing:-.055em}
+.h1 em{font-style:normal;color:var(--accent);white-space:nowrap}
+.h1 .ext{display:inline-block;font-family:var(--mono);font-weight:500;font-size:.34em;letter-spacing:0;vertical-align:.95em;margin-left:.15em;padding:.18em .5em;border-radius:100px;background:var(--fg);color:var(--bg);transform:rotate(-6deg)}
+.lead{color:var(--muted);font-size:16px;line-height:1.55;max-width:560px;margin-top:20px}
+.lead b{color:var(--fg)}
+.head{margin-bottom:26px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 10px;border-radius:100px;font-weight:700;font-size:13px;background:var(--card);border:1px solid var(--line)}
+.pill svg{width:16px;height:16px}
+.pill.ok{background:var(--green-soft);color:var(--green);border-color:transparent}
+
+/* ============ BARRA DE ENLACE ============ */
+.bar{position:relative;background:var(--card);border:1px solid var(--line);border-radius:30px;padding:10px;box-shadow:var(--shadow);transition:border-color .3s,box-shadow .3s}
+.bar.focus{border-color:var(--accent);box-shadow:0 0 0 5px var(--accent-soft),var(--shadow)}
+.bar.shake{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.bar-in{display:flex;align-items:center;gap:10px;padding:4px 4px 4px 10px}
+.plat{width:44px;height:44px;flex:none;border-radius:14px;background:var(--bg);display:grid;place-items:center;color:var(--muted);position:relative;overflow:hidden;transition:background .4s,color .4s}
+.plat svg{width:22px;height:22px;position:absolute;transition:transform .5s cubic-bezier(.3,1.6,.5,1),opacity .3s}
+.plat .p-tt,.plat .p-ig{opacity:0;transform:scale(.4) rotate(-30deg)}
+.plat[data-p="tiktok"]{background:var(--fg);color:var(--bg)}
+.plat[data-p="instagram"]{background:linear-gradient(135deg,#FFB547,#FF2D7A 45%,#7A3BFF);color:#fff}
+.plat[data-p="tiktok"] .p-tt,.plat[data-p="instagram"] .p-ig{opacity:1;transform:none}
+.plat[data-p="tiktok"] .p-link,.plat[data-p="instagram"] .p-link{opacity:0;transform:scale(.4) rotate(30deg)}
+#url{flex:1;min-width:0;height:52px;border:0;background:none;outline:none;font-size:17px;font-weight:600}
+#url::placeholder{color:var(--muted);font-weight:500;opacity:.85}
+.bar-acts{display:flex;gap:8px;padding:8px 4px 4px}
+.bar-acts .btn{flex:1}
+.bar-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 12px 4px;color:var(--muted);font-size:13px}
+.bar-foot .ex{display:flex;gap:6px;flex-wrap:wrap}
+.bar-foot .ex span{font-family:var(--mono);font-size:11px;padding:4px 8px;border-radius:8px;background:var(--bg)}
+
+/* ============ BOTONES ============ */
+.btn{height:54px;border-radius:100px;padding:0 24px;font-weight:800;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap;text-decoration:none;
+  transition:transform .35s cubic-bezier(.3,1.6,.5,1),background .3s,color .3s,box-shadow .3s,opacity .3s;position:relative;overflow:hidden}
+.btn svg{width:18px;height:18px;flex:none}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.96)}
+.btn.primary{background:var(--fg);color:var(--bg)}
+.btn.accent{background:var(--accent);color:#fff;box-shadow:0 14px 30px -12px color-mix(in srgb,var(--accent) 70%,transparent)}
+.btn.ghost{border:1px solid var(--line-2)}
+.btn.ghost:hover{border-color:var(--fg)}
+.btn.sm{height:42px;padding:0 16px;font-size:14px}
+.btn:disabled{opacity:.35;pointer-events:none}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-100%);transition:transform .7s}
+.btn:hover::after{transform:translateX(100%)}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-top-color:transparent;animation:spin .8s linear infinite;flex:none;opacity:.8}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============ CINTA ============ */
+.marq{margin:26px -16px 0;border-block:1px solid var(--line);overflow:hidden;padding:13px 0;color:var(--muted)}
+.marq div{display:flex;gap:28px;width:max-content;animation:mq 30s linear infinite}
+.marq span{white-space:nowrap}
+.marq span.v{color:var(--accent)}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ============ RESULTADOS ============ */
+.results{display:flex;flex-direction:column;gap:18px;margin-top:26px}
+.res{position:relative;display:grid;grid-template-columns:118px minmax(0,1fr);gap:16px;padding:14px;border-radius:28px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;animation:popIn .6s cubic-bezier(.3,1.4,.5,1)}
+@keyframes popIn{from{opacity:0;transform:translateY(18px) scale(.97)}}
+.res.out{opacity:0;transform:translateX(40px) scale(.96);transition:all .3s}
+.res .x{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--muted);transition:all .3s cubic-bezier(.3,1.6,.5,1);z-index:3}
+.res .x:hover{background:var(--red-soft);color:var(--red);transform:rotate(90deg)}
+.res .x svg{width:15px;height:15px}
+
+/* portada estilo móvil */
+.phone{position:relative;width:118px;aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:var(--bg-2);align-self:start;box-shadow:0 18px 30px -18px rgba(0,0,0,.5)}
+.phone img,.phone video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.phone .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 30%,transparent 60%,rgba(0,0,0,.6));pointer-events:none}
+.phone .badge{position:absolute;left:8px;top:8px;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;color:#fff;background:#0D0D10}
+.phone .badge.ig{background:linear-gradient(135deg,#FFB547,#FF2D7A 45%,#7A3BFF)}
+.phone .badge svg{width:14px;height:14px}
+.phone .dur{position:absolute;right:8px;bottom:8px;padding:3px 7px;border-radius:8px;background:rgba(0,0,0,.6);color:#fff;font-family:var(--mono);font-size:10.5px}
+.phone .play{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.92);color:#0D0D10;display:grid;place-items:center;transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.phone .play svg{width:18px;height:18px;margin-left:3px}
+.phone:hover .play{transform:scale(1.12)}
+.phone.playing .play,.phone.playing .shade,.phone.playing .dur{display:none}
+.phone .ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted)}
+.phone .ph svg{width:28px;height:28px}
+
+.r-body{min-width:0;display:flex;flex-direction:column;gap:12px}
+.who{display:flex;align-items:center;gap:10px;padding-right:38px;min-width:0}
+.who img,.who .av{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none;background:var(--bg-2)}
+.who b{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.who small{color:var(--muted);font-size:12.5px}
+.cap{font-size:14px;line-height:1.5;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.cap.open{-webkit-line-clamp:unset}
+.cap .ht{color:var(--accent);font-weight:700}
+.stats{display:flex;flex-wrap:wrap;gap:6px}
+.st{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:100px;background:var(--bg);font-weight:800;font-size:13px}
+.st svg{width:14px;height:14px;color:var(--muted)}
+.st small{color:var(--muted);font-weight:600;font-size:12px}
+.mini{display:flex;flex-wrap:wrap;gap:6px}
+.ibtn{height:36px;border-radius:100px;border:1px solid var(--line-2);display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 12px;font-weight:700;font-size:13px;color:var(--fg);text-decoration:none;transition:all .3s cubic-bezier(.3,1.6,.5,1)}
+.ibtn svg{width:14px;height:14px}
+.ibtn:hover{border-color:var(--fg);transform:translateY(-2px)}
+.ibtn.done{border-color:var(--green);color:var(--green)}
+
+/* opciones de descarga */
+.opts{grid-column:1/-1;display:flex;flex-direction:column;gap:8px}
+.opts .mini{margin-bottom:6px}
+.opts .mini:empty{display:none}
+.best{display:flex;align-items:center;gap:14px;width:100%;min-height:70px;padding:10px 10px 10px 20px;border-radius:22px;background:var(--accent);color:#fff;text-align:left;position:relative;overflow:hidden;
+  box-shadow:0 16px 34px -14px color-mix(in srgb,var(--accent) 75%,transparent);transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.best:hover{transform:translateY(-2px)}
+.best:active{transform:scale(.98)}
+.best .q{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:-.04em;line-height:1}
+.best .t{flex:1;min-width:0;line-height:1.25}
+.best .t b{display:block;font-weight:800;font-size:15px}
+.best .t span{font-size:12.5px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.best .go{width:50px;height:50px;border-radius:50%;background:#fff;color:var(--accent);display:grid;place-items:center;flex:none;transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.best:hover .go{transform:translateY(3px)}
+.best .go svg{width:20px;height:20px}
+.best .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(255,255,255,.18);transition:width .25s;pointer-events:none}
+.alts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.alt{display:flex;align-items:center;gap:10px;min-height:56px;padding:8px 12px;border-radius:18px;border:1px solid var(--line-2);text-align:left;position:relative;overflow:hidden;transition:border-color .3s,transform .35s cubic-bezier(.3,1.6,.5,1)}
+.alt:hover{border-color:var(--fg);transform:translateY(-2px)}
+.alt .ic{width:32px;height:32px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:none}
+.alt .ic svg{width:16px;height:16px}
+.alt .t{min-width:0;line-height:1.2}
+.alt .t b{display:block;font-weight:800;font-size:14px}
+.alt .t span{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.alt .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent-soft);transition:width .25s;pointer-events:none}
+.best.busy,.alt.busy,.tile.busy{pointer-events:none}
+.prog-txt{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:8px;min-height:18px}
+.prog-txt.err{color:var(--red)}
+
+/* carrusel */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.tile{position:relative;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:var(--bg-2)}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile .n{position:absolute;left:6px;top:6px;padding:2px 7px;border-radius:7px;background:rgba(0,0,0,.6);color:#fff;font-family:var(--mono);font-size:10.5px}
+.tile .k{position:absolute;right:6px;top:6px;width:22px;height:22px;border-radius:7px;background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center}
+.tile .k svg{width:11px;height:11px}
+.tile .d{position:absolute;right:6px;bottom:6px;width:34px;height:34px;border-radius:50%;background:#fff;color:#0D0D10;display:grid;place-items:center;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.tile:hover .d{transform:scale(1.12)}
+.tile .d svg{width:15px;height:15px}
+.tile .fill{position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--accent);transition:width .25s}
+
+/* estados */
+.res.loading .phone{animation:pulseBg 1.2s ease-in-out infinite}
+@keyframes pulseBg{50%{opacity:.5}}
+.sk{height:14px;border-radius:8px;background:var(--bg-2);animation:pulseBg 1.2s ease-in-out infinite}
+.res.fail{grid-template-columns:minmax(0,1fr);border-color:color-mix(in srgb,var(--red) 40%,var(--line))}
+.fail-in{display:flex;gap:14px;align-items:flex-start;padding-right:36px}
+.fail-in .ic{width:40px;height:40px;border-radius:14px;background:var(--red-soft);color:var(--red);display:grid;place-items:center;flex:none}
+.fail-in .ic svg{width:20px;height:20px}
+.fail-in b{display:block;font-weight:800;font-size:15px;margin-bottom:4px}
+.fail-in p{color:var(--muted);font-size:13.5px;line-height:1.45;word-break:break-word}
+.fail-in .ibtn{margin-top:10px}
+
+/* ============ HISTORIAL ============ */
+.hist{margin-top:44px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 4px 14px}
+.sec-head h3{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.03em;display:flex;align-items:baseline;gap:10px}
+.sec-head h3 small{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:500}
+.h-list{display:flex;gap:10px;overflow-x:auto;padding:4px 4px 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.h-it{flex:none;width:112px;scroll-snap-align:start;text-align:left}
+.h-it .phone{width:112px;border-radius:18px;transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.h-it:hover .phone{transform:translateY(-4px) rotate(-1.5deg)}
+.h-it b{display:block;font-size:13px;font-weight:800;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h-it small{color:var(--muted);font-size:11.5px}
+.empty{padding:22px;border-radius:22px;border:1px dashed var(--line-2);color:var(--muted);font-size:14px;text-align:center}
+
+/* ============ AYUDA ============ */
+.how{display:grid;grid-template-columns:1fr;gap:12px;margin-top:44px}
+.how .c{padding:20px;border-radius:24px;background:var(--card);border:1px solid var(--line)}
+.how .c .n{font-family:var(--display);font-weight:800;font-size:44px;letter-spacing:-.05em;line-height:1;color:var(--accent)}
+.how .c b{display:block;font-weight:800;font-size:16px;margin:10px 0 4px}
+.how .c p{color:var(--muted);font-size:14px;line-height:1.5}
+.legal{margin-top:16px;color:var(--muted);font-size:12.5px;line-height:1.5;max-width:720px}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));z-index:450;transform:translate(-50%,20px);opacity:0;pointer-events:none;max-width:calc(100% - 32px);
+  display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:100px;background:var(--fg);color:var(--bg);font-weight:700;font-size:14px;transition:all .45s cubic-bezier(.3,1.5,.5,1)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ============ RESPONSIVE ============ */
+@media (min-width:600px){
+  .top{padding:14px 28px}
+  .back .brand-txt{display:inline}
+  .wrap{padding:30px 28px 110px}
+  .marq{margin-inline:-28px}
+  .bar{padding:10px 10px 10px 12px}
+  .bar-in{padding:0}
+  .bar-main{display:flex;align-items:center;gap:10px}
+  .bar-main .bar-in{flex:1;min-width:0}
+  .bar-acts{padding:0}
+  .bar-acts .btn{flex:none}
+  .res{grid-template-columns:180px minmax(0,1fr);grid-template-rows:auto 1fr;gap:18px 22px;padding:18px}
+  .phone{width:180px;border-radius:24px;grid-row:span 2}
+  .opts{grid-column:2;align-self:start}
+  .res.fail{grid-template-rows:auto}
+  .how{grid-template-columns:repeat(3,1fr)}
+}
+@media (min-width:900px){
+  .tool-name{display:flex}
+  .top{padding:16px 40px}
+  .wrap{padding:40px 40px 100px}
+  .marq{margin-inline:-40px}
+  #url{font-size:19px}
+  .res{grid-template-columns:220px minmax(0,1fr);gap:28px;padding:20px}
+  .phone{width:220px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="bg"><div class="grid"></div><div class="g1"></div><div class="g2"></div></div>
+
+<header class="top">
+  <a class="back" href="../index.html#tools" aria-label="ZongaElements">
+    <span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+    <span class="brand-mark"><span></span><span></span></span><span class="brand-txt">Zonga<b>Elements</b></span>
+  </a>
+  <div class="tool-name mono"><i></i><span data-i18n="tool">Descargador de vídeos</span></div>
+  <div class="controls">
+    <button class="ctrl lang-btn" id="langBtn" data-i18n-aria="langA">ES</button>
+    <button class="ctrl theme-btn" id="themeBtn" aria-label="Tema">
+      <span class="knob"></span>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <div class="kicker mono rise"><b>02</b><i></i><span data-i18n="kick">Descargador · Orgánico × Ads</span></div>
+    <h1 class="h1 rise d1"><span data-i18n="h1a">Pega el enlace.</span><br><em data-i18n="h1b">Bájalo en HD.</em><span class="ext">.mp4</span></h1>
+    <p class="lead rise d2" data-i18n-html="lead">Vídeos de <b>TikTok</b> e <b>Instagram</b> a la máxima calidad que existe, con un solo clic. Sin marca de agua, con su texto, sus hashtags y sus métricas.</p>
+    <div class="pills rise d3">
+      <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span data-i18n="pNoWm">Sin marca de agua</span></span>
+      <span class="pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.2v12.4a2.6 2.6 0 1 1-1.8-2.5V9.6a5.8 5.8 0 1 0 5 5.8V9.1a7.4 7.4 0 0 0 4.3 1.4V7.3a4.3 4.3 0 0 1-3.2-1.5z"/></svg>TikTok</span>
+      <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>Instagram</span>
+    </div>
+  </div>
+
+  <form class="bar rise d2" id="bar" autocomplete="off">
+    <div class="bar-main">
+      <div class="bar-in">
+        <div class="plat" id="plat" aria-hidden="true">
+          <svg class="p-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>
+          <svg class="p-tt" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.2v12.4a2.6 2.6 0 1 1-1.8-2.5V9.6a5.8 5.8 0 1 0 5 5.8V9.1a7.4 7.4 0 0 0 4.3 1.4V7.3a4.3 4.3 0 0 1-3.2-1.5z"/></svg>
+          <svg class="p-ig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <input id="url" type="url" inputmode="url" enterkeyhint="go" spellcheck="false" data-i18n-ph="ph" placeholder="Pega aquí el enlace de TikTok o Instagram" aria-label="Enlace">
+      </div>
+      <div class="bar-acts">
+        <button type="button" class="btn ghost" id="pasteBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg><span data-i18n="paste">Pegar</span></button>
+        <button type="submit" class="btn accent" id="goBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="go">Buscar vídeo</span></button>
+      </div>
+    </div>
+    <div class="bar-foot"><span data-i18n="multi">Puedes pegar varios enlaces a la vez.</span><span class="ex"><span>tiktok.com/@…/video/…</span><span>vm.tiktok.com/…</span><span>instagram.com/reel/…</span></span></div>
+  </form>
+
+  <div class="marq mono" aria-hidden="true"><div id="marq"></div></div>
+
+  <section class="results" id="results" aria-live="polite"></section>
+
+  <section class="hist">
+    <div class="sec-head">
+      <h3><span data-i18n="hist">Recientes</span> <small id="hCount"></small></h3>
+      <button class="btn ghost sm" id="hClear" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg><span data-i18n="clear">Vaciar</span></button>
+    </div>
+    <div class="h-list" id="hList"></div>
+  </section>
+
+  <section class="how">
+    <div class="c"><div class="n">01</div><b data-i18n="s1t">Copia el enlace</b><p data-i18n="s1p">En TikTok o Instagram pulsa «Compartir» → «Copiar enlace».</p></div>
+    <div class="c"><div class="n">02</div><b data-i18n="s2t">Pégalo aquí</b><p data-i18n="s2p">Lo detectamos solo y te enseñamos las calidades que existen de verdad.</p></div>
+    <div class="c"><div class="n">03</div><b data-i18n="s3t">Un clic y listo</b><p data-i18n="s3p">Se guarda en tu dispositivo. En iPhone lo tienes en «Archivos» → «Descargas».</p></div>
+  </section>
+  <p class="legal" data-i18n="legal">Solo vídeos públicos. Úsalo para tu research, como referencia o con tu propio contenido: resubir vídeos de otros sin permiso puede hacer que las redes te bajen el alcance.</p>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/cuenta.js"></script>
+<script src="../js/novedades.js?v=2"></script>
+<script>
+(async () => {
+/* =========================================================
+   TEXTOS (ES / EN / RO) — mismo idioma que la web (ze-lang)
+   ========================================================= */
+const T = {
+es:{ tool:"Descargador de vídeos", kick:"Descargador · Orgánico × Ads", h1a:"Pega el enlace.", h1b:"Bájalo en HD.", langA:"Cambiar idioma",
+  lead:"Vídeos de <b>TikTok</b> e <b>Instagram</b> a la máxima calidad que existe, con un solo clic. Sin marca de agua, con su texto, sus hashtags y sus métricas.",
+  pNoWm:"Sin marca de agua", ph:"Pega aquí el enlace de TikTok o Instagram", paste:"Pegar", go:"Buscar vídeo", multi:"Puedes pegar varios enlaces a la vez.",
+  hist:"Recientes", clear:"Vaciar", histEmpty:"Aquí aparecerán los vídeos que descargues.",
+  s1t:"Copia el enlace", s1p:"En TikTok o Instagram pulsa «Compartir» → «Copiar enlace».",
+  s2t:"Pégalo aquí", s2p:"Lo detectamos solo y te enseñamos las calidades que existen de verdad.",
+  s3t:"Un clic y listo", s3p:"Se guarda en tu dispositivo. En iPhone lo tienes en «Archivos» → «Descargas».",
+  legal:"Solo vídeos públicos. Úsalo para tu research, como referencia o con tu propio contenido: resubir vídeos de otros sin permiso puede hacer que las redes te bajen el alcance.",
+  searching:"Buscando el vídeo…", best:"Mejor calidad", hdNoWm:"HD · sin marca de agua", sdNoWm:"Calidad estándar · sin marca", noWm:"Sin marca de agua",
+  quality:"Calidad", audio:"Audio", audioS:"MP3 · solo el sonido", cover:"Portada", coverS:"Imagen JPG", wm:"Con marca", wmS:"Marca de agua de TikTok",
+  copyCap:"Copiar texto", copyTags:"Copiar hashtags", copied:"Copiado", more:"Ver más", less:"Ver menos", noCap:"Sin descripción",
+  views:"vistas", likes:"me gusta", comments:"coment.", shares:"compart.", saves:"guardados",
+  photos:"{n} fotos", items:"{n} archivos", all:"Descargar todo (.zip)", allS:"{n} archivos en un ZIP", photo:"Foto", video:"Vídeo",
+  dl:"Descargando {p}", dlMb:"{a} de {b}", saved:"Descargado", zipping:"Preparando el ZIP…",
+  opened:"Se ha abierto en otra pestaña: mantén pulsado o clic derecho → Guardar.",
+  eBad:"Este enlace no es de TikTok ni de Instagram.", eBadP:"Copia el enlace desde el botón «Compartir» del vídeo y pégalo aquí.",
+  eNF:"No hemos encontrado el vídeo", eNFP:"Puede que sea privado, que se haya borrado o que el enlace esté incompleto.",
+  eNet:"No hay conexión", eNetP:"Revisa tu conexión a internet y vuelve a probar.",
+  eBusy:"Demasiadas peticiones seguidas", eBusyP:"Espera unos segundos y vuelve a probar.",
+  eIgOff:"Instagram aún no está activado", eIgOffP:"Falta publicar la función del servidor para Instagram. TikTok ya funciona.",
+  eAuth:"Tu sesión ha caducado", eAuthP:"Recarga la página y vuelve a iniciar sesión.",
+  eDl:"No se ha podido descargar", retry:"Reintentar", remove:"Quitar", play:"Reproducir", ago:"hace {x}",
+  added:"{n} enlaces en cola" },
+en:{ tool:"Video downloader", kick:"Downloader · Organic × Ads", h1a:"Paste the link.", h1b:"Get it in HD.", langA:"Change language",
+  lead:"<b>TikTok</b> and <b>Instagram</b> videos in the best quality available, in one click. No watermark, with their caption, hashtags and metrics.",
+  pNoWm:"No watermark", ph:"Paste a TikTok or Instagram link here", paste:"Paste", go:"Find video", multi:"You can paste several links at once.",
+  hist:"Recent", clear:"Clear", histEmpty:"The videos you download will show up here.",
+  s1t:"Copy the link", s1p:"On TikTok or Instagram tap “Share” → “Copy link”.",
+  s2t:"Paste it here", s2p:"We detect it automatically and show you the qualities that actually exist.",
+  s3t:"One click, done", s3p:"It's saved to your device. On iPhone you'll find it in “Files” → “Downloads”.",
+  legal:"Public videos only. Use it for research, as a reference or with your own content: reposting other people's videos without permission can get your reach cut.",
+  searching:"Finding the video…", best:"Best quality", hdNoWm:"HD · no watermark", sdNoWm:"Standard quality · no watermark", noWm:"No watermark",
+  quality:"Quality", audio:"Audio", audioS:"MP3 · sound only", cover:"Cover", coverS:"JPG image", wm:"Watermarked", wmS:"With TikTok watermark",
+  copyCap:"Copy caption", copyTags:"Copy hashtags", copied:"Copied", more:"Show more", less:"Show less", noCap:"No caption",
+  views:"views", likes:"likes", comments:"comments", shares:"shares", saves:"saves",
+  photos:"{n} photos", items:"{n} files", all:"Download all (.zip)", allS:"{n} files in a ZIP", photo:"Photo", video:"Video",
+  dl:"Downloading {p}", dlMb:"{a} of {b}", saved:"Downloaded", zipping:"Preparing the ZIP…",
+  opened:"Opened in a new tab: long-press or right-click → Save.",
+  eBad:"This isn't a TikTok or Instagram link.", eBadP:"Copy the link from the video's “Share” button and paste it here.",
+  eNF:"We couldn't find the video", eNFP:"It may be private, deleted, or the link may be incomplete.",
+  eNet:"No connection", eNetP:"Check your internet connection and try again.",
+  eBusy:"Too many requests in a row", eBusyP:"Wait a few seconds and try again.",
+  eIgOff:"Instagram isn't switched on yet", eIgOffP:"The server function for Instagram still needs to be published. TikTok already works.",
+  eAuth:"Your session expired", eAuthP:"Reload the page and sign in again.",
+  eDl:"Couldn't download it", retry:"Retry", remove:"Remove", play:"Play", ago:"{x} ago",
+  added:"{n} links queued" },
+ro:{ tool:"Descărcător de clipuri", kick:"Descărcător · Organic × Ads", h1a:"Lipește linkul.", h1b:"Ia-l în HD.", langA:"Schimbă limba",
+  lead:"Clipuri de pe <b>TikTok</b> și <b>Instagram</b> la cea mai bună calitate disponibilă, dintr-un clic. Fără watermark, cu textul, hashtagurile și metricile lor.",
+  pNoWm:"Fără watermark", ph:"Lipește aici linkul de TikTok sau Instagram", paste:"Lipește", go:"Caută clipul", multi:"Poți lipi mai multe linkuri deodată.",
+  hist:"Recente", clear:"Golește", histEmpty:"Aici vor apărea clipurile pe care le descarci.",
+  s1t:"Copiază linkul", s1p:"Pe TikTok sau Instagram apasă „Distribuie” → „Copiază linkul”.",
+  s2t:"Lipește-l aici", s2p:"Îl detectăm singuri și îți arătăm calitățile care există cu adevărat.",
+  s3t:"Un clic și gata", s3p:"Se salvează pe dispozitiv. Pe iPhone îl găsești în „Fișiere” → „Descărcări”.",
+  legal:"Doar clipuri publice. Folosește-l pentru research, ca referință sau cu propriul conținut: dacă repostezi clipurile altora fără permisiune, rețelele îți pot tăia reach-ul.",
+  searching:"Căutăm clipul…", best:"Cea mai bună calitate", hdNoWm:"HD · fără watermark", sdNoWm:"Calitate standard · fără watermark", noWm:"Fără watermark",
+  quality:"Calitate", audio:"Audio", audioS:"MP3 · doar sunetul", cover:"Copertă", coverS:"Imagine JPG", wm:"Cu watermark", wmS:"Cu watermark TikTok",
+  copyCap:"Copiază textul", copyTags:"Copiază hashtagurile", copied:"Copiat", more:"Vezi mai mult", less:"Vezi mai puțin", noCap:"Fără descriere",
+  views:"vizualizări", likes:"aprecieri", comments:"coment.", shares:"distrib.", saves:"salvări",
+  photos:"{n} poze", items:"{n} fișiere", all:"Descarcă tot (.zip)", allS:"{n} fișiere într-un ZIP", photo:"Poză", video:"Clip",
+  dl:"Se descarcă {p}", dlMb:"{a} din {b}", saved:"Descărcat", zipping:"Se pregătește ZIP-ul…",
+  opened:"S-a deschis într-o filă nouă: ține apăsat sau clic dreapta → Salvează.",
+  eBad:"Linkul nu e de pe TikTok sau Instagram.", eBadP:"Copiază linkul din butonul „Distribuie” al clipului și lipește-l aici.",
+  eNF:"Nu am găsit clipul", eNFP:"Poate e privat, a fost șters sau linkul e incomplet.",
+  eNet:"Fără conexiune", eNetP:"Verifică conexiunea la internet și încearcă din nou.",
+  eBusy:"Prea multe cereri la rând", eBusyP:"Așteaptă câteva secunde și încearcă din nou.",
+  eIgOff:"Instagram nu e încă activat", eIgOffP:"Mai trebuie publicată funcția de server pentru Instagram. TikTok funcționează deja.",
+  eAuth:"Sesiunea a expirat", eAuthP:"Reîncarcă pagina și autentifică-te din nou.",
+  eDl:"Nu s-a putut descărca", retry:"Reîncearcă", remove:"Elimină", play:"Redă", ago:"acum {x}",
+  added:"{n} linkuri în așteptare" }
+};
+const pref = { get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}} };
+let lang = pref.get("ze-lang") || "es"; if (!T[lang]) lang = "es";
+const t = (k, v={}) => String(T[lang][k] ?? T.es[k] ?? k).replace(/\{(\w+)\}/g, (_,x) => v[x] ?? "");
+const $ = (s, el=document) => el.querySelector(s), $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+await ZE.requireUser();
+
+/* =========================================================
+   UTILIDADES
+   ========================================================= */
+const fmtSize = b => {
+  if (!b) return "";
+  const u = ["B","KB","MB","GB"]; let i = 0; while (b >= 1000 && i < 3) { b /= 1000; i++; }
+  return `${b.toLocaleString(lang, { maximumFractionDigits: b < 10 && i ? 1 : 0 })} ${u[i]}`;
+};
+const fmtNum = n => n == null ? "" : new Intl.NumberFormat(lang, { notation:"compact", maximumFractionDigits:1 }).format(n);
+const fmtDur = s => s ? `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}` : "";
+const fmtAgo = ts => {
+  if (!ts) return "";
+  const s = Math.max(1, Date.now() / 1000 - ts), rtf = new Intl.RelativeTimeFormat(lang, { numeric:"auto" });
+  for (const [u, n] of [["year",31536e3],["month",2592e3],["week",604800],["day",86400],["hour",3600],["minute",60]])
+    if (s >= n) return rtf.format(-Math.floor(s / n), u);
+  return rtf.format(-Math.floor(s), "second");
+};
+const slug = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let toastT;
+function toast(msg){ const el = $("#toast"); el.textContent = msg; el.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("on"), 2600); }
+const ICON = {
+  dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>',
+  tt:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.2v12.4a2.6 2.6 0 1 1-1.8-2.5V9.6a5.8 5.8 0 1 0 5 5.8V9.1a7.4 7.4 0 0 0 4.3 1.4V7.3a4.3 4.3 0 0 1-3.2-1.5z"/></svg>',
+  ig:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>',
+  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.4h2c.7-1.2 2.2-2.4 4.3-2.4 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z"/></svg>',
+  chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.8A8 8 0 1 1 21 12z"/></svg>',
+  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l7 7-7 7M21 12H9a6 6 0 0 0-6 6"/></svg>',
+  save:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  music:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
+  img:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>',
+  vid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="5" width="13" height="14" rx="3"/><path d="M16 10l5-3v10l-5-3z"/></svg>',
+  copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="3"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>',
+  hash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></svg>',
+  warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg>',
+  wm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 15h5"/></svg>'
+};
+
+/* =========================================================
+   ENLACES: detectar plataforma y separar varios pegados juntos
+   ========================================================= */
+const platformOf = u => {
+  let h; try { h = new URL(u).hostname.toLowerCase(); } catch (e) { return null; }
+  if (/(^|\.)tiktok\.com$/.test(h)) return "tiktok";
+  if (/(^|\.)instagram\.com$|(^|\.)instagr\.am$/.test(h)) return "instagram";
+  return null;
+};
+const splitLinks = txt => {
+  const found = String(txt).match(/https?:\/\/[^\s"'<>]+/g);
+  if (found) return [...new Set(found.map(s => s.replace(/[),.;]+$/, "")))];
+  const s = String(txt).trim();
+  return s ? [/^[\w.-]+\.[a-z]{2,}\//i.test(s) ? `https://${s}` : s] : [];
+};
+
+/* =========================================================
+   TIKTOK (tikwm · gratis y directo desde el navegador)
+   ========================================================= */
+const TIKWM = "https://www.tikwm.com";
+const absT = u => !u ? "" : u.startsWith("http") ? u : TIKWM + u;
+async function tiktokInfo(url){
+  const fd = new FormData(); fd.append("url", url); fd.append("hd", "1");
+  let r;
+  try { r = await fetch(`${TIKWM}/api/`, { method:"POST", body:fd }); } catch (e) { throw err("net"); }
+  if (r.status === 429) throw err("busy");
+  const j = await r.json().catch(() => null);
+  if (!j) throw err("nf");
+  if (j.code !== 0 || !j.data) throw err(/limit/i.test(j.msg || "") ? "busy" : "nf");
+  const d = j.data, a = d.author || {};
+  const info = {
+    platform:"tiktok", id:d.id, url, author:a.unique_id || "", authorName:a.nickname || "", avatar:a.avatar || "",
+    caption:d.title || "", cover:absT(d.origin_cover || d.cover), date:d.create_time, duration:d.duration,
+    stats:{ views:d.play_count, likes:d.digg_count, comments:d.comment_count, shares:d.share_count, saves:d.collect_count },
+    videos:[], extras:[], items:[]
+  };
+  if (d.images?.length) {
+    info.items = d.images.map(u => ({ type:"image", url:absT(u), cover:absT(u) }));
+    info.duration = 0;
+  } else {
+    if (d.hdplay) info.videos.push({ url:absT(d.hdplay), size:d.hd_size, sub:t("hdNoWm") });
+    if (d.play && d.play !== d.hdplay) info.videos.push({ url:absT(d.play), size:d.size, sub:t("sdNoWm") });
+    if (d.wmplay) info.extras.push({ kind:"wm", url:absT(d.wmplay), size:d.wm_size, ext:"mp4" });
+  }
+  const music = d.music || d.music_info?.play;
+  if (music) info.extras.push({ kind:"audio", url:absT(music), ext:"mp3" });
+  if (info.cover) info.extras.push({ kind:"cover", url:info.cover, ext:"jpg" });
+  return info;
+}
+
+/* =========================================================
+   INSTAGRAM (función de Supabase: API interna → embed → RapidAPI)
+   ========================================================= */
+const FN = "descargar-video";
+async function instagramInfo(url){
+  let r;
+  try { r = await ZE.callFn(FN, { action:"info", url }); } catch (e) { throw err("net"); }
+  const j = await r.json().catch(() => null);
+  if (r.status === 401) throw err("auth");
+  if (!r.ok) throw err(j?.error === "not_found" || j?.error === "bad_url" ? (j.error === "bad_url" ? "bad" : "nf") : r.status === 404 ? "igoff" : "nf");
+  const info = {
+    platform:"instagram", id:j.id, url, author:j.author || "", authorName:"", avatar:"",
+    caption:j.caption || "", cover:j.cover || "", date:j.date, duration:j.duration,
+    stats:{ views:j.stats?.views, likes:j.stats?.likes, comments:j.stats?.comments },
+    videos:[], extras:[], items:[]
+  };
+  const media = j.media || [];
+  if (media.length > 1) info.items = media.map(m => ({ type:m.type, url:m.variants?.[0]?.url || m.url, cover:m.cover || (m.type === "image" ? m.url : info.cover) }));
+  else if (media[0]?.type === "video") {
+    const vs = media[0].variants?.length ? media[0].variants : [media[0]];
+    info.videos = vs.map((v, i) => ({ url:v.url, h:v.width && v.height ? Math.min(v.width, v.height) : 0, sub:i ? t("quality") : t("noWm") }));
+    if (!info.cover) info.cover = media[0].cover || "";
+  } else if (media[0]) info.items = [{ type:"image", url:media[0].url, cover:media[0].url }];
+  if (info.cover && !info.items.length) info.extras.push({ kind:"cover", url:info.cover, ext:"jpg" });
+  return info;
+}
+const err = code => Object.assign(new Error(code), { code });
+
+/* Resolución real de cada vídeo: se leen solo los metadatos (unos KB). */
+function probe(url){
+  return new Promise(res => {
+    const v = document.createElement("video");
+    const done = h => { clearTimeout(to); v.removeAttribute("src"); v.load(); res(h); };
+    const to = setTimeout(() => done(0), 9000);
+    v.preload = "metadata"; v.muted = true;
+    v.onloadedmetadata = () => done(Math.min(v.videoWidth, v.videoHeight) || 0);
+    v.onerror = () => done(0);
+    v.src = url;
+  });
+}
+const qLabel = h => !h ? "HD" : h >= 2000 ? "4K" : h >= 1400 ? "1440p" : h >= 1000 ? "1080p" : h >= 700 ? "720p" : h >= 520 ? "540p" : `${h}p`;
+
+/* =========================================================
+   DESCARGA con progreso. Si el CDN no deja leer el archivo desde
+   la web, Instagram pasa por la función y TikTok se abre aparte.
+   ========================================================= */
+async function readBody(r, onProg){
+  const total = +r.headers.get("content-length") || 0;
+  if (!r.body || !r.body.getReader) { const b = await r.blob(); onProg(1, b.size, b.size); return b; }
+  const reader = r.body.getReader(), chunks = []; let got = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value); got += value.length;
+    onProg(total ? got / total : 0, got, total);
+  }
+  return new Blob(chunks, { type:r.headers.get("content-type") || "application/octet-stream" });
+}
+async function fetchFile(url, platform, onProg){
+  try {
+    const r = await fetch(url, { referrerPolicy:"no-referrer" });
+    if (!r.ok) throw new Error("http");
+    return await readBody(r, onProg);
+  } catch (e) {
+    if (platform === "instagram") {
+      const r = await ZE.callFn(FN, { action:"file", url });
+      if (!r.ok) throw new Error("dl");
+      return readBody(r, onProg);
+    }
+    throw Object.assign(new Error("cors"), { cors:true });
+  }
+}
+function saveBlob(blob, name){
+  const u = URL.createObjectURL(blob), a = document.createElement("a");
+  a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(u), 60_000);
+}
+const fileName = (info, suffix, ext) => [info.platform, slug(info.author) || null, info.id, suffix].filter(Boolean).join("-") + "." + ext;
+
+/* ZIP sin compresión (los vídeos y las fotos ya vienen comprimidos) */
+const CRC = (() => { const tb = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; tb[n] = c >>> 0; } return tb; })();
+const crc32 = u8 => { let c = ~0; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 255] ^ (c >>> 8); return ~c >>> 0; };
+async function makeZip(files){
+  const enc = new TextEncoder(), parts = [], central = [], d = new Date();
+  const tm = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+  const dt = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  let off = 0;
+  for (const f of files) {
+    const data = new Uint8Array(await f.blob.arrayBuffer()), nm = enc.encode(f.name), crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+    lh.setUint16(10, tm, true); lh.setUint16(12, dt, true); lh.setUint32(14, crc, true);
+    lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, nm.length, true);
+    parts.push(lh, nm, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+    ch.setUint16(12, tm, true); ch.setUint16(14, dt, true); ch.setUint32(16, crc, true);
+    ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true); ch.setUint16(28, nm.length, true); ch.setUint32(42, off, true);
+    central.push(ch, nm);
+    off += 30 + nm.length + data.length;
+  }
+  const cs = central.reduce((s, p) => s + p.byteLength, 0), end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, cs, true); end.setUint32(16, off, true);
+  return new Blob([...parts, ...central, end], { type:"application/zip" });
+}
+
+/* =========================================================
+   TARJETAS DE RESULTADO
+   ========================================================= */
+const cards = [];   // { el, url, platform, info, error, state }
+const resultsEl = $("#results");
+const extOfType = (type, url) => type === "image" ? (/\.webp/i.test(url) ? "webp" : /\.png/i.test(url) ? "png" : "jpg") : "mp4";
+
+function captionHtml(txt){
+  return esc(txt).replace(/(^|\s)(#[\p{L}\p{N}_]+)/gu, '$1<span class="ht">$2</span>');
+}
+const tagsOf = txt => [...new Set((String(txt).match(/#[\p{L}\p{N}_]+/gu) || []))];
+
+function phoneHtml(c, cls = ""){
+  const i = c.info || {};
+  return `<div class="phone ${cls}" data-act="play">
+    <div class="ph">${c.platform === "instagram" ? ICON.ig : ICON.tt}</div>
+    ${i.cover ? `<img src="${esc(i.cover)}" alt="${esc(i.caption?.slice(0, 80) || "")}" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}
+    <div class="shade"></div>
+    <span class="badge ${c.platform === "instagram" ? "ig" : ""}">${c.platform === "instagram" ? ICON.ig : ICON.tt}</span>
+    ${i.videos?.length ? `<span class="play" aria-label="${t("play")}">${ICON.play}</span>` : ""}
+    ${i.duration ? `<span class="dur">${fmtDur(i.duration)}</span>` : i.items?.length > 1 ? `<span class="dur">${i.items.length}</span>` : ""}
+  </div>`;
+}
+
+function render(c){
+  const el = c.el;
+  el.className = "res" + (c.state === "loading" ? " loading" : c.state === "error" ? " fail" : "");
+  const x = `<button class="x" data-act="remove" aria-label="${t("remove")}">${ICON.x}</button>`;
+  if (c.state === "loading") {
+    el.innerHTML = `${x}${phoneHtml(c)}<div class="r-body">
+      <div class="who"><span class="av"></span><div style="flex:1"><div class="sk" style="width:40%"></div></div></div>
+      <div class="prog-txt"><span class="spin"></span>${t("searching")}</div>
+      <div class="sk" style="width:90%"></div><div class="sk" style="width:65%"></div></div>`;
+    return;
+  }
+  if (c.state === "error") {
+    const k = { bad:["eBad","eBadP"], nf:["eNF","eNFP"], net:["eNet","eNetP"], busy:["eBusy","eBusyP"], igoff:["eIgOff","eIgOffP"], auth:["eAuth","eAuthP"] }[c.error] || ["eNF","eNFP"];
+    el.innerHTML = `${x}<div class="fail-in"><span class="ic">${ICON.warn}</span><div style="min-width:0">
+      <b>${t(k[0])}</b><p>${t(k[1])}</p><p class="mono" style="margin-top:6px;font-size:10.5px;text-transform:none;letter-spacing:0">${esc(c.url)}</p>
+      ${c.error !== "bad" ? `<button class="ibtn" data-act="retry">${t("retry")}</button>` : ""}</div></div>`;
+    return;
+  }
+  const i = c.info, s = i.stats || {};
+  const stat = (n, ic, lab) => n == null ? "" : `<span class="st">${ICON[ic]}${fmtNum(n)} <small>${t(lab)}</small></span>`;
+  const tags = tagsOf(i.caption);
+  const stats = [stat(s.views,"eye","views"), stat(s.likes,"heart","likes"), stat(s.comments,"chat","comments"), stat(s.shares,"share","shares"), stat(s.saves,"save","saves")].join("");
+  const best = i.videos[0];
+  let opts = "";
+  if (best) {
+    opts += `<button class="best" data-act="video" data-i="0"><span class="fill"></span>
+      <span class="q">${qLabel(best.h)}</span>
+      <span class="t"><b>${t("best")}</b><span>${esc(best.sub)}${best.size ? " · " + fmtSize(best.size) : ""}</span></span>
+      <span class="go">${ICON.dl}</span></button>`;
+  } else if (i.items.length > 1) {
+    opts += `<button class="best" data-act="all"><span class="fill"></span>
+      <span class="q">${i.items.length}</span>
+      <span class="t"><b>${t("all")}</b><span>${t("allS", { n:i.items.length })}</span></span>
+      <span class="go">${ICON.dl}</span></button>`;
+  } else if (i.items.length === 1) {
+    opts += `<button class="best" data-act="item" data-i="0"><span class="fill"></span>
+      <span class="q">${ICON.img.replace("<svg", '<svg width="30" height="30"')}</span>
+      <span class="t"><b>${t("photo")}</b><span>${t("best")}</span></span>
+      <span class="go">${ICON.dl}</span></button>`;
+  }
+  const alts = [
+    ...i.videos.slice(1).map((v, k) => ({ act:"video", i:k + 1, ic:"vid", b:qLabel(v.h), s:`${v.sub}${v.size ? " · " + fmtSize(v.size) : ""}` })),
+    ...i.extras.map((e, k) => ({ act:"extra", i:k, ic:{ audio:"music", cover:"img", wm:"wm" }[e.kind],
+      b:t({ audio:"audio", cover:"cover", wm:"wm" }[e.kind]), s:e.kind === "wm" ? `${t("wmS")}${e.size ? " · " + fmtSize(e.size) : ""}` : t({ audio:"audioS", cover:"coverS" }[e.kind]) }))
+  ];
+  if (alts.length) opts += `<div class="alts">${alts.map(a => `<button class="alt" data-act="${a.act}" data-i="${a.i}"><span class="fill"></span><span class="ic">${ICON[a.ic]}</span><span class="t"><b>${esc(a.b)}</b><span>${esc(a.s)}</span></span></button>`).join("")}</div>`;
+  if (i.items.length > 1) opts += `<div class="tiles">${i.items.map((m, k) => `<button class="tile" data-act="item" data-i="${k}" aria-label="${t(m.type === "video" ? "video" : "photo")} ${k + 1}">
+      <img src="${esc(m.cover || m.url)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.opacity=0">
+      <span class="n">${k + 1}</span>${m.type === "video" ? `<span class="k">${ICON.play}</span>` : ""}<span class="d">${ICON.dl}</span><span class="fill"></span></button>`).join("")}</div>`;
+  opts += `<div class="prog-txt" data-prog></div>`;
+
+  el.innerHTML = `${x}${phoneHtml(c)}
+    <div class="r-body">
+      <div class="who">${i.avatar ? `<img src="${esc(i.avatar)}" alt="" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'av'}))">` : `<span class="av"></span>`}
+        <div style="min-width:0"><b>${i.author ? "@" + esc(i.author) : esc(i.authorName) || "—"}</b><small>${[i.platform === "tiktok" ? "TikTok" : "Instagram", fmtAgo(i.date)].filter(Boolean).join(" · ")}</small></div></div>
+      <p class="cap">${i.caption ? captionHtml(i.caption) : `<i>${t("noCap")}</i>`}</p>
+    </div>
+    <div class="opts">
+      ${stats ? `<div class="stats">${stats}</div>` : ""}
+      <div class="mini">
+        ${i.caption ? `<button class="ibtn" data-act="copy">${ICON.copy}<span>${t("copyCap")}</span></button>` : ""}
+        ${tags.length ? `<button class="ibtn" data-act="tags">${ICON.hash}<span>${t("copyTags")} · ${tags.length}</span></button>` : ""}
+        ${i.caption && i.caption.length > 140 ? `<button class="ibtn" data-act="more">${t("more")}</button>` : ""}
+      </div>
+      ${opts}</div>`;
+}
+
+function addCard(url){
+  const el = document.createElement("article");
+  const c = { el, url, platform:platformOf(url), state:"loading", info:null, error:null };
+  cards.unshift(c); resultsEl.prepend(el); render(c);
+  return c;
+}
+
+/* Cola: tikwm admite ~1 petición por segundo en su plan gratis */
+const queue = []; let pumping = false;
+async function pump(){
+  if (pumping) return; pumping = true;
+  while (queue.length) {
+    const c = queue.shift();
+    if (!cards.includes(c)) continue;
+    await analyze(c);
+    if (queue.length && c.platform === "tiktok") await sleep(1100);
+  }
+  pumping = false;
+}
+async function analyze(c){
+  c.state = "loading"; render(c);
+  try {
+    if (!c.platform) throw err("bad");
+    c.info = c.platform === "tiktok" ? await tiktokInfo(c.url) : await instagramInfo(c.url);
+    c.state = "ready"; render(c);
+    addHist(c.info);
+    // calidad real de cada vídeo (TikTok no la dice)
+    c.info.videos.forEach(async v => { if (!v.h) { v.h = await probe(v.url); if (c.state === "ready") render(c); } });
+  } catch (e) {
+    c.state = "error"; c.error = e.code || "nf"; render(c);
+  }
+}
+function submit(txt){
+  const links = splitLinks(txt);
+  if (!links.length) { const b = $("#bar"); b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); $("#url").focus(); return; }
+  links.forEach(u => queue.push(addCard(u)));
+  if (links.length > 1) toast(t("added", { n:links.length }));
+  $("#url").value = ""; paintPlat();
+  pump();
+}
+
+/* ---------- acciones dentro de cada tarjeta ---------- */
+async function download(c, btn, url, name){
+  const prog = $("[data-prog]", c.el), fill = $(".fill", btn);
+  btn.classList.add("busy");
+  prog.className = "prog-txt"; prog.innerHTML = `<span class="spin"></span>${t("dl", { p:"" })}`;
+  try {
+    const blob = await fetchFile(url, c.platform, (p, a, b) => {
+      if (fill) fill.style.width = `${Math.round(p * 100)}%`;
+      prog.innerHTML = `<span class="spin"></span>${t("dl", { p:p ? Math.round(p * 100) + " %" : "" })}${a ? " · " + t("dlMb", { a:fmtSize(a), b:fmtSize(b) || "…" }) : ""}`;
+    });
+    saveBlob(blob, name);
+    prog.innerHTML = `✓ ${t("saved")} · ${fmtSize(blob.size)}`;
+    toast(`${t("saved")} · ${name}`);
+  } catch (e) {
+    if (e.cors) { window.open(url, "_blank", "noopener"); prog.textContent = t("opened"); }
+    else { prog.className = "prog-txt err"; prog.textContent = t("eDl"); }
+  } finally {
+    btn.classList.remove("busy");
+    if (fill) setTimeout(() => fill.style.width = "0", 700);
+  }
+}
+async function downloadAll(c, btn){
+  const i = c.info, prog = $("[data-prog]", c.el), fill = $(".fill", btn);
+  btn.classList.add("busy");
+  try {
+    const files = [];
+    for (let k = 0; k < i.items.length; k++) {
+      const m = i.items[k];
+      prog.innerHTML = `<span class="spin"></span>${t("dl", { p:`${k + 1}/${i.items.length}` })}`;
+      const blob = await fetchFile(m.url, c.platform, p => { if (fill) fill.style.width = `${Math.round((k + p) / i.items.length * 100)}%`; });
+      files.push({ name:fileName(i, String(k + 1).padStart(2, "0"), extOfType(m.type, m.url)), blob });
+    }
+    prog.innerHTML = `<span class="spin"></span>${t("zipping")}`;
+    const zip = await makeZip(files);
+    saveBlob(zip, fileName(i, "", "zip"));
+    prog.innerHTML = `✓ ${t("saved")} · ${fmtSize(zip.size)}`;
+  } catch (e) {
+    prog.className = "prog-txt err"; prog.textContent = t("eDl");
+  } finally {
+    btn.classList.remove("busy");
+    if (fill) setTimeout(() => fill.style.width = "0", 700);
+  }
+}
+async function copy(txt, btn){
+  try { await navigator.clipboard.writeText(txt); }
+  catch (e) { const ta = Object.assign(document.createElement("textarea"), { value:txt }); document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+  btn.classList.add("done"); const sp = $("span", btn), old = sp.textContent; sp.textContent = t("copied");
+  setTimeout(() => { btn.classList.remove("done"); sp.textContent = old; }, 1600);
+}
+resultsEl.addEventListener("click", e => {
+  const btn = e.target.closest("[data-act]"); if (!btn) return;
+  const c = cards.find(x => x.el.contains(btn)); if (!c) return;
+  const i = c.info, k = +btn.dataset.i, act = btn.dataset.act;
+  if (act === "remove") {
+    c.el.classList.add("out"); cards.splice(cards.indexOf(c), 1);
+    setTimeout(() => c.el.remove(), 300);
+  } else if (act === "retry") { queue.push(c); pump(); }
+  else if (act === "video") download(c, btn, i.videos[k].url, fileName(i, k ? qLabel(i.videos[k].h) : "", "mp4"));
+  else if (act === "extra") { const x = i.extras[k]; download(c, btn, x.url, fileName(i, x.kind === "wm" ? "marca" : x.kind === "audio" ? "audio" : "portada", x.ext)); }
+  else if (act === "item") { const m = i.items[k]; download(c, btn, m.url, fileName(i, String(k + 1).padStart(2, "0"), extOfType(m.type, m.url))); }
+  else if (act === "all") downloadAll(c, btn);
+  else if (act === "copy") copy(i.caption, btn);
+  else if (act === "tags") copy(tagsOf(i.caption).join(" "), btn);
+  else if (act === "more") { const cap = $(".cap", c.el); cap.classList.toggle("open"); btn.textContent = t(cap.classList.contains("open") ? "less" : "more"); }
+  else if (act === "play" && i?.videos?.length && !btn.classList.contains("playing")) {
+    btn.classList.add("playing");
+    const v = Object.assign(document.createElement("video"), { src:i.videos[i.videos.length - 1].url, controls:true, autoplay:true, playsInline:true, poster:i.cover });
+    btn.appendChild(v);
+  }
+});
+
+/* =========================================================
+   HISTORIAL (solo en este dispositivo)
+   ========================================================= */
+const H_KEY = "ze-dl-hist";
+let hist = []; try { hist = JSON.parse(pref.get(H_KEY) || "[]"); } catch (e) {}
+function addHist(i){
+  hist = [{ platform:i.platform, id:i.id, url:i.url, author:i.author || i.authorName, cover:i.cover, ts:Date.now() / 1000 },
+    ...hist.filter(h => !(h.platform === i.platform && h.id === i.id))].slice(0, 16);
+  pref.set(H_KEY, JSON.stringify(hist)); renderHist();
+}
+function renderHist(){
+  $("#hCount").textContent = hist.length || "";
+  $("#hClear").hidden = !hist.length;
+  $("#hList").innerHTML = hist.length ? hist.map((h, k) => `<button class="h-it" data-k="${k}">
+      ${phoneHtml({ platform:h.platform, info:{ cover:h.cover } })}
+      <b>${h.author ? "@" + esc(h.author) : "—"}</b><small>${esc(fmtAgo(h.ts))}</small></button>`).join("")
+    : `<div class="empty" style="flex:1">${t("histEmpty")}</div>`;
+}
+$("#hList").addEventListener("click", e => {
+  const b = e.target.closest(".h-it"); if (!b) return;
+  const h = hist[+b.dataset.k]; if (!h) return;
+  queue.push(addCard(h.url)); pump(); scrollTo({ top:$("#bar").offsetTop - 90, behavior:"smooth" });
+});
+$("#hClear").onclick = () => { hist = []; pref.set(H_KEY, "[]"); renderHist(); };
+
+/* =========================================================
+   BARRA: detectar plataforma, pegar y enviar
+   ========================================================= */
+const urlIn = $("#url");
+function paintPlat(){ $("#plat").dataset.p = platformOf(splitLinks(urlIn.value)[0] || "") || ""; }
+urlIn.addEventListener("input", paintPlat);
+urlIn.addEventListener("focus", () => $("#bar").classList.add("focus"));
+urlIn.addEventListener("blur", () => $("#bar").classList.remove("focus"));
+// al pegar un enlace válido se busca solo: un gesto menos
+urlIn.addEventListener("paste", e => {
+  const txt = e.clipboardData?.getData("text") || "";
+  if (splitLinks(txt).some(platformOf)) { e.preventDefault(); urlIn.value = txt.trim(); paintPlat(); setTimeout(() => submit(txt), 250); }
+});
+$("#bar").addEventListener("submit", e => { e.preventDefault(); submit(urlIn.value); });
+$("#pasteBtn").onclick = async () => {
+  try {
+    const txt = await navigator.clipboard.readText();
+    if (txt) { urlIn.value = txt.trim(); paintPlat(); if (splitLinks(txt).some(platformOf)) submit(txt); return; }
+  } catch (e) {}
+  urlIn.focus();
+};
+
+/* cinta de detalles */
+$("#marq").innerHTML = [...Array(2)].map(() => ["TikTok","→","1080p","Instagram","→","Reels","Carruseles","→",".zip","Audio","→",".mp3","Hashtags","→","copiar"]
+  .map(w => `<span class="${w === "→" || /^\./.test(w) || /\d/.test(w) ? "v" : ""}">${w}</span>`).join("")).join("");
+
+/* =========================================================
+   IDIOMA, TEMA Y ARRANQUE
+   ========================================================= */
+const LANGS = ["es","en","ro"];
+function applyLang(l){
+  lang = T[l] ? l : "es"; pref.set("ze-lang", lang); document.documentElement.lang = lang;
+  document.title = `${t("tool")} · ZongaElements`;
+  $("#langBtn").textContent = lang.toUpperCase();
+  $$("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+  $$("[data-i18n-html]").forEach(el => el.innerHTML = t(el.dataset.i18nHtml));
+  $$("[data-i18n-ph]").forEach(el => el.placeholder = t(el.dataset.i18nPh));
+  $$("[data-i18n-aria]").forEach(el => el.setAttribute("aria-label", t(el.dataset.i18nAria)));
+  cards.forEach(render); renderHist();
+}
+$("#langBtn").onclick = () => applyLang(LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]);
+const root = document.documentElement;
+root.dataset.theme = pref.get("ze-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+$("#themeBtn").addEventListener("click", () => { root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark"; pref.set("ze-theme", root.dataset.theme); });
+
+setTimeout(() => ZN.popup({ newsUrl: "../#novedades" }), 1200);
+try { ZE.mountAccount($(".controls")); } catch (e) {}
+applyLang(lang);
+// enlace recibido en la URL (?url=…): se busca al abrir
+const qs = new URLSearchParams(location.search).get("url");
+if (qs) { submit(qs); history.replaceState(null, "", location.pathname); }
+})();
+</script>
+</body>
+</html>

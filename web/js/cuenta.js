@@ -454,5 +454,17 @@
     setTimeout(() => { el.classList.remove("on"); setTimeout(() => el.remove(), 500); }, 3500);
   }
 
-  window.ZE = { online, requireUser, sync, load, save, flushAll, signOut, mountAccount, openBackups, get user(){ return user; } };
+  /* ---------- funciones del servidor (Edge Functions) ----------
+     Devuelve la Response tal cual, para poder leer JSON o archivos. */
+  async function callFn(name, body){
+    if (!online) throw new Error("offline");
+    const { data: { session } } = await sb.auth.getSession();
+    return fetch(`${cfg.url}/functions/v1/${name}`, {
+      method: "POST",
+      headers: { "content-type": "application/json", apikey: cfg.anonKey, authorization: `Bearer ${session ? session.access_token : cfg.anonKey}` },
+      body: JSON.stringify(body)
+    });
+  }
+
+  window.ZE = { online, requireUser, sync, load, save, flushAll, signOut, mountAccount, openBackups, callFn, get user(){ return user; } };
 })();

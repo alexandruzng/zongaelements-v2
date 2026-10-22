@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-10-22-descargador-videos",
+    "date": "2026-10-22",
+    "type": "nuevo",
+    "title": {
+      "es": "Nueva herramienta: Descargador de vídeos",
+      "en": "New tool: Video downloader",
+      "ro": "Instrument nou: Descărcător de clipuri"
+    },
+    "items": {
+      "es": [
+        "Pega un enlace de TikTok o Instagram y descarga el vídeo con un clic, a la máxima calidad que existe (hasta 1080p) y sin marca de agua.",
+        "Te enseña las vistas, los me gusta y los comentarios, y copias el texto o los hashtags con un toque: perfecto para tu research.",
+        "También baja el audio en MP3, la portada y los carruseles de fotos en un ZIP. Puedes pegar varios enlaces a la vez."
+      ],
+      "en": [
+        "Paste a TikTok or Instagram link and download the video in one click, in the best quality available (up to 1080p) and with no watermark.",
+        "It shows views, likes and comments, and you can copy the caption or hashtags with one tap: perfect for your research.",
+        "It also grabs the MP3 audio, the cover and photo carousels as a ZIP. You can paste several links at once."
+      ],
+      "ro": [
+        "Lipește un link de TikTok sau Instagram și descarcă clipul dintr-un clic, la cea mai bună calitate disponibilă (până la 1080p) și fără watermark.",
+        "Îți arată vizualizările, aprecierile și comentariile, iar textul sau hashtagurile le copiezi dintr-o atingere: perfect pentru research.",
+        "Descarcă și audio MP3, coperta și caruselele de poze într-un ZIP. Poți lipi mai multe linkuri deodată."
+      ]
+    }
+  },
+  {
     "id": "2026-10-21-conversor-webp",
     "date": "2026-10-21",
     "type": "nuevo",
