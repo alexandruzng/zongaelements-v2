@@ -466,5 +466,5 @@
     });
   }
 
-  window.ZE = { online, requireUser, sync, load, save, flushAll, signOut, mountAccount, openBackups, callFn, get user(){ return user; } };
+  window.ZE = { online, requireUser, sync, load, save, flushAll, signOut, mountAccount, openBackups, callFn, client: sb, get user(){ return user; } };
 })();

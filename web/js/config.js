@@ -8,5 +8,7 @@
    ========================================================= */
 window.ZE_CONFIG = {
   url: "https://kzlhjyvayrrqvviczhlo.supabase.co",
-  anonKey: "sb_publishable_Y6zUE8n6KkLLqiyTs5yLEw_U48_q00d"
+  anonKey: "sb_publishable_Y6zUE8n6KkLLqiyTs5yLEw_U48_q00d",
+  // clave pública para las notificaciones (la privada solo está en Supabase)
+  vapidPublic: "BHkqieB-n4dEd-dXJzPlgzA8MyYD6x1v_fHgcR64sO5QDsPFs47_cXKywshxe8BX0zIW8nYxi-UXsHlbuMai8G4"
 };

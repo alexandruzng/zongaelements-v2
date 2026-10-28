@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-10-29-avisos-suscripciones",
+    "date": "2026-10-29",
+    "type": "nuevo",
+    "title": {
+      "es": "Avisos en tu iPhone antes de cada cobro",
+      "en": "Reminders on your iPhone before every charge",
+      "ro": "Notificări pe iPhone înainte de fiecare plată"
+    },
+    "items": {
+      "es": [
+        "ZongaElements ya se puede instalar como app: en Safari pulsa Compartir → «Añadir a pantalla de inicio».",
+        "Abre la app desde el icono, ve a Finanzas → Suscripciones y pulsa «Activar avisos».",
+        "Te llegará una notificación 7, 3 y 1 día antes de cada cobro, a las 14:00 (hora de Rumanía)."
+      ],
+      "en": [
+        "ZongaElements can now be installed as an app: in Safari tap Share → “Add to Home Screen”.",
+        "Open the app from the icon, go to Finances → Subscriptions and tap “Turn on reminders”.",
+        "You'll get a notification 7, 3 and 1 day before each charge, at 14:00 (Romania time)."
+      ],
+      "ro": [
+        "ZongaElements se poate instala acum ca aplicație: în Safari apasă Partajează → „Adaugă pe ecranul principal”.",
+        "Deschide aplicația din iconiță, mergi la Finanțe → Abonamente și apasă „Activează notificările”.",
+        "Vei primi o notificare cu 7, 3 și 1 zi înainte de fiecare plată, la ora 14:00 (ora României)."
+      ]
+    }
+  },
+  {
     "id": "2026-10-29-finanzas-importar",
     "date": "2026-10-29",
     "type": "nuevo",

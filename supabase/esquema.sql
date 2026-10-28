@@ -118,3 +118,58 @@ grant execute on function public.add_backup(text, jsonb) to authenticated;
 -- =========================================================
 alter table public.user_data drop constraint if exists user_data_tool_check;
 alter table public.user_data add constraint user_data_tool_check check (tool in ('planner', 'habits', 'finance'));
+
+-- =========================================================
+-- Avisos de suscripciones (notificaciones push) · 2026-10-29
+-- Re-ejecutable.
+-- =========================================================
+
+-- 1) Dispositivos que quieren avisos (uno por navegador / iPhone).
+create table if not exists public.push_subs (
+  endpoint   text        primary key,
+  user_id    uuid        not null references auth.users (id) on delete cascade,
+  p256dh     text        not null,
+  auth       text        not null,
+  lang       text        not null default 'es',
+  ua         text,
+  created_at timestamptz not null default now(),
+  last_ok    timestamptz
+);
+create index if not exists push_subs_user on public.push_subs (user_id);
+revoke all on public.push_subs from anon;
+grant select, insert, update, delete on public.push_subs to authenticated;
+alter table public.push_subs enable row level security;
+drop policy if exists "ver mis avisos"     on public.push_subs;
+drop policy if exists "crear mis avisos"   on public.push_subs;
+drop policy if exists "cambiar mis avisos" on public.push_subs;
+drop policy if exists "borrar mis avisos"  on public.push_subs;
+create policy "ver mis avisos"     on public.push_subs for select using (auth.uid() = user_id);
+create policy "crear mis avisos"   on public.push_subs for insert with check (auth.uid() = user_id);
+create policy "cambiar mis avisos" on public.push_subs for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "borrar mis avisos"  on public.push_subs for delete using (auth.uid() = user_id);
+
+-- 2) Avisos ya enviados (para no repetir el mismo aviso). Solo lo usa la función.
+create table if not exists public.push_sent (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  sub_id  text not null,
+  charge  date not null,
+  days    int  not null,
+  sent_at timestamptz not null default now(),
+  primary key (user_id, sub_id, charge, days)
+);
+alter table public.push_sent enable row level security;
+revoke all on public.push_sent from anon, authenticated;
+
+-- 3) Tarea cada hora: la función solo envía a partir de las 14:00 (hora de Rumanía).
+--    El secreto real NO va en este archivo: se pone al programar la tarea.
+-- la función de avisos usa la clave de servicio (las tablas nuevas no se exponen solas)
+grant select, insert, update, delete on public.push_subs, public.push_sent to service_role;
+grant select on public.user_data to service_role;
+create extension if not exists pg_cron;
+create extension if not exists pg_net with schema extensions;
+-- select cron.schedule('avisos-suscripciones', '0 * * * *', $$
+--   select net.http_post(
+--     url := 'https://kzlhjyvayrrqvviczhlo.supabase.co/functions/v1/avisos-suscripciones',
+--     headers := jsonb_build_object('content-type', 'application/json', 'x-cron-secret', '<CRON_SECRET>'),
+--     body := '{}'::jsonb)
+-- $$);

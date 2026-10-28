@@ -7,6 +7,12 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#09090B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ZongaElements">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Syne:wght@800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Gochi+Hand&display=swap" rel="stylesheet">
@@ -317,6 +323,17 @@ svg{display:block}
 .addcard:hover{background:var(--card);transform:translateY(-2px)}
 .addcard span{width:34px;height:34px;border-radius:50%;background:var(--yellow);border:2px solid #17161C;display:grid;place-items:center;color:#17161C}
 .addcard svg{width:16px;height:16px}
+/* avisos (notificaciones) */
+.pushc{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.pushc .bell{font-size:44px;line-height:1;animation:ring 2.8s ease-in-out infinite;transform-origin:50% 10%}
+@keyframes ring{0%,70%,100%{transform:rotate(0)}74%{transform:rotate(16deg)}78%{transform:rotate(-14deg)}82%{transform:rotate(10deg)}86%{transform:rotate(-6deg)}}
+.pushc .txt{flex:1 1 240px;min-width:0}
+.pushc h3{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.03em;line-height:1.15}
+.pushc p{font-size:14px;font-weight:700;line-height:1.5;margin-top:6px;opacity:.8}
+.pushc ol{margin:10px 0 0 20px;font-size:14px;font-weight:700;line-height:1.7}
+.pushc .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pushc .pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.pushc .pills span{height:28px;padding:0 10px;border-radius:100px;border:2px solid #17161C;background:#fff;color:#17161C;font-size:12.5px;font-weight:800;display:inline-flex;align-items:center}
 /* importar */
 .drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:30px 18px;border-radius:24px;border:var(--b) dashed var(--ink);background:var(--card);cursor:pointer;transition:background .2s,transform .2s}
 .drop:hover,.drop.over{background:var(--butter);color:#17161C;transform:translateY(-2px)}
@@ -624,7 +641,7 @@ input:checked+.sw::after{transform:translateX(20px)}
   .hero{padding:30px 30px}
   .hero .art{width:250px;right:10px;top:22px}
   .cmps{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .subs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .subs{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
   .goals{grid-template-columns:repeat(2,minmax(0,1fr))}
   .fab .lbl{display:inline}
 }
@@ -642,7 +659,6 @@ input:checked+.sw::after{transform:translateX(20px)}
   .s4{grid-column:span 4} .s5{grid-column:span 5} .s6{grid-column:span 6} .s7{grid-column:span 7} .s8{grid-column:span 8} .s12{grid-column:1/-1}
   .goals{grid-template-columns:repeat(3,minmax(0,1fr))}
   .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .subs.big{grid-template-columns:repeat(3,minmax(0,1fr))}
   .hero .art{width:280px;right:24px;top:10px}
 }
 @media (max-width:999px){ .s4,.s5,.s6,.s7,.s8,.s12{grid-column:auto} }
@@ -809,8 +825,8 @@ input:checked+.sw::after{transform:translateX(20px)}
 <canvas id="fxc"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
-<script src="../js/config.js"></script>
-<script src="../js/cuenta.js"></script>
+<script src="../js/config.js?v=3"></script>
+<script src="../js/cuenta.js?v=3"></script>
 <script src="../js/novedades.js?v=2"></script>
 <script>
 (async () => {
@@ -861,6 +877,7 @@ es:{ tool:"Finanzas", tagline:"Mejores decisiones, grandes sueños.", settings:"
   "q.add":"Sumar","q.sub":"Restar","q.next":"Siguiente","q.back":"Atrás","q.saveAll":"Guardar {n}","q.none":"No has marcado ningún día. Vuelve atrás y toca los días con movimientos.","q.ok":"{n} movimientos guardados","q.count":"{n} marcados","q.bad":"Revisa las filas en rojo: el concepto necesita al menos 2 caracteres.","q.empty":"Escribe la cantidad de al menos un movimiento.",
   wd:["L","M","X","J","V","S","D"],
   "set.title":"Ajustes","set.name":"Tu nombre","set.sound":"Efectos de sonido","set.soundS":"Monedas, logros y confeti con sonido.","set.whims":"Tus caprichos","set.whimsP":"Las categorías que rompen tu racha si gastas en ellas.","set.cats":"Categorías","set.catsS":"Crea las tuyas o cambia nombre, color e icono.","set.bud":"Presupuestos","set.budS":"Límite mensual por categoría de gasto.","set.csvS":"Fecha, tipo, categoría, concepto, EUR, RON y tasa.",
+  "push.t":"Avisos de cobros","push.p":"Te avisamos 7, 3 y 1 día antes de cada cobro, a las 14:00 (hora de Rumanía).","push.on":"Avisos activados en este dispositivo","push.enable":"Activar avisos","push.test":"Enviar prueba","push.off":"Desactivar","push.installT":"Activa los avisos en tu iPhone","push.install":["En Safari, pulsa el botón Compartir","Elige «Añadir a pantalla de inicio»","Abre ZongaElements desde el icono y vuelve a esta pestaña"],"push.unsup":"Este navegador no permite notificaciones. En iPhone necesitas iOS 16.4 o superior.","push.denied":"Has bloqueado los avisos. Actívalos en Ajustes del iPhone → Notificaciones → ZongaElements y vuelve aquí.","push.deniedWeb":"Has bloqueado los avisos. Permite las notificaciones de esta web en los ajustes del navegador y vuelve aquí.","push.ok":"¡Avisos activados! Te llega una notificación de prueba","push.err":"No se pudieron activar los avisos. Inténtalo de nuevo.","push.sent":"Prueba enviada a {n} dispositivo(s)","push.disabled":"Avisos desactivados en este dispositivo","push.d7":"7 días antes","push.d3":"3 días antes","push.d1":"1 día antes",
   "imp.t":"Importar copia de la web antigua","imp.s":"Movimientos, categorías y suscripciones de Zonga Elements.","imp.h":"Importar copia","imp.p":"Sube el archivo de copia de seguridad (.json) de tu web antigua de Zonga Elements. Se añadirán tus movimientos, tus categorías propias y tus suscripciones activas sin borrar nada de lo que ya tienes aquí. Si lo importas dos veces, no se duplica nada.","imp.pick":"Elige tu archivo .json","imp.pickS":"o arrástralo aquí","imp.reading":"Leyendo el archivo…","imp.bad":"Este archivo no es una copia de Zonga Elements con datos de Finanzas.","imp.err":"No se pudo leer el archivo. Comprueba que sea el .json de la copia de seguridad.","imp.found":"Esto es lo que hay en tu copia","imp.tx":"Movimientos","imp.range":"{a} → {b}","imp.inc":"Ingresos","imp.exp":"Gastos","imp.cats":"Categorías propias","imp.subs":"Suscripciones activas","imp.subsS":"{n} canceladas no se importan","imp.dup":"{n} ya estaban importados y se saltarán.","imp.optTx":"Movimientos","imp.optTxS":"Con el tipo de cambio de cada día.","imp.optCats":"Categorías propias","imp.optCatsS":"Con su nombre, color e icono.","imp.optSubs":"Suscripciones activas","imp.optSubsS":"Con su próximo cobro.","imp.go":"Importar todo","imp.going":"Importando…","imp.none":"No hay nada nuevo que importar: ya lo tienes todo.","imp.ok":"¡Importado! {n} movimientos, {c} categorías y {s} suscripciones","imp.cta":"¿Vienes de la web antigua?","imp.ctaP":"Importa tu copia de seguridad y recupera todos tus meses de un golpe.","imp.ctaB":"Importar copia",
   "c.newFor":"Nombre de la categoría","c.namePh":"Ej: Meta Ads","c.create":"Crear categoría","c.addNew":"Nueva","c.created":"Categoría creada",
   "set.lang":"Idioma","set.data":"Datos","set.reset":"Borrar todos los datos","set.resetT":"¿Borrar todos los datos?","set.resetP":"Se eliminarán tus movimientos, metas, suscripciones, presupuestos, logros y categorías propias. No se puede deshacer.","set.resetOk":"Borrar todo","set.resetDone":"Datos borrados",
@@ -920,6 +937,7 @@ en:{ tool:"Finances", tagline:"Better decisions, big dreams.", settings:"Setting
   "q.add":"Add","q.sub":"Remove","q.next":"Next","q.back":"Back","q.saveAll":"Save {n}","q.none":"You haven't marked any day. Go back and tap the days with transactions.","q.ok":"{n} transactions saved","q.count":"{n} marked","q.bad":"Check the rows in red: the description needs at least 2 characters.","q.empty":"Enter the amount of at least one transaction.",
   wd:["M","T","W","T","F","S","S"],
   "set.title":"Settings","set.name":"Your name","set.sound":"Sound effects","set.soundS":"Coins, achievements and confetti with sound.","set.whims":"Your treats","set.whimsP":"Categories that break your streak when you spend on them.","set.cats":"Categories","set.catsS":"Create your own or change name, color and icon.","set.bud":"Budgets","set.budS":"Monthly limit per spending category.","set.csvS":"Date, type, category, description, EUR, RON and rate.",
+  "push.t":"Charge reminders","push.p":"We'll remind you 7, 3 and 1 day before each charge, at 14:00 (Romania time).","push.on":"Reminders on for this device","push.enable":"Turn on reminders","push.test":"Send a test","push.off":"Turn off","push.installT":"Turn on reminders on your iPhone","push.install":["In Safari, tap the Share button","Choose “Add to Home Screen”","Open ZongaElements from the icon and come back to this tab"],"push.unsup":"This browser doesn't support notifications. On iPhone you need iOS 16.4 or later.","push.denied":"You've blocked reminders. Turn them on in iPhone Settings → Notifications → ZongaElements and come back.","push.deniedWeb":"You've blocked reminders. Allow notifications for this site in your browser settings and come back.","push.ok":"Reminders on! A test notification is on its way","push.err":"Reminders couldn't be turned on. Try again.","push.sent":"Test sent to {n} device(s)","push.disabled":"Reminders turned off on this device","push.d7":"7 days before","push.d3":"3 days before","push.d1":"1 day before",
   "imp.t":"Import a backup from the old site","imp.s":"Transactions, categories and subscriptions from Zonga Elements.","imp.h":"Import backup","imp.p":"Upload the backup file (.json) from your old Zonga Elements site. Your transactions, custom categories and active subscriptions will be added without deleting anything you already have here. Importing twice won't duplicate anything.","imp.pick":"Choose your .json file","imp.pickS":"or drop it here","imp.reading":"Reading the file…","imp.bad":"This file isn't a Zonga Elements backup with Finances data.","imp.err":"The file couldn't be read. Check that it's the backup .json.","imp.found":"Here's what's in your backup","imp.tx":"Transactions","imp.range":"{a} → {b}","imp.inc":"Income","imp.exp":"Expenses","imp.cats":"Custom categories","imp.subs":"Active subscriptions","imp.subsS":"{n} cancelled won't be imported","imp.dup":"{n} were already imported and will be skipped.","imp.optTx":"Transactions","imp.optTxS":"With each day's exchange rate.","imp.optCats":"Custom categories","imp.optCatsS":"With their name, color and icon.","imp.optSubs":"Active subscriptions","imp.optSubsS":"With their next charge.","imp.go":"Import everything","imp.going":"Importing…","imp.none":"Nothing new to import: you already have it all.","imp.ok":"Imported! {n} transactions, {c} categories and {s} subscriptions","imp.cta":"Coming from the old site?","imp.ctaP":"Import your backup and get all your months back in one go.","imp.ctaB":"Import backup",
   "c.newFor":"Category name","c.namePh":"E.g. Meta Ads","c.create":"Create category","c.addNew":"New","c.created":"Category created",
   "set.lang":"Language","set.data":"Data","set.reset":"Delete all data","set.resetT":"Delete all data?","set.resetP":"Your transactions, goals, subscriptions, budgets, achievements and custom categories will be deleted. This can't be undone.","set.resetOk":"Delete everything","set.resetDone":"Data deleted",
@@ -979,6 +997,7 @@ ro:{ tool:"Finanțe", tagline:"Decizii mai bune, vise mari.", settings:"Setări"
   "q.add":"Adaugă","q.sub":"Scade","q.next":"Înainte","q.back":"Înapoi","q.saveAll":"Salvează {n}","q.none":"N-ai marcat nicio zi. Întoarce-te și atinge zilele cu tranzacții.","q.ok":"{n} tranzacții salvate","q.count":"{n} marcate","q.bad":"Verifică rândurile roșii: descrierea are nevoie de cel puțin 2 caractere.","q.empty":"Scrie suma pentru cel puțin o tranzacție.",
   wd:["L","M","M","J","V","S","D"],
   "set.title":"Setări","set.name":"Numele tău","set.sound":"Efecte sonore","set.soundS":"Monede, realizări și confetti cu sunet.","set.whims":"Capriciile tale","set.whimsP":"Categoriile care îți rup seria dacă cheltuiești pe ele.","set.cats":"Categorii","set.catsS":"Creează-le pe ale tale sau schimbă numele, culoarea și iconița.","set.bud":"Bugete","set.budS":"Limită lunară pe categorie de cheltuieli.","set.csvS":"Data, tip, categorie, descriere, EUR, RON și curs.",
+  "push.t":"Notificări de plată","push.p":"Te anunțăm cu 7, 3 și 1 zi înainte de fiecare plată, la ora 14:00 (ora României).","push.on":"Notificări activate pe acest dispozitiv","push.enable":"Activează notificările","push.test":"Trimite un test","push.off":"Dezactivează","push.installT":"Activează notificările pe iPhone","push.install":["În Safari, apasă butonul Partajează","Alege „Adaugă pe ecranul principal”","Deschide ZongaElements din iconiță și revino la această filă"],"push.unsup":"Acest browser nu permite notificări. Pe iPhone ai nevoie de iOS 16.4 sau mai nou.","push.denied":"Ai blocat notificările. Activează-le în Setări iPhone → Notificări → ZongaElements și revino aici.","push.deniedWeb":"Ai blocat notificările. Permite notificările acestui site în setările browserului și revino aici.","push.ok":"Notificări activate! Îți vine o notificare de test","push.err":"Notificările nu au putut fi activate. Încearcă din nou.","push.sent":"Test trimis pe {n} dispozitiv(e)","push.disabled":"Notificări dezactivate pe acest dispozitiv","push.d7":"cu 7 zile înainte","push.d3":"cu 3 zile înainte","push.d1":"cu o zi înainte",
   "imp.t":"Importă o copie de pe site-ul vechi","imp.s":"Tranzacții, categorii și abonamente din Zonga Elements.","imp.h":"Importă copia","imp.p":"Încarcă fișierul de backup (.json) de pe vechiul site Zonga Elements. Tranzacțiile, categoriile proprii și abonamentele active se adaugă fără să se șteargă nimic din ce ai aici. Dacă imporți de două ori, nu se dublează nimic.","imp.pick":"Alege fișierul .json","imp.pickS":"sau trage-l aici","imp.reading":"Se citește fișierul…","imp.bad":"Fișierul nu e o copie Zonga Elements cu date de Finanțe.","imp.err":"Fișierul nu a putut fi citit. Verifică dacă e .json-ul de backup.","imp.found":"Iată ce conține copia ta","imp.tx":"Tranzacții","imp.range":"{a} → {b}","imp.inc":"Venituri","imp.exp":"Cheltuieli","imp.cats":"Categorii proprii","imp.subs":"Abonamente active","imp.subsS":"{n} anulate nu se importă","imp.dup":"{n} erau deja importate și vor fi sărite.","imp.optTx":"Tranzacții","imp.optTxS":"Cu cursul de schimb al fiecărei zile.","imp.optCats":"Categorii proprii","imp.optCatsS":"Cu numele, culoarea și iconița lor.","imp.optSubs":"Abonamente active","imp.optSubsS":"Cu următoarea plată.","imp.go":"Importă tot","imp.going":"Se importă…","imp.none":"Nimic nou de importat: ai deja totul.","imp.ok":"Importat! {n} tranzacții, {c} categorii și {s} abonamente","imp.cta":"Vii de pe site-ul vechi?","imp.ctaP":"Importă copia de siguranță și recuperează toate lunile dintr-odată.","imp.ctaB":"Importă copia",
   "c.newFor":"Numele categoriei","c.namePh":"Ex: Meta Ads","c.create":"Creează categoria","c.addNew":"Nouă","c.created":"Categorie creată",
   "set.lang":"Limbă","set.data":"Date","set.reset":"Șterge toate datele","set.resetT":"Ștergi toate datele?","set.resetP":"Se vor șterge tranzacțiile, obiectivele, abonamentele, bugetele, realizările și categoriile proprii. Nu se poate anula.","set.resetOk":"Șterge tot","set.resetDone":"Date șterse",
@@ -1776,7 +1795,78 @@ function renderSubs(){
   el.innerHTML = `<div class="grid"><article class="card c-rose s12 rise"><div class="ct"><div><h3>🔔 ${t("subs.t")}</h3></div></div>
       <div class="subsum"><div><span>${t("s.month")}</span><b class="num">${fmtE(m)}</b></div><div><span>${t("s.year")}</span><b class="num">${fmtE(m*12, 0)}</b></div><div><span>${t("s.nextT")}</span><b>${nx ? esc(subWhen(nx.n)) : "—"}</b></div></div>
       <div class="keyrow"><span><i style="background:var(--mint)"></i>${t("s.k.ok")}</span><span><i style="background:var(--butter)"></i>${t("s.k.soon")}</span><span><i style="background:var(--salmon)"></i>${t("s.k.close")}</span><span><i style="background:#17161C"></i>${t("s.k.now")}</span></div></article>
-    <div class="s12"><div class="subs big">${list.map(subCard).join("")}<button class="addcard" data-act="snew"><span>${ICON.plus}</span>${t("subs.add")}</button></div></div></div>`;
+    <div class="s12"><div class="subs big">${list.map(subCard).join("")}<button class="addcard" data-act="snew"><span>${ICON.plus}</span>${t("subs.add")}</button></div></div>
+    <div class="s12" id="pushCard"></div></div>`;
+  drawPush();
+}
+
+/* =========================================================
+   AVISOS (notificaciones push)
+   El navegador se apunta en push_subs y la función «avisos-suscripciones»
+   de Supabase envía los avisos 7, 3 y 1 día antes de cada cobro.
+   En iPhone solo funciona con la web añadida a la pantalla de inicio.
+   ========================================================= */
+const PUSH = {
+  ok: "serviceWorker" in navigator && "PushManager" in window && "Notification" in window,
+  ios: /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1),
+  reg: null
+};
+if (PUSH.ok && ZE.online) navigator.serviceWorker.register("/sw.js").then(r => PUSH.reg = r).catch(() => {});
+const b64u = s => { const b = atob((s + "=".repeat((4 - s.length % 4) % 4)).replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(b, c => c.charCodeAt(0)); };
+async function pushSub(){ const reg = PUSH.reg || await navigator.serviceWorker.getRegistration("/"); return reg ? reg.pushManager.getSubscription() : null; }
+async function pushState(){
+  if (!ZE.online || !ZE.user || !ZE.client || !(window.ZE_CONFIG || {}).vapidPublic) return "none";
+  if (!PUSH.ok) return PUSH.ios ? "install" : "unsup";
+  if (Notification.permission === "denied") return "denied";
+  try { return (await pushSub()) ? "on" : "off"; } catch (e) { return "off"; }
+}
+async function drawPush(){
+  const box = $("#pushCard"); if (!box) return;
+  const st = await pushState(); if (!$("#pushCard")) return;
+  if (st === "none"){ box.innerHTML = ""; return; }
+  const pills = `<div class="pills"><span>${t("push.d7")}</span><span>${t("push.d3")}</span><span>${t("push.d1")}</span><span>14:00 🇷🇴</span></div>`;
+  const body = st === "install" ? `<h3>${t("push.installT")}</h3><ol>${ta("push.install").map(x => `<li>${esc(x)}</li>`).join("")}</ol>${pills}`
+    : st === "unsup" ? `<h3>${t("push.t")}</h3><p>${t("push.unsup")}</p>`
+    : st === "denied" ? `<h3>${t("push.t")}</h3><p>${t(PUSH.ios ? "push.denied" : "push.deniedWeb")}</p>`
+    : st === "on" ? `<h3>✅ ${t("push.on")}</h3><p>${t("push.p")}</p>${pills}<div class="btns"><button class="btn sm yellow" id="pushTest">🔔 ${t("push.test")}</button><button class="btn sm" id="pushOff">${t("push.off")}</button></div>`
+    : `<h3>${t("push.t")}</h3><p>${t("push.p")}</p>${pills}<div class="btns"><button class="btn accent" id="pushOn">🔔 ${t("push.enable")}</button></div>`;
+  box.innerHTML = `<article class="card ${st === "on" ? "c-mint" : "c-sky"} rise"><div class="pushc"><span class="bell">${st === "on" ? "🔔" : st === "install" ? "📲" : "🔕"}</span><div class="txt">${body}</div></div></article>`;
+  const on = $("#pushOn"), off = $("#pushOff"), test = $("#pushTest");
+  if (on) on.addEventListener("click", enablePush);
+  if (off) off.addEventListener("click", disablePush);
+  if (test) test.addEventListener("click", testPush);
+}
+async function enablePush(){
+  const b = $("#pushOn"); if (b){ b.disabled = true; }
+  try {
+    // el permiso se pide directamente desde el toque (requisito de iPhone)
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted"){ drawPush(); return; }
+    const reg = PUSH.reg || await navigator.serviceWorker.register("/sw.js"); PUSH.reg = reg;
+    await navigator.serviceWorker.ready;
+    const sub = (await reg.pushManager.getSubscription()) || await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:b64u(ZE_CONFIG.vapidPublic) });
+    const j = sub.toJSON();
+    const { error } = await ZE.client.from("push_subs").upsert({ endpoint:j.endpoint, user_id:ZE.user.id, p256dh:j.keys.p256dh, auth:j.keys.auth, lang, ua:navigator.userAgent.slice(0, 200) });
+    if (error) throw error;
+    await ZE.flushAll();   // que las suscripciones estén en la nube para la función
+    SFX.play("success"); FXC.confetti(); toast(t("push.ok"), "🔔");
+    ZE.callFn("avisos-suscripciones", { test:true }).catch(() => {});
+  } catch (e){ console.error(e); toast(t("push.err"), "⚠️"); }
+  drawPush();
+}
+async function disablePush(){
+  try {
+    const sub = await pushSub();
+    if (sub){ await ZE.client.from("push_subs").delete().eq("endpoint", sub.endpoint); await sub.unsubscribe(); }
+    SFX.play("remove"); toast(t("push.disabled"), "🔕");
+  } catch (e){ toast(t("push.err"), "⚠️"); }
+  drawPush();
+}
+async function testPush(){
+  const b = $("#pushTest"); if (b) b.disabled = true;
+  try { const r = await ZE.callFn("avisos-suscripciones", { test:true }); const j = await r.json(); toast(t("push.sent", { n:j.sent || 0 }), "🔔"); SFX.play("pop"); }
+  catch (e){ toast(t("push.err"), "⚠️"); }
+  if (b) b.disabled = false;
 }
 function renderAch(){
   const el = $("#v-ach"), x = xpInfo(), st = x.st, today = todayIso();
@@ -2390,6 +2480,8 @@ checkAch(firstAch);   // con datos de antes de los logros, se desbloquean sin av
 if (firstAch && S.tx.length) DB.save(S);
 setTimeout(() => ZN.popup({ newsUrl: "../#novedades" }), 1200);
 try { ZE.mountAccount($(".controls")); } catch (e) {}
+if (location.hash === "#subs") view.tab = "subs";
+addEventListener("hashchange", () => { if (location.hash === "#subs" && view.tab !== "subs"){ view.tab = "subs"; render(); } });
 applyLang(lang);
 FX.load();
 })();
