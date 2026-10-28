@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-10-28-finanzas",
+    "date": "2026-10-28",
+    "type": "nuevo",
+    "title": {
+      "es": "Nueva herramienta: Finanzas",
+      "en": "New tool: Finances",
+      "ro": "Instrument nou: Finanțe"
+    },
+    "items": {
+      "es": [
+        "Apunta tus ingresos y gastos en euros o en leis: cada movimiento se convierte con el cambio oficial de su propio día.",
+        "Resumen con tu balance, gráficos por mes y por categoría, presupuestos que puedes editar y una nota de salud financiera de 0 a 100.",
+        "Mete un mes entero en tres pasos con «Rápido», crea metas de ahorro y descarga todo en CSV."
+      ],
+      "en": [
+        "Log your income and expenses in euros or lei: each one is converted with the official rate of its own day.",
+        "An overview with your balance, charts by month and category, budgets you can edit and a financial health score from 0 to 100.",
+        "Enter a whole month in three steps with “Quick”, create savings goals and download everything as CSV."
+      ],
+      "ro": [
+        "Notează-ți veniturile și cheltuielile în euro sau lei: fiecare se convertește la cursul oficial al zilei ei.",
+        "Rezumat cu balanța, grafice pe luni și categorii, bugete pe care le poți edita și o notă de sănătate financiară de la 0 la 100.",
+        "Introdu o lună întreagă în trei pași cu „Rapid”, creează obiective de economisire și descarcă totul în CSV."
+      ]
+    }
+  },
+  {
     "id": "2026-10-22-descargador-videos",
     "date": "2026-10-22",
     "type": "nuevo",
