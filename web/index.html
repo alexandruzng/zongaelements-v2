@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ZongaElements</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png?v=2" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#09090B">
@@ -61,18 +61,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* noise */
 .noise{position:fixed;inset:-50%;pointer-events:none;z-index:200;opacity:var(--noise-op);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation:grain 1s steps(4) infinite}
+}
 @keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}100%{transform:translate(0,0)}}
 
 /* progress */
 .progress{position:fixed;top:0;left:0;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);z-index:150;
   background:linear-gradient(90deg,var(--blue),var(--red))}
 
-/* cursor ring */
-.cursor{position:fixed;top:0;left:0;width:34px;height:34px;border:1.5px solid var(--fg);border-radius:50%;pointer-events:none;z-index:300;
-  transform:translate(-50%,-50%);transition:width .3s,height .3s,background .3s,border-color .3s;mix-blend-mode:difference;border-color:#fff}
-.cursor.big{width:70px;height:70px;background:rgba(255,255,255,.9)}
-.cursor-dot{position:fixed;top:0;left:0;width:5px;height:5px;background:#fff;border-radius:50%;pointer-events:none;z-index:301;transform:translate(-50%,-50%);mix-blend-mode:difference}
+/* rendimiento: las animaciones fuera de pantalla se pausan */
+.paused,.paused *,.paused *::before,.paused *::after,.overlay:not(.open) *,.overlay:not(.open) *::before,.overlay:not(.open) *::after{animation-play-state:paused!important}
 
 /* ============ PRELOADER ============ */
 .loader{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column;justify-content:space-between;padding:40px 56px;
@@ -129,7 +126,7 @@ nav.menu a:hover{background:var(--fg);color:var(--bg)}
 .hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:72px 72px;
   mask-image:radial-gradient(ellipse 70% 60% at 50% 45%,#000 30%,transparent 80%)}
 .spot{position:absolute;inset:0;pointer-events:none;background:radial-gradient(500px circle at var(--sx,50%) var(--sy,40%),color-mix(in srgb,var(--fg) 6%,transparent),transparent 60%)}
-.glow{position:absolute;width:640px;height:640px;border-radius:50%;filter:blur(110px);opacity:.45;pointer-events:none;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.glow{position:absolute;width:640px;height:640px;border-radius:50%;filter:blur(110px);will-change:transform;opacity:.45;pointer-events:none;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
 .glow.b{background:var(--blue);left:-180px;top:10%}
 .glow.r{background:var(--red);right:-180px;bottom:-5%}
 :root[data-theme="light"] .glow, :root:not([data-theme]) .glow{opacity:.28}
@@ -485,7 +482,6 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
 }
 @media (max-width:360px){ .brand b{display:none} }
 /* ============ MÓVIL (solo pantallas ≤900px; escritorio sin cambios) ============ */
-@media (hover:none){ .cursor,.cursor-dot{display:none} }
 @media (max-width:900px){
   /* cabecera */
   .brand{font-size:16px}
@@ -552,7 +548,6 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
 <body>
 <div class="noise"></div>
 <div class="progress" id="progress"></div>
-<div class="cursor" id="cursor"></div><div class="cursor-dot" id="cursorDot"></div>
 
 <!-- PRELOADER -->
 <div class="loader" id="loader">
@@ -1002,27 +997,29 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
     mPct.textContent = String(Math.round(p*100)).padStart(2,"0");
     mBar.style.transform = `scaleX(${p})`;
   }
-  addEventListener("scroll", onScroll, {passive:true});
+  let sRaf = 0;
+  addEventListener("scroll", () => { if (!sRaf) sRaf = requestAnimationFrame(() => { sRaf = 0; onScroll(); }); }, {passive:true});
 
   const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold:.15});
   document.querySelectorAll(".rv").forEach(el => io.observe(el));
+  const pauseIO = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle("paused", !e.isIntersecting)), {rootMargin:"150px"});
+  document.querySelectorAll("section, footer").forEach(el => pauseIO.observe(el));
 
   /* ---------- mouse: parallax, spotlight, cursor, tilt ---------- */
   const spot = document.getElementById("spot"), gB = document.getElementById("glowB"), gR = document.getElementById("glowR");
   const floats = document.querySelectorAll(".float");
-  const cur = document.getElementById("cursor"), dot = document.getElementById("cursorDot");
-  let mx = innerWidth/2, my = innerHeight/2, cx = mx, cy = my;
-  addEventListener("mousemove", e => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+  let mx = innerWidth/2, my = innerHeight/2, mRaf = 0;
+  const onMouse = () => {
+    mRaf = 0;
+    if (scrollY > innerHeight) return;   // el efecto solo se ve en la portada de arriba
     spot.style.setProperty("--sx", mx+"px"); spot.style.setProperty("--sy", (my+scrollY)+"px");
     const nx = mx/innerWidth - .5, ny = my/innerHeight - .5;
     gB.style.transform = `translate(${nx*120}px,${ny*80}px)`;
     gR.style.transform = `translate(${nx*-120}px,${ny*-80}px)`;
     floats.forEach(f => { const d = +f.dataset.depth; f.style.transform = `translate(${nx*d}px,${ny*d}px)`; });
-  });
-  (function loop(){ cx += (mx-cx)*.18; cy += (my-cy)*.18; cur.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`; requestAnimationFrame(loop); })();
-  document.addEventListener("mouseover", e => cur.classList.toggle("big", !!e.target.closest("[data-hover],.ch")));
+  };
+  if (matchMedia("(hover:hover)").matches)
+    addEventListener("mousemove", e => { mx = e.clientX; my = e.clientY; if (!mRaf) mRaf = requestAnimationFrame(onMouse); }, {passive:true});
 
   document.querySelectorAll(".path").forEach(card => {
     card.addEventListener("mousemove", e => {
@@ -1039,10 +1036,10 @@ footer{position:relative;padding:100px 56px 40px;border-top:1px solid var(--line
   const loadNum = document.getElementById("loadNum"), loadBar = document.getElementById("loadBar");
   let n = 0;
   const tick = setInterval(() => {
-    n = Math.min(100, n + Math.ceil(Math.random()*9));
+    n = Math.min(100, n + 6 + Math.ceil(Math.random()*8));
     loadNum.textContent = n; loadBar.style.transform = `scaleX(${n/100})`;
-    if(n >= 100){ clearInterval(tick); setTimeout(intro, 250); }
-  }, 45);
+    if(n >= 100){ clearInterval(tick); setTimeout(intro, 120); }
+  }, 28);
   function intro(){
     document.getElementById("loader").classList.add("done");
     const show = (el, d) => setTimeout(() => { el.style.transition = "opacity 1s, transform 1.2s cubic-bezier(.2,.9,.2,1)"; el.style.opacity = 1; el.style.transform = "none"; }, d);

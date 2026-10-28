@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-10-29-web-mas-rapida",
+    "date": "2026-10-29",
+    "type": "mejora",
+    "title": {
+      "es": "La web va más rápida y tiene icono nuevo",
+      "en": "The site is faster and has a new icon",
+      "ro": "Site-ul e mai rapid și are o iconiță nouă"
+    },
+    "items": {
+      "es": [
+        "La portada carga antes: la pantalla de «Cargando» dura menos de medio segundo.",
+        "Menos animaciones gastando batería en segundo plano: las que no ves se pausan solas.",
+        "Quitamos el círculo que seguía al ratón y estrenamos un icono más simple: una Z sobre azul."
+      ],
+      "en": [
+        "The home page loads sooner: the “Loading” screen now takes under half a second.",
+        "Fewer animations draining battery in the background: the ones you can't see pause on their own.",
+        "We removed the circle that followed your mouse and switched to a simpler icon: a Z on blue."
+      ],
+      "ro": [
+        "Pagina principală se încarcă mai repede: ecranul „Se încarcă” durează sub o jumătate de secundă.",
+        "Mai puține animații care consumă bateria în fundal: cele pe care nu le vezi se opresc singure.",
+        "Am scos cercul care urmărea mouse-ul și avem o iconiță mai simplă: un Z pe albastru."
+      ]
+    }
+  },
+  {
     "id": "2026-10-29-pedidos-diarios",
     "date": "2026-10-29",
     "type": "nuevo",
