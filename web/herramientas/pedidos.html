@@ -409,9 +409,7 @@ input:checked+.sw::after{transform:translateX(20px)}
     <div class="field"><span class="lab" data-i18n="d.cur">Moneda de este día</span><div class="seg-ctl" id="dCur"><button data-c="USD">$ USD</button><button data-c="EUR">€ EUR</button></div></div>
     <div class="field"><label for="dRev" data-i18n="d.rev">Facturación total del día</label><div class="amt big"><input id="dRev" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="u" data-cu></span></div><span class="hint" id="dConv"></span></div>
     <div class="field"><label for="dCost" data-i18n="d.cost">Coste de producto (total del día)</label><div class="amt"><input id="dCost" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="u" data-cu></span></div></div>
-    <div class="field"><span class="lab" data-i18n="d.fees">Comisiones</span>
-      <div class="fees"><div class="amt"><input id="dPct" inputmode="decimal" autocomplete="off" placeholder="0"><span class="u">%</span></div><div class="amt"><input id="dFix" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="u"><span data-cu></span>/<span data-i18n="perOrder">pedido</span></span></div></div>
-      <span class="hint" id="dFeeHint"></span></div>
+    <div class="field"><label for="dFee" data-i18n="d.fees">Comisiones (total del día)</label><div class="amt"><input id="dFee" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="u" data-cu></span></div><span class="hint" data-i18n="d.feeHint"></span></div>
     <div class="dr-foot">
       <div class="result" id="dResult"><div><span data-i18n="costs">Costes</span><b id="rCost">—</b></div><div class="pf"><span data-i18n="profit">Beneficio</span><b id="rProfit">—</b></div><div><span data-i18n="margin">Margen</span><b id="rMargin">—</b></div></div>
       <button class="btn blue full" id="dSave" data-i18n="d.save">Guardar día</button>
@@ -439,8 +437,6 @@ input:checked+.sw::after{transform:translateX(20px)}
   <div class="dr-head"><h2 data-i18n="set.title">Ajustes</h2><button class="ctrl" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <div class="dr-body">
     <div class="sec" style="margin-top:4px"><span class="lab" data-i18n="set.cur">Moneda de las cifras</span><div class="seg-ctl" id="setCur" style="background:var(--card)"><button data-c="USD">$ USD</button><button data-c="EUR">€ EUR</button></div></div>
-    <div class="sec"><span class="lab" data-i18n="set.fees">Comisiones por defecto</span><p class="muted" data-i18n="set.feesP" style="margin:-4px 0 12px;font-size:13px"></p>
-      <div class="fees"><div class="amt"><input id="setPct" inputmode="decimal" autocomplete="off"><span class="u">%</span></div><div class="amt"><input id="setFix" inputmode="decimal" autocomplete="off"><span class="u"><span id="setFixCu"></span> / <span data-i18n="perOrder">pedido</span></span></div></div></div>
     <div class="sec">
       <label class="set-row"><span class="set-ic">🔊</span><span class="txt"><b data-i18n="set.sound">Efectos de sonido</b><small data-i18n="set.soundS">Monedas y confeti al apuntar ventas.</small></span><input type="checkbox" id="setSound"><span class="sw"></span></label>
       <button class="set-row" id="setImp"><span class="set-ic">📦</span><span class="txt"><b data-i18n="imp.t">Importar copia de la web antigua</b><small data-i18n="imp.s">Tus pedidos y facturación de Zonga Elements.</small></span></button>
@@ -490,8 +486,8 @@ es:{ tool:"Pedidos diarios", h1a:"Pedidos", h1b:"diarios", sub:"Apunta cada día
   "h.cur":"Mes en curso","h.best":"Mejor mes cerrado","h.avg":"Media mensual","h.avgS":"{n} meses cerrados","h.none":"—","proj":"Previsión",
   "tbl.t":"Mes a mes","tbl.month":"Mes","tbl.state":"Estado","st.cur":"En curso {a}/{b}","st.closed":"Cerrado · {a}/{b} días",
   csv:"Exportar CSV", csvS:"Un día por fila con pedidos, facturación, costes y beneficio.", csvOk:"CSV descargado", csvNone:"No hay datos que exportar.",
-  "d.today":"Hoy","d.past":"Día pasado","d.future":"Día futuro","d.orders":"¿Cuántos pedidos has tenido?","d.cur":"Moneda de este día","d.rev":"Facturación total del día","d.cost":"Coste de producto (total del día)","d.fees":"Comisiones",
-  "d.feeHint":"{p} % de {r} + {n} × {f} = {t}","d.conv":"≈ {a} · 1 € = {r} $ del {d}","d.save":"Guardar día","d.zero":"Sin pedidos","d.saved":"Día guardado","d.savedZ":"Día sin pedidos guardado","d.deleted":"Día borrado","d.record":"¡Récord! Tu mejor día de facturación",
+  "d.today":"Hoy","d.past":"Día pasado","d.future":"Día futuro","d.orders":"¿Cuántos pedidos has tenido?","d.cur":"Moneda de este día","d.rev":"Facturación total del día","d.cost":"Coste de producto (total del día)","d.fees":"Comisiones (total del día)",
+  "d.feeHint":"Lo que te ha quitado la pasarela de pago (Shopify Payments, Stripe, PayPal…) ese día.","d.conv":"≈ {a} · 1 € = {r} $ del {d}","d.save":"Guardar día","d.zero":"Sin pedidos","d.saved":"Día guardado","d.savedZ":"Día sin pedidos guardado","d.deleted":"Día borrado","d.record":"¡Récord! Tu mejor día de facturación",
   "d.bad":"Escribe la facturación del día (o pulsa «Sin pedidos»).","d.warnDecl":"Este mes tiene un total importado de {r}: lo que apuntes aquí se suma a ese total.","d.delT":"¿Borrar este día?","d.delP":"Se borrarán sus pedidos, facturación y costes.",
   "m.t":"Importar mes","m.p":"Para cargar meses pasados de golpe. Escribe los pedidos de cada día y, si quieres, los totales del mes.","m.which":"Mes","m.perDay":"Pedidos por día","m.gridHint":"En blanco = no tocar · 0 = sin pedidos","m.totals":"Totales del mes (opcional)",
   "m.rev":"Facturación del mes","m.cost":"Coste de producto del mes","m.fee":"Comisiones del mes","m.totHint":"Se guardan como un total del mes, sin repartir entre días. Déjalo vacío si apuntas la facturación día a día.",
@@ -501,7 +497,7 @@ es:{ tool:"Pedidos diarios", h1a:"Pedidos", h1b:"diarios", sub:"Apunta cada día
   "imp.t":"Importar copia de la web antigua","imp.s":"Tus pedidos y facturación de Zonga Elements.","imp.h":"Importar copia","imp.p":"Sube el archivo .json de copia de seguridad de tu web antigua. Se añaden tus días y los totales de cada mes sin borrar lo que ya tengas aquí, y si lo importas dos veces no se duplica nada.",
   "imp.pick":"Elige tu archivo .json","imp.pickS":"o arrástralo aquí","imp.reading":"Leyendo el archivo…","imp.bad":"Este archivo no es una copia de Zonga Elements con datos de Pedidos diarios.","imp.err":"No se pudo leer el archivo.",
   "imp.found":"Esto es lo que hay en tu copia","imp.days":"Días con datos","imp.ord":"Pedidos","imp.rev":"Facturación","imp.months":"Totales de mes","imp.skip":"{n} días ya los tenías y se saltarán.",
-  "imp.fees":"Aplicar tus comisiones","imp.feesS":"{p} % + {f} por pedido a los días con facturación (la web antigua no las guardaba).","imp.go":"Importar","imp.none":"No hay nada nuevo que importar.","imp.ok":"¡Importado! {d} días y {m} totales de mes","imp.cost":"Los días importados no tienen coste de producto: añádelo en cada día o en «Importar mes» para ver tu beneficio real.",
+  "imp.fees":"Aplicar tus comisiones","imp.feesS":"{p} % + {f} por pedido a los días con facturación (la web antigua no las guardaba).","imp.go":"Importar","imp.none":"No hay nada nuevo que importar.","imp.ok":"¡Importado! {d} días y {m} totales de mes","imp.cost":"La web antigua no guardaba coste de producto ni comisiones: añádelos en cada día o en «Importar mes» para ver tu beneficio real.",
   wd:["L","M","X","J","V","S","D"], csvH:["fecha","pedidos","moneda","facturacion","coste_producto","comisiones","beneficio","tasa_eur_usd"] },
 en:{ tool:"Daily orders", h1a:"Daily", h1b:"orders", sub:"Log every day and see what you really earn.", settings:"Settings", cancel:"Cancel", del:"Delete",
   prevM:"Previous month", nextM:"Next month", toToday:"Back to today", impMonth:"Import month", addToday:"Log today", perOrder:"order",
@@ -517,8 +513,8 @@ en:{ tool:"Daily orders", h1a:"Daily", h1b:"orders", sub:"Log every day and see 
   "h.cur":"Current month","h.best":"Best closed month","h.avg":"Monthly average","h.avgS":"{n} closed months","h.none":"—","proj":"Forecast",
   "tbl.t":"Month by month","tbl.month":"Month","tbl.state":"Status","st.cur":"Ongoing {a}/{b}","st.closed":"Closed · {a}/{b} days",
   csv:"Export CSV", csvS:"One day per row with orders, revenue, costs and profit.", csvOk:"CSV downloaded", csvNone:"There's no data to export.",
-  "d.today":"Today","d.past":"Past day","d.future":"Future day","d.orders":"How many orders did you get?","d.cur":"Currency for this day","d.rev":"Total revenue for the day","d.cost":"Product cost (day total)","d.fees":"Fees",
-  "d.feeHint":"{p}% of {r} + {n} × {f} = {t}","d.conv":"≈ {a} · 1 € = {r} $ on {d}","d.save":"Save day","d.zero":"No orders","d.saved":"Day saved","d.savedZ":"No-orders day saved","d.deleted":"Day deleted","d.record":"Record! Your best revenue day",
+  "d.today":"Today","d.past":"Past day","d.future":"Future day","d.orders":"How many orders did you get?","d.cur":"Currency for this day","d.rev":"Total revenue for the day","d.cost":"Product cost (day total)","d.fees":"Fees (day total)",
+  "d.feeHint":"What your payment gateway (Shopify Payments, Stripe, PayPal…) took that day.","d.conv":"≈ {a} · 1 € = {r} $ on {d}","d.save":"Save day","d.zero":"No orders","d.saved":"Day saved","d.savedZ":"No-orders day saved","d.deleted":"Day deleted","d.record":"Record! Your best revenue day",
   "d.bad":"Enter the day's revenue (or tap “No orders”).","d.warnDecl":"This month has an imported total of {r}: whatever you log here is added to it.","d.delT":"Delete this day?","d.delP":"Its orders, revenue and costs will be deleted.",
   "m.t":"Import month","m.p":"To load past months in one go. Enter each day's orders and, if you like, the month totals.","m.which":"Month","m.perDay":"Orders per day","m.gridHint":"Blank = leave as is · 0 = no orders","m.totals":"Month totals (optional)",
   "m.rev":"Month revenue","m.cost":"Month product cost","m.fee":"Month fees","m.totHint":"Saved as a monthly total, not split across days. Leave it empty if you log revenue day by day.",
@@ -528,7 +524,7 @@ en:{ tool:"Daily orders", h1a:"Daily", h1b:"orders", sub:"Log every day and see 
   "imp.t":"Import a backup from the old site","imp.s":"Your orders and revenue from Zonga Elements.","imp.h":"Import backup","imp.p":"Upload the backup .json from your old site. Your days and monthly totals are added without deleting what you have here, and importing twice won't duplicate anything.",
   "imp.pick":"Choose your .json file","imp.pickS":"or drop it here","imp.reading":"Reading the file…","imp.bad":"This file isn't a Zonga Elements backup with Daily orders data.","imp.err":"The file couldn't be read.",
   "imp.found":"Here's what's in your backup","imp.days":"Days with data","imp.ord":"Orders","imp.rev":"Revenue","imp.months":"Monthly totals","imp.skip":"You already had {n} days; they'll be skipped.",
-  "imp.fees":"Apply your fees","imp.feesS":"{p}% + {f} per order to days with revenue (the old site didn't store them).","imp.go":"Import","imp.none":"Nothing new to import.","imp.ok":"Imported! {d} days and {m} monthly totals","imp.cost":"Imported days have no product cost: add it per day or in “Import month” to see your real profit.",
+  "imp.fees":"Apply your fees","imp.feesS":"{p}% + {f} per order to days with revenue (the old site didn't store them).","imp.go":"Import","imp.none":"Nothing new to import.","imp.ok":"Imported! {d} days and {m} monthly totals","imp.cost":"The old site didn't store product cost or fees: add them per day or in “Import month” to see your real profit.",
   wd:["M","T","W","T","F","S","S"], csvH:["date","orders","currency","revenue","product_cost","fees","profit","eur_usd_rate"] },
 ro:{ tool:"Comenzi zilnice", h1a:"Comenzi", h1b:"zilnice", sub:"Notează fiecare zi și vezi cât câștigi de fapt.", settings:"Setări", cancel:"Anulează", del:"Șterge",
   prevM:"Luna trecută", nextM:"Luna următoare", toToday:"Înapoi la azi", impMonth:"Importă luna", addToday:"Notează azi", perOrder:"comandă",
@@ -544,8 +540,8 @@ ro:{ tool:"Comenzi zilnice", h1a:"Comenzi", h1b:"zilnice", sub:"Notează fiecare
   "h.cur":"Luna curentă","h.best":"Cea mai bună lună închisă","h.avg":"Medie lunară","h.avgS":"{n} luni închise","h.none":"—","proj":"Estimare",
   "tbl.t":"Lună cu lună","tbl.month":"Luna","tbl.state":"Stare","st.cur":"În curs {a}/{b}","st.closed":"Închisă · {a}/{b} zile",
   csv:"Exportă CSV", csvS:"O zi pe rând cu comenzi, încasări, costuri și profit.", csvOk:"CSV descărcat", csvNone:"Nu există date de exportat.",
-  "d.today":"Azi","d.past":"Zi trecută","d.future":"Zi viitoare","d.orders":"Câte comenzi ai avut?","d.cur":"Moneda acestei zile","d.rev":"Încasări totale în ziua asta","d.cost":"Cost produs (total pe zi)","d.fees":"Comisioane",
-  "d.feeHint":"{p}% din {r} + {n} × {f} = {t}","d.conv":"≈ {a} · 1 € = {r} $ din {d}","d.save":"Salvează ziua","d.zero":"Fără comenzi","d.saved":"Zi salvată","d.savedZ":"Zi fără comenzi salvată","d.deleted":"Zi ștearsă","d.record":"Record! Cea mai bună zi de încasări",
+  "d.today":"Azi","d.past":"Zi trecută","d.future":"Zi viitoare","d.orders":"Câte comenzi ai avut?","d.cur":"Moneda acestei zile","d.rev":"Încasări totale în ziua asta","d.cost":"Cost produs (total pe zi)","d.fees":"Comisioane (total pe zi)",
+  "d.feeHint":"Cât ți-a luat procesatorul de plăți (Shopify Payments, Stripe, PayPal…) în ziua aceea.","d.conv":"≈ {a} · 1 € = {r} $ din {d}","d.save":"Salvează ziua","d.zero":"Fără comenzi","d.saved":"Zi salvată","d.savedZ":"Zi fără comenzi salvată","d.deleted":"Zi ștearsă","d.record":"Record! Cea mai bună zi de încasări",
   "d.bad":"Scrie încasările zilei (sau apasă „Fără comenzi”).","d.warnDecl":"Luna asta are un total importat de {r}: ce notezi aici se adaugă la el.","d.delT":"Ștergi ziua asta?","d.delP":"Se vor șterge comenzile, încasările și costurile ei.",
   "m.t":"Importă luna","m.p":"Pentru a încărca luni trecute dintr-odată. Scrie comenzile fiecărei zile și, dacă vrei, totalurile lunii.","m.which":"Luna","m.perDay":"Comenzi pe zi","m.gridHint":"Gol = nu modifica · 0 = fără comenzi","m.totals":"Totalurile lunii (opțional)",
   "m.rev":"Încasările lunii","m.cost":"Costul produselor în lună","m.fee":"Comisioanele lunii","m.totHint":"Se salvează ca total lunar, fără împărțire pe zile. Lasă gol dacă notezi încasările zilnic.",
@@ -555,7 +551,7 @@ ro:{ tool:"Comenzi zilnice", h1a:"Comenzi", h1b:"zilnice", sub:"Notează fiecare
   "imp.t":"Importă o copie de pe site-ul vechi","imp.s":"Comenzile și încasările tale din Zonga Elements.","imp.h":"Importă copia","imp.p":"Încarcă fișierul .json de backup de pe site-ul vechi. Zilele și totalurile lunare se adaugă fără să se șteargă ce ai aici, iar dacă imporți de două ori nu se dublează nimic.",
   "imp.pick":"Alege fișierul .json","imp.pickS":"sau trage-l aici","imp.reading":"Se citește fișierul…","imp.bad":"Fișierul nu e o copie Zonga Elements cu date de Comenzi zilnice.","imp.err":"Fișierul nu a putut fi citit.",
   "imp.found":"Iată ce conține copia ta","imp.days":"Zile cu date","imp.ord":"Comenzi","imp.rev":"Încasări","imp.months":"Totaluri lunare","imp.skip":"Aveai deja {n} zile; vor fi sărite.",
-  "imp.fees":"Aplică comisioanele tale","imp.feesS":"{p}% + {f} pe comandă la zilele cu încasări (site-ul vechi nu le salva).","imp.go":"Importă","imp.none":"Nimic nou de importat.","imp.ok":"Importat! {d} zile și {m} totaluri lunare","imp.cost":"Zilele importate nu au cost de produs: adaugă-l pe fiecare zi sau în „Importă luna” ca să vezi profitul real.",
+  "imp.fees":"Aplică comisioanele tale","imp.feesS":"{p}% + {f} pe comandă la zilele cu încasări (site-ul vechi nu le salva).","imp.go":"Importă","imp.none":"Nimic nou de importat.","imp.ok":"Importat! {d} zile și {m} totaluri lunare","imp.cost":"Site-ul vechi nu salva costul produselor și comisioanele: adaugă-le pe fiecare zi sau în „Importă luna” ca să vezi profitul real.",
   wd:["L","M","M","J","V","S","D"], csvH:["data","comenzi","moneda","incasari","cost_produs","comisioane","profit","curs_eur_usd"] }
 };
 const pref = { get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}} };
@@ -566,7 +562,7 @@ const LOC = { es:"es-ES", en:"en-IE", ro:"ro-RO" };
 
 /* =========================================================
    CAPA DE DATOS — nube, copia local y copias de seguridad: ../js/cuenta.js
-   S.days["2026-10-12"] = { o:pedidos, rev, cost, pct, fix, cu:"USD"|"EUR", r:tasa EUR→USD de ese día }
+   S.days["2026-10-12"] = { o:pedidos, rev, cost, fee, cu:"USD"|"EUR", r:tasa EUR→USD de ese día }   (rev, cost y fee en la moneda del día)
    S.months["2026-05"]  = { rev, cost, fee, cu, r }   (totales del mes sin repartir por días)
    ========================================================= */
 const DB = { load(){ return ZE.sync("orders").load(); }, save(state){ ZE.sync("orders").save(state); } };
@@ -603,7 +599,7 @@ const numIn = v => v == null || v === "" ? "" : String(v).replace(".", lang === 
    ESTADO
    ========================================================= */
 await ZE.requireUser();
-const fresh = () => ({ v:1, settings:{ cur:"USD", feePct:2.9, feeFix:0.3, feeCu:"USD", sound:true }, days:{}, months:{}, flags:{} });
+const fresh = () => ({ v:1, settings:{ cur:"USD", sound:true }, days:{}, months:{}, flags:{} });
 let S = await DB.load();
 if (!S || S.v !== 1) S = fresh();
 S.days = S.days || {}; S.months = S.months || {}; S.flags = S.flags || {};
@@ -669,7 +665,7 @@ const FX = (() => {
 /* =========================================================
    CÁLCULOS — todo en la moneda elegida en ajustes (D)
    Beneficio = facturación − coste de producto − comisiones
-   Comisiones = facturación × % + pedidos × fijo
+   Comisiones = importe que escribe el usuario cada día
    ========================================================= */
 const D = () => S.settings.cur;
 const conv = (a, cu, r) => !a ? 0 : cu === D() ? a : cu === "EUR" ? a * r : a / r;
@@ -688,7 +684,8 @@ function moneyH(v){
   }
   return out;
 }
-const feeOf = x => (x.rev || 0) * (x.pct || 0) / 100 + (x.o || 0) * (x.fix || 0);
+/* comisiones: importe que escribe el usuario (los días guardados con % + fijo de la primera versión siguen funcionando) */
+const feeOf = x => x.fee != null ? x.fee : (x.rev || 0) * (x.pct || 0) / 100 + (x.o || 0) * (x.fix || 0);
 function dayVals(x){
   const rev = conv(x.rev || 0, x.cu, x.r), cost = conv(x.cost || 0, x.cu, x.r), fee = conv(feeOf(x), x.cu, x.r);
   return { o:x.o || 0, rev, cost, fee, profit:rev - cost - fee };
@@ -960,9 +957,8 @@ function openDay(ds){
   const tag = ds === today ? ["today", t("d.today")] : ds > today ? ["fut", t("d.future")] : ["", t("d.past")];
   $("#dTag").className = "dtag " + tag[0]; $("#dTag").textContent = tag[1];
   $("#dTitle").textContent = cap(dateOfIso(ds).toLocaleDateString(LOC[lang], { weekday:"long", day:"numeric", month:"long", year:"numeric" }));
-  const fixDef = S.settings.feeCu === F.cu ? S.settings.feeFix : conv0(S.settings.feeFix, S.settings.feeCu, F.cu, F.r);
   $("#dOrders").value = x ? x.o : ""; $("#dRev").value = x ? numIn(x.rev) : ""; $("#dCost").value = x ? numIn(x.cost) : "";
-  $("#dPct").value = numIn(x ? x.pct : S.settings.feePct); $("#dFix").value = numIn(x ? x.fix : r2(fixDef));
+  $("#dFee").value = x && feeOf(x) ? numIn(r2(feeOf(x))) : "";
   $("#dDel").hidden = !x; $("#dRev").classList.remove("bad");
   const m = S.months[ds.slice(0,7)];
   $("#dWarn").hidden = !m; if (m) $("#dWarn").textContent = t("d.warnDecl", { r:fmt(conv(m.rev, m.cu, m.r)) });
@@ -972,15 +968,14 @@ function openDay(ds){
 /* convertir entre monedas con una tasa concreta */
 const conv0 = (a, from, to, r) => from === to ? a : from === "EUR" ? a * r : a / r;
 function readDay(){
-  return { o:Math.max(0, Math.round(parseNum($("#dOrders").value) || 0)), rev:parseNum($("#dRev").value), cost:parseNum($("#dCost").value) || 0, pct:parseNum($("#dPct").value) || 0, fix:parseNum($("#dFix").value) || 0, cu:F.cu, r:F.r };
+  return { o:Math.max(0, Math.round(parseNum($("#dOrders").value) || 0)), rev:parseNum($("#dRev").value), cost:parseNum($("#dCost").value) || 0, fee:parseNum($("#dFee").value) || 0, cu:F.cu, r:F.r };
 }
 function paintDay(){
   $$("#dCur button").forEach(b => b.classList.toggle("on", b.dataset.c === F.cu));
   const sym = F.cu === "EUR" ? "€" : "$";
   $$("#drDay [data-cu]").forEach(el => el.textContent = sym);
-  const x = readDay(), rev = x.rev || 0, fee = rev * x.pct / 100 + x.o * x.fix, profit = rev - x.cost - fee;
+  const x = readDay(), rev = x.rev || 0, fee = x.fee, profit = rev - x.cost - fee;
   const f = v => fmt(v, 2, F.cu);
-  $("#dFeeHint").textContent = t("d.feeHint", { p:x.pct.toLocaleString(LOC[lang]), r:f(rev), n:x.o, f:f(x.fix), t:f(fee) });
   const other = F.cu === "EUR" ? "USD" : "EUR";
   $("#dConv").textContent = rev > 0 ? t("d.conv", { a:fmt(conv0(rev, F.cu, other, F.r), 2, other), r:F.r.toLocaleString(LOC[lang], { minimumFractionDigits:4, maximumFractionDigits:4 }), d:dayShort(F.d) }) : "";
   $("#rCost").textContent = f(x.cost + fee); $("#rProfit").textContent = (profit < -.004 ? "−" : "") + f(Math.abs(profit));
@@ -994,8 +989,6 @@ $("#drDay").addEventListener("click", e => {
 });
 $("#dCur").addEventListener("click", e => {
   const b = e.target.closest("[data-c]"); if (!b || b.dataset.c === F.cu) return;
-  // al cambiar de moneda, el fijo por pedido se convierte para no cambiar su valor real
-  const fix = parseNum($("#dFix").value); if (fix > 0) $("#dFix").value = numIn(r2(conv0(fix, F.cu, b.dataset.c, F.r)));
   F.cu = b.dataset.c; pref.set("ze-orders-cu", F.cu); SFX.play("tick"); paintDay();
 });
 $("#drDay").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches("input")) $("#dSave").click(); });
@@ -1004,7 +997,7 @@ $("#dSave").addEventListener("click", () => {
   if (!(x.rev >= 0) && x.o > 0){ $("#dRev").classList.add("bad"); toast(t("d.bad"), "⚠️"); return shake($("#dRev").closest(".amt")); }
   if (!(x.rev > 0) && !x.o) return $("#dZero").click();
   const prevBest = bestRevDay();
-  S.days[F.d] = { o:x.o, rev:r2(x.rev || 0), cost:r2(x.cost), pct:x.pct, fix:r2(x.fix), cu:x.cu, r:x.r };
+  S.days[F.d] = { o:x.o, rev:r2(x.rev || 0), cost:r2(x.cost), fee:r2(x.fee), cu:x.cu, r:x.r };
   save(); closeDrawers(); SFX.play("coin");
   const v = dayVals(S.days[F.d]);
   if (v.rev > 0 && (!prevBest || (v.rev > prevBest.v && prevBest.d !== F.d))){ FXC.confetti(); SFX.play("success"); toast(t("d.record"), "🏆"); }
@@ -1013,7 +1006,7 @@ $("#dSave").addEventListener("click", () => {
   render();
 });
 $("#dZero").addEventListener("click", () => {
-  S.days[F.d] = { o:0, rev:0, cost:0, pct:0, fix:0, cu:F.cu, r:F.r };
+  S.days[F.d] = { o:0, rev:0, cost:0, fee:0, cu:F.cu, r:F.r };
   save(); closeDrawers(); SFX.play("pop"); toast(t("d.savedZ"), "😴");
   if (F.d.slice(0,7) !== view.key) view.key = F.d.slice(0,7);
   render();
@@ -1054,7 +1047,7 @@ $("#mSave").addEventListener("click", () => {
   $$("#mGrid [data-md]").forEach(inp => {
     if (inp.value.trim() === "") return;   // en blanco = no tocar
     const ds = `${MF.k}-${pad(+inp.dataset.md)}`, o = Math.max(0, Math.round(parseNum(inp.value) || 0)), x = S.days[ds];
-    S.days[ds] = x ? { ...x, o } : { o, rev:0, cost:0, pct:0, fix:0, cu:MF.cu, r:FX.rateFor(ds) };
+    S.days[ds] = x ? { ...x, o } : { o, rev:0, cost:0, fee:0, cu:MF.cu, r:FX.rateFor(ds) };
   });
   const rev = parseNum($("#mRev").value), cost = parseNum($("#mCost").value), fee = parseNum($("#mFee").value);
   if (rev > 0 || cost > 0 || fee > 0) S.months[MF.k] = { rev:r2(rev || 0), cost:r2(cost || 0), fee:r2(fee || 0), cu:MF.cu, r:FX.rateFor(`${MF.k}-15`) };
@@ -1072,14 +1065,11 @@ $("#mDel").addEventListener("click", async () => {
    ========================================================= */
 function paintSettings(){
   $$("#setCur button").forEach(b => b.classList.toggle("on", b.dataset.c === D()));
-  $("#setPct").value = numIn(S.settings.feePct); $("#setFix").value = numIn(S.settings.feeFix); $("#setFixCu").textContent = S.settings.feeCu === "EUR" ? "€" : "$";
   $("#setSound").checked = S.settings.sound;
   $$("#setLang button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
 }
 $("#btnSettings").addEventListener("click", () => { paintSettings(); openDrawer("drSettings"); });
 $("#setCur").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; S.settings.cur = b.dataset.c; save(); SFX.play("tick"); paintSettings(); render(); });
-$("#setPct").addEventListener("change", e => { const v = parseNum(e.target.value); S.settings.feePct = v >= 0 ? v : 0; save(); paintSettings(); });
-$("#setFix").addEventListener("change", e => { const v = parseNum(e.target.value); S.settings.feeFix = v >= 0 ? r2(v) : 0; S.settings.feeCu = D(); save(); paintSettings(); });
 $("#setSound").addEventListener("change", e => { S.settings.sound = e.target.checked; save(); SFX.play("pop"); });
 $("#setLang").addEventListener("click", e => { const b = e.target.closest("[data-lang]"); if (!b) return; applyLang(b.dataset.lang); paintSettings(); SFX.play("click"); });
 $("#setCsv").addEventListener("click", exportCsv);
@@ -1118,13 +1108,12 @@ async function parseBackup(file){
     IMP = { days:nw, months:mo, skip:ent.length - nw.length };
     const o = ent.reduce((s, [, x]) => s + (x.orders || 0), 0);
     const r = ent.reduce((s, [d, x]) => s + conv(x.revenue || 0, x.currency || "USD", FX.rateFor(d)), 0) + Object.entries(months).reduce((s, [k, x]) => s + conv(x.revenue || 0, x.currency || "USD", FX.rateFor(k + "-15")), 0);
-    const fixS = fmt(S.settings.feeFix, 2, S.settings.feeCu), ds = ent.map(e => e[0]).sort();
+    const ds = ent.map(e => e[0]).sort();
     box.innerHTML = `<h3 style="font-family:var(--display);font-size:22px;letter-spacing:-.03em;margin-top:22px">${t("imp.found")}</h3>
       <div class="isum"><div style="--c:var(--sky)"><span>${t("imp.days")}</span><b>${ent.length}</b><small>${ds.length ? esc(dayShort(ds[0]) + " → " + dayShort(ds[ds.length-1])) : "—"}</small></div>
         <div style="--c:var(--butter)"><span>${t("imp.ord")}</span><b>${o}</b></div><div style="--c:var(--mint)"><span>${t("imp.rev")}</span><b>${fmt(r, 0)}</b></div>
         <div style="--c:var(--lilac)"><span>${t("imp.months")}</span><b>${Object.keys(months).length}</b></div></div>
       ${IMP.skip ? `<p class="muted" style="margin-bottom:12px">${t("imp.skip", { n:IMP.skip })}</p>` : ""}
-      <label class="set-row"><span class="set-ic">💳</span><span class="txt"><b>${t("imp.fees")}</b><small>${esc(t("imp.feesS", { p:S.settings.feePct.toLocaleString(LOC[lang]), f:fixS }))}</small></span><input type="checkbox" id="impFees" checked><span class="sw"></span></label>
       <p class="muted" style="font-size:13px;margin:4px 0 10px">💡 ${t("imp.cost")}</p>
       <div class="dr-foot"><button class="btn blue full" id="impGo" ${nw.length || mo.length ? "" : "disabled"}>📦 ${nw.length || mo.length ? t("imp.go") : t("imp.none")}</button></div>`;
     $("#impGo").addEventListener("click", runImport); SFX.play("pop");
@@ -1132,11 +1121,11 @@ async function parseBackup(file){
 }
 async function runImport(){
   if (!IMP) return; const b = $("#impGo"); b.disabled = true;
-  const fees = $("#impFees").checked, oldest = IMP.days.reduce((m, [d]) => d < m ? d : m, todayIso());
+  const oldest = IMP.days.reduce((m, [d]) => d < m ? d : m, todayIso());
   await FX.ensure(IMP.months.reduce((m, [k]) => k + "-01" < m ? k + "-01" : m, oldest));
   IMP.days.forEach(([d, x]) => {
     const cu = x.currency === "EUR" ? "EUR" : "USD", rev = +x.revenue || 0, r = FX.rateFor(d);
-    S.days[d] = { o:Math.max(0, Math.round(+x.orders || 0)), rev:r2(rev), cost:0, pct:fees && rev > 0 ? S.settings.feePct : 0, fix:fees && rev > 0 ? r2(conv0(S.settings.feeFix, S.settings.feeCu, cu, r)) : 0, cu, r };
+    S.days[d] = { o:Math.max(0, Math.round(+x.orders || 0)), rev:r2(rev), cost:0, fee:0, cu, r };
   });
   IMP.months.forEach(([k, x]) => { S.months[k] = { rev:r2(+x.revenue), cost:0, fee:0, cu:x.currency === "EUR" ? "EUR" : "USD", r:FX.rateFor(k + "-15") }; });
   S.flags.imported = todayIso(); save(); closeDrawers(); SFX.play("success"); FXC.confetti(); FXC.coins(30);
