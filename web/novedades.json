@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-10-29-finanzas-juego",
+    "date": "2026-10-29",
+    "type": "mejora",
+    "title": {
+      "es": "Finanzas, rediseñada: suscripciones, logros y tu mes Wrapped",
+      "en": "Finances redesigned: subscriptions, achievements and your month Wrapped",
+      "ro": "Finanțe, redesenat: abonamente, realizări și luna ta Wrapped"
+    },
+    "items": {
+      "es": [
+        "Nuevo diseño mucho más visual: hucha animada, metas como tanques de agua, presupuestos en tubos de ensayo, velocímetro de salud y lluvia de monedas.",
+        "Suscripciones: apunta nombre, importe y fecha de cobro. La tarjeta pasa de verde a amarillo, rojo y negro según se acerca el cargo.",
+        "Rachas sin caprichos, niveles con XP, 15 logros y tu resumen del mes en historias tipo Wrapped que puedes guardar como imagen."
+      ],
+      "en": [
+        "A much more visual design: animated piggy bank, goals as water tanks, budgets as test tubes, a health speedometer and coin rain.",
+        "Subscriptions: add the name, amount and charge date. The card goes from green to yellow, red and black as the charge gets closer.",
+        "Treat-free streaks, XP levels, 15 achievements and your month in Wrapped-style stories you can save as an image."
+      ],
+      "ro": [
+        "Un design mult mai vizual: pușculiță animată, obiective ca rezervoare cu apă, bugete în eprubete, vitezometru de sănătate și ploaie de monede.",
+        "Abonamente: notează numele, suma și data plății. Cardul trece din verde în galben, roșu și negru pe măsură ce se apropie plata.",
+        "Serii fără capricii, niveluri cu XP, 15 realizări și luna ta în povești tip Wrapped pe care le poți salva ca imagine."
+      ]
+    }
+  },
+  {
     "id": "2026-10-28-finanzas",
     "date": "2026-10-28",
     "type": "nuevo",
