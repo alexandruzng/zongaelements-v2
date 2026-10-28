@@ -1,0 +1,1176 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pedidos diarios · ZongaElements</title>
+<link rel="icon" href="img/favicon-pedidos-64.png" sizes="64x64" type="image/png">
+<link rel="icon" href="img/favicon-pedidos-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#09090B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ZongaElements">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Syne:wght@800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Gochi+Hand&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============
+   Mismo estilo «juego» que Finanzas, con el azul de la sección Orgánico. */
+:root{
+  --bg:#F1F4FF; --bg-2:#DFE6FB; --card:#FFFFFF; --fg:#17161C; --muted:#636777;
+  --ink:#17161C; --sh:#17161C; --line:rgba(23,22,28,.12); --line-2:rgba(23,22,28,.22);
+  --blue:#2F5BFF; --blue-d:#1F44D6; --green:#22C55E; --green-d:#15A34A; --yellow:#FFC83D; --red:#FF5A4E; --pink:#FF6FB0; --purple:#8B5CF6; --orange:#FF9636;
+  --mint:#CFF6DD; --butter:#FFF0BF; --sky:#DCE6FF; --rose:#FFD9E6; --salmon:#FFC6C0; --lilac:#E7DEFF;
+  --accent:var(--blue); --pos:var(--green-d); --neg:#E5483C;
+  --display:"Bricolage Grotesque",sans-serif; --logo:"Syne",sans-serif; --body:"Manrope",sans-serif; --mono:"JetBrains Mono",monospace; --hand:"Gochi Hand",cursive;
+  --b:2.5px; --r:24px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#11131C; --bg-2:#1C2030; --card:#22263A; --fg:#F2F4FF; --muted:#9EA3B8;
+    --ink:#07080D; --sh:#000; --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+    --mint:#BFF0CF; --butter:#FFE9A6; --sky:#C9D7FF; --rose:#FFC9DC; --salmon:#FFB4AC; --lilac:#D6C9FF; --pos:#3EDC7A; --neg:#FF7A6E;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11131C; --bg-2:#1C2030; --card:#22263A; --fg:#F2F4FF; --muted:#9EA3B8;
+  --ink:#07080D; --sh:#000; --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+  --mint:#BFF0CF; --butter:#FFE9A6; --sky:#C9D7FF; --rose:#FFC9DC; --salmon:#FFB4AC; --lilac:#D6C9FF; --pos:#3EDC7A; --neg:#FF7A6E;
+  color-scheme:dark;
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow-x:hidden;min-height:100vh;transition:background .5s,color .5s;-webkit-font-smoothing:antialiased}
+body.locked{overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,select{font:inherit;color:inherit}
+::selection{background:var(--yellow);color:#17161C}
+svg{display:block}
+.num{font-variant-numeric:tabular-nums}
+[hidden]{display:none!important}
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;background-image:radial-gradient(circle at 1px 1px,var(--line) 1.5px,transparent 0);background-size:26px 26px}
+.bg i{position:absolute;width:12px;height:5px;border-radius:3px;opacity:.55;animation:flt 9s ease-in-out infinite}
+.bg .c{position:absolute;width:42px;animation:coinF 7s ease-in-out infinite}
+@keyframes flt{50%{transform:translateY(-14px) rotate(40deg)}}
+@keyframes coinF{0%,100%{transform:translateY(0) rotate(-12deg)}50%{transform:translateY(-18px) rotate(14deg)}}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-2deg)}}
+
+/* ============ HEADER ============ */
+.top{position:sticky;top:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;
+  background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:var(--b) solid var(--ink)}
+.back{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg);font-family:var(--logo);font-weight:800;font-size:17px;letter-spacing:-.02em}
+.back .arr{width:38px;height:38px;border-radius:50%;border:var(--b) solid var(--ink);background:var(--card);display:grid;place-items:center;box-shadow:2px 2px 0 var(--sh);transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.back:hover .arr{transform:translateX(-4px)}
+.back .arr svg{width:16px;height:16px}
+.brand-mark{width:30px;height:30px;position:relative;border-radius:9px;overflow:hidden;background:var(--fg);flex:none}
+.brand-mark span{position:absolute;width:60%;height:60%;border-radius:50%;filter:blur(2px)}
+.brand-mark span:nth-child(1){background:#2B63FF;top:-8%;left:-8%;animation:orbitA 6s linear infinite}
+.brand-mark span:nth-child(2){background:#FF2D3F;bottom:-8%;right:-8%;animation:orbitA 6s linear infinite reverse}
+@keyframes orbitA{50%{transform:translate(40%,40%) scale(.8)}}
+.back b{color:var(--muted);font-weight:500}
+.back .brand-txt{display:none}
+.controls{display:flex;gap:8px;align-items:center}
+.ctrl{height:40px;min-width:40px;border:var(--b) solid var(--ink);border-radius:100px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px;background:var(--card);font-weight:800;font-size:14px;box-shadow:2px 2px 0 var(--sh);transition:transform .15s,box-shadow .15s}
+.ctrl:active{transform:translate(2px,2px);box-shadow:none}
+.ctrl svg{width:18px;height:18px}
+.ctrl .lbl{display:none}
+.theme-btn{width:66px;position:relative;justify-content:space-between;padding:0 7px}
+.theme-btn .knob{position:absolute;top:4px;left:4px;width:27px;height:27px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink);transition:transform .5s cubic-bezier(.7,-0.4,.3,1.4)}
+:root[data-theme="dark"] .theme-btn .knob{transform:translateX(25px);background:var(--purple)}
+.theme-btn svg{position:relative;z-index:1;width:15px;height:15px}
+
+/* ============ ESTRUCTURA ============ */
+.wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:18px 16px 150px}
+.hello{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.hello h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,8.4vw,52px);letter-spacing:-.045em;line-height:.98}
+.hello h1 em{font-style:normal;color:var(--blue)}
+.hello p{font-weight:700;color:var(--muted);margin-top:8px;font-size:14.5px}
+.fx{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:100px;border:var(--b) solid var(--ink);background:var(--card);box-shadow:2px 2px 0 var(--sh);font-family:var(--mono);font-size:11.5px;max-width:100%}
+.fx i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,.25);flex:none}
+.fx.off i{background:var(--yellow)} .fx.spin i{animation:pulse 1s infinite}
+.fx span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@keyframes pulse{50%{opacity:.3}}
+.mbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.nav-btn{width:46px;height:46px;border-radius:50%;border:var(--b) solid var(--ink);display:grid;place-items:center;background:var(--card);box-shadow:3px 3px 0 var(--sh);transition:transform .15s,box-shadow .15s;flex:none}
+.nav-btn:active{transform:translate(3px,3px);box-shadow:none}
+.nav-btn svg{width:18px;height:18px}
+.mtitle{flex:1;min-width:0}
+.mtitle h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,7vw,40px);letter-spacing:-.04em;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mbar .chips{width:100%}
+
+/* ============ PIEZAS ============ */
+.card{position:relative;background:var(--card);border:var(--b) solid var(--ink);border-radius:var(--r);padding:20px;box-shadow:5px 5px 0 var(--sh);min-width:0}
+.c-yellow{background:var(--butter);color:#17161C} .c-mint{background:var(--mint);color:#17161C} .c-sky{background:var(--sky);color:#17161C} .c-lilac{background:var(--lilac);color:#17161C}
+.c-yellow .muted,.c-mint .muted,.c-sky .muted,.c-lilac .muted{color:#55505E}
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.ct{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.ct h3{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.03em;line-height:1.1}
+.ct .subt{display:block;font-size:13px;font-weight:700;opacity:.65;margin-top:4px}
+.muted{color:var(--muted);font-size:14px;line-height:1.5}
+.rise{animation:rise .7s cubic-bezier(.2,.9,.2,1) both}
+.grid>.rise:nth-child(2){animation-delay:.05s}.grid>.rise:nth-child(3){animation-delay:.1s}.grid>.rise:nth-child(4){animation-delay:.15s}.grid>.rise:nth-child(5){animation-delay:.2s}.grid>.rise:nth-child(n+6){animation-delay:.25s}
+@keyframes rise{from{opacity:0;transform:translateY(26px) scale(.98)}}
+.hand{font-family:var(--hand);font-size:24px;line-height:1.1}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;padding:22px 10px;font-size:14px;line-height:1.5;font-weight:700}
+.empty .em{font-size:38px;line-height:1}
+.btn{height:54px;border-radius:100px;padding:0 24px;font-weight:800;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap;border:var(--b) solid var(--ink);background:var(--card);color:var(--fg);box-shadow:4px 4px 0 var(--sh);transition:transform .15s,box-shadow .15s,opacity .3s}
+.btn svg{width:18px;height:18px}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--sh)}
+.btn:active{transform:translate(4px,4px);box-shadow:none}
+.btn.primary{background:var(--ink);color:#fff}
+:root[data-theme="dark"] .btn.primary{background:var(--fg);color:#17161C}
+.btn.blue{background:var(--blue);color:#fff}
+.btn.accent{background:var(--green);color:#0F1F14}
+.btn.yellow{background:var(--yellow);color:#17161C}
+.btn.danger{background:var(--red);color:#fff}
+.btn.full{width:100%}
+.btn.sm{height:44px;padding:0 16px;font-size:14px;box-shadow:3px 3px 0 var(--sh)}
+.btn:disabled{opacity:.35;pointer-events:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:100px;border:2px solid var(--ink);font-weight:800;font-size:13.5px;background:var(--card);box-shadow:2px 2px 0 var(--sh);transition:transform .15s,box-shadow .15s}
+.chip:active{transform:translate(2px,2px);box-shadow:none}
+.chip.on{background:var(--yellow);color:#17161C}
+.seg-ctl{display:flex;padding:4px;border-radius:100px;background:var(--bg-2);border:2px solid var(--ink)}
+.seg-ctl button{flex:1;height:38px;border-radius:100px;font-weight:800;font-size:13.5px;transition:all .25s;white-space:nowrap;padding:0 10px}
+.seg-ctl button.on{background:var(--ink);color:#fff}
+:root[data-theme="dark"] .seg-ctl button.on{background:var(--fg);color:#17161C}
+.select{height:48px;border-radius:100px;border:2px solid var(--ink);background:var(--card);padding:0 38px 0 16px;font-size:14px;font-weight:800;outline:none;appearance:none;-webkit-appearance:none;min-width:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238D8C95' stroke-width='2.8' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:15px}
+
+/* héroe */
+.hero{background:var(--blue);color:#fff;padding:24px 22px;overflow:hidden;min-height:250px}
+.hero .lab{font-weight:800;font-size:16px;position:relative;z-index:2}
+.hero .big{display:block;font-family:var(--display);font-weight:800;font-size:clamp(46px,13vw,84px);letter-spacing:-.05em;line-height:.95;margin-top:10px;color:#fff;-webkit-text-stroke:2.5px #17161C;paint-order:stroke fill;text-shadow:4px 4px 0 #17161C;white-space:nowrap;position:relative;z-index:2}
+.hero .big small{font-size:.5em}
+.hero .sec{font-family:var(--mono);font-size:12px;margin-top:10px;opacity:.85;position:relative;z-index:2}
+.hero .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;position:relative;z-index:2;max-width:calc(100% - 120px)}
+.pillx{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:100px;background:#fff;color:#17161C;border:2px solid #17161C;font-weight:800;font-size:13px;white-space:nowrap}
+.pillx.pos{background:var(--mint)} .pillx.neg{background:var(--salmon)} .pillx.dark{background:rgba(23,22,28,.85);color:#fff}
+.hero .hand{margin-top:14px;position:relative;z-index:2;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.25)}
+.hero .art{position:absolute;right:-14px;top:12px;width:150px;z-index:1;pointer-events:none}
+.mascot{display:block;width:100%;height:auto;animation:bob 3.4s ease-in-out infinite;filter:drop-shadow(6px 8px 0 rgba(10,20,70,.3))}
+.hero .art::after{content:"";position:absolute;left:20%;right:16%;bottom:-6px;height:14px;border-radius:50%;background:rgba(10,20,70,.3);filter:blur(3px);animation:shadowS 3.4s ease-in-out infinite;z-index:-1}
+@keyframes shadowS{50%{transform:scaleX(.86);opacity:.7}}
+
+/* reparto del dinero */
+.split{display:flex;height:42px;border-radius:14px;overflow:hidden;border:var(--b) solid #17161C;margin:6px 0 16px;background:#fff}
+.split i{display:block;height:100%;transform-origin:left;animation:grow 1.1s cubic-bezier(.2,.9,.2,1) both}
+.split i+i{border-left:2.5px solid #17161C}
+@keyframes grow{from{transform:scaleX(0)}}
+.legend2{display:flex;flex-direction:column;gap:10px}
+.lg{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font-weight:800;font-size:14px}
+.lg i{width:14px;height:14px;border-radius:5px;border:2px solid #17161C}
+.lg b{font-family:var(--display);font-size:16px;letter-spacing:-.02em;white-space:nowrap}
+.lg small{grid-column:2/-1;font-family:var(--mono);font-size:11px;font-weight:500;opacity:.7;margin-top:-6px}
+
+/* indicadores */
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kpi{padding:14px 14px 12px;border-radius:20px;border:var(--b) solid var(--ink);box-shadow:4px 4px 0 var(--sh);min-width:0;color:#17161C}
+.kpi .k{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13px}
+.kpi .k i{width:28px;height:28px;border-radius:9px;border:2px solid #17161C;display:grid;place-items:center;font-style:normal;font-size:14px;flex:none;background:#fff}
+.kpi b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(20px,5.4vw,26px);letter-spacing:-.03em;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi small{display:block;font-size:12px;font-weight:700;color:#55505E;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi small.good{color:var(--green-d)} .kpi small.bad{color:#D63A2E}
+
+/* calendario */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal .wd{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center;padding-bottom:4px}
+.day{position:relative;aspect-ratio:1/1.06;border-radius:14px;border:2px solid var(--ink);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 2px;transition:transform .15s,box-shadow .15s;animation:pop .5s cubic-bezier(.3,1.6,.5,1) both;min-width:0;overflow:hidden}
+.day:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--sh)}
+.day:active{transform:scale(.92)}
+@keyframes pop{from{opacity:0;transform:scale(.6)}}
+.day .dn{position:absolute;top:4px;left:6px;font-family:var(--mono);font-size:10px;font-weight:500;opacity:.65}
+.day .o{font-family:var(--display);font-weight:800;font-size:clamp(17px,4.6vw,26px);letter-spacing:-.03em;line-height:1;margin-top:6px}
+.day .rv{font-family:var(--mono);font-size:9.5px;opacity:.85;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.day.none .o{opacity:.3}
+.day.zero{background:var(--bg-2)} .day.zero .o{opacity:.55}
+.day.has{background:color-mix(in srgb,var(--blue) calc(var(--h) * 100%),#fff);color:#17161C}
+.day.has.hi{color:#fff}
+.day.loss::after{content:"";position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:var(--red);border:1.5px solid #17161C}
+.day.today{box-shadow:0 0 0 3px var(--yellow);z-index:1}
+.day.fut{border-style:dashed;opacity:.55}
+.day.best::before{content:"🏆";position:absolute;top:2px;right:3px;font-size:11px}
+.calnote{margin-top:14px;padding:10px 12px;border-radius:14px;background:var(--butter);border:2px solid #17161C;color:#17161C;font-size:13px;font-weight:700;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.keyrow{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:12px;font-weight:800;color:var(--muted)}
+.keyrow span{display:inline-flex;align-items:center;gap:6px}
+.keyrow i{width:13px;height:13px;border-radius:4px;border:2px solid var(--ink)}
+
+/* lateral del mes */
+.facts{display:flex;flex-direction:column;gap:10px}
+.fact{display:flex;align-items:center;gap:12px;padding:12px;border-radius:18px;background:rgba(255,255,255,.7);border:2px solid #17161C;min-width:0}
+.fact .e{font-size:26px;flex:none}
+.fact span{display:block;font-size:12px;font-weight:800;opacity:.7}
+.fact b{display:block;font-family:var(--display);font-size:20px;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fact small{display:block;font-family:var(--mono);font-size:11px;opacity:.75}
+.fact>div{min-width:0}
+
+/* histórico */
+.hctl{display:flex;gap:8px;flex-wrap:wrap}
+.chart{width:100%;height:auto;overflow:visible}
+.chart text{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+.chart .gl{stroke:var(--line-2);stroke-dasharray:4 5}
+.chart rect.b{stroke:var(--ink);stroke-width:2;transform-box:fill-box;transform-origin:bottom;animation:barUp .9s cubic-bezier(.3,1.4,.5,1) both}
+.chart rect.proj{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:5 4}
+@keyframes barUp{from{transform:scaleY(0)}}
+.chart .grp{cursor:pointer}
+.chart .grp .hit{fill:transparent}
+.chart .grp:hover .hit{fill:var(--bg-2)}
+.chart .grp.cur .hit{fill:var(--butter);stroke:var(--ink);stroke-width:2}
+.chart .grp.cur text{fill:#17161C;font-weight:700}
+.legend{display:flex;gap:12px;font-size:12.5px;font-weight:800;flex-wrap:wrap;margin-top:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:4px;border:2px solid var(--ink)}
+.minis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.mini{padding:12px;border-radius:16px;background:var(--bg);border:2px solid var(--ink);min-width:0}
+.mini span{display:block;font-size:11.5px;font-weight:800;color:var(--muted);line-height:1.25}
+.mini b{display:block;font-family:var(--display);font-size:19px;letter-spacing:-.03em;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini small{display:block;font-family:var(--mono);font-size:10.5px;margin-top:3px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini small.good{color:var(--pos)} .mini small.bad{color:var(--neg)}
+.tblw{overflow-x:auto;margin:0 -6px;padding:0 6px;scrollbar-width:thin}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+.tbl th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;text-align:right;padding:0 8px 10px;white-space:nowrap}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl td{padding:11px 8px;border-top:2px solid var(--line);text-align:right;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl tr.click{cursor:pointer} .tbl tr.click:hover td{background:var(--butter);color:#17161C}
+.tbl .p{color:var(--pos)} .tbl .n{color:var(--neg)} .tbl .z{color:var(--muted);font-weight:500}
+.tbl .st{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted)}
+
+/* FAB */
+.fabs{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:94;display:flex;gap:10px}
+.fab{height:60px;padding:0 22px;border-radius:100px;background:var(--blue);color:#fff;border:var(--b) solid var(--ink);display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;box-shadow:4px 4px 0 var(--sh);transition:transform .15s,box-shadow .15s}
+.fab svg{width:24px;height:24px;transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.fab:hover svg{transform:rotate(90deg)}
+.fab:active{transform:translate(4px,4px);box-shadow:none}
+
+/* ============ FORMULARIOS / CAJONES / MODAL ============ */
+.field{display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+.field>label,.field>.lab{font-weight:800;font-size:13px}
+.input{width:100%;height:52px;border-radius:16px;border:2px solid var(--ink);background:var(--card);padding:0 16px;font-size:16px;font-weight:700;outline:none;transition:box-shadow .2s;min-width:0}
+.input::placeholder{color:var(--muted);font-weight:600;opacity:.8}
+.input:focus,.select:focus{box-shadow:3px 3px 0 var(--yellow)}
+.input.bad{border-color:var(--red);box-shadow:3px 3px 0 var(--red)}
+.shake{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.dtag{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:100px;border:2px solid #17161C;font-weight:800;font-size:12.5px;background:var(--sky);color:#17161C;margin-bottom:8px}
+.dtag.today{background:var(--yellow)} .dtag.fut{background:var(--lilac)}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:56px;height:56px;border-radius:18px;border:var(--b) solid var(--ink);background:var(--card);box-shadow:3px 3px 0 var(--sh);font-family:var(--display);font-weight:800;font-size:26px;transition:transform .12s,box-shadow .12s;flex:none}
+.stepper button:active{transform:translate(3px,3px);box-shadow:none}
+.stepper input{flex:1;min-width:0;height:64px;border-radius:20px;border:var(--b) solid var(--ink);background:var(--sky);color:#17161C;text-align:center;font-family:var(--display);font-weight:800;font-size:38px;letter-spacing:-.03em;outline:none}
+.amt{display:flex;align-items:center;gap:8px;padding:6px 6px 6px 16px;border-radius:18px;border:2px solid var(--ink);background:var(--card)}
+.amt input{flex:1;min-width:0;border:0;background:none;outline:none;font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.03em;height:44px}
+.amt input::placeholder{color:var(--line-2)}
+.amt .u{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--muted);padding-right:8px}
+.amt.big{border-width:var(--b);box-shadow:4px 4px 0 var(--sh);background:var(--mint)}
+.amt.big input{font-size:36px;height:56px;color:#17161C}
+.amt.big .u{color:#55505E}
+.fees{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.fees .amt{min-width:0;padding-left:12px}
+.fees .amt .u{font-size:11.5px;white-space:nowrap;padding-right:4px}
+.fees .amt input{font-size:20px;height:38px}
+.hint{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:2px}
+.result{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:12px;border-radius:20px;border:var(--b) solid #17161C;box-shadow:4px 4px 0 var(--sh);background:var(--mint);color:#17161C;margin:6px 0 4px}
+.result.neg{background:var(--salmon)}
+.result div{min-width:0}
+.result span{display:block;font-size:11.5px;font-weight:800;opacity:.7}
+.result b{display:block;font-family:var(--display);font-size:19px;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result .pf b{font-size:24px}
+.warnbox{padding:10px 12px;border-radius:14px;background:var(--butter);border:2px solid #17161C;color:#17161C;font-size:13px;font-weight:700;margin-bottom:14px}
+.dr-foot{position:sticky;bottom:0;padding:16px 0 22px;background:var(--bg);margin-top:8px;display:flex;flex-direction:column;gap:10px;z-index:2}
+.dr-foot .row{display:flex;gap:10px} .dr-foot .row .btn{flex:1;padding:0 12px}
+.scrim{position:fixed;inset:0;z-index:300;background:rgba(10,9,13,.5);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
+.scrim.on{opacity:1;visibility:visible;transition:opacity .35s}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:310;width:min(500px,100%);background:var(--bg);border-left:var(--b) solid var(--ink);overflow-y:auto;overscroll-behavior:contain;transform:translateX(105%);transition:transform .55s cubic-bezier(.77,0,.18,1);padding:0 18px}
+.drawer.on{transform:none}
+.dr-head{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:18px 0 14px;background:var(--bg);margin-bottom:6px}
+.dr-head h2{font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:-.04em;line-height:1.05}
+.dr-body{padding-bottom:30px}
+.sec{margin-top:24px}
+.sec>.lab{display:block;font-weight:800;font-size:13px;margin-bottom:12px}
+.set-row{display:flex;gap:14px;align-items:center;cursor:pointer;padding:14px 16px;border-radius:20px;border:2px solid var(--ink);background:var(--card);margin-bottom:10px;width:100%;text-align:left;box-shadow:3px 3px 0 var(--sh);transition:transform .15s,box-shadow .15s}
+button.set-row:active{transform:translate(3px,3px);box-shadow:none}
+.set-row input[type=checkbox]{position:absolute;opacity:0;pointer-events:none}
+.set-row .txt{flex:1;min-width:0}
+.set-row b{display:block;font-size:15px}
+.set-row small{display:block;color:var(--muted);font-size:13px;line-height:1.45;margin-top:3px;font-weight:600}
+.set-ic{width:42px;height:42px;border-radius:14px;background:var(--sky);color:#17161C;border:2px solid #17161C;display:grid;place-items:center;flex:none;font-size:20px}
+.sw{width:50px;height:30px;border-radius:30px;background:var(--bg-2);border:2px solid var(--ink);position:relative;flex:none;transition:background .3s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #17161C;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+input:checked+.sw{background:var(--blue)}
+input:checked+.sw::after{transform:translateX(20px)}
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.mgrid .wd{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center}
+.mgrid label{display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--mono);font-size:10px;color:var(--muted)}
+.mgrid input{width:100%;height:40px;border-radius:11px;border:2px solid var(--ink);background:var(--card);text-align:center;font-weight:800;font-size:15px;outline:none;min-width:0}
+.mgrid input:focus{box-shadow:2px 2px 0 var(--yellow)}
+.mgrid input.has{background:var(--sky);color:#17161C}
+.modal{position:fixed;left:50%;top:50%;z-index:420;width:min(440px,calc(100% - 28px));transform:translate(-50%,-46%) scale(.94);opacity:0;visibility:hidden;transition:opacity .25s,transform .4s cubic-bezier(.3,1.5,.5,1),visibility 0s .4s;text-align:center;padding:28px 22px 22px}
+.modal.on{opacity:1;visibility:visible;transform:translate(-50%,-50%);transition:opacity .25s,transform .4s cubic-bezier(.3,1.5,.5,1)}
+.modal-scrim{z-index:410}
+.m-ic{width:64px;height:64px;border-radius:20px;margin:0 auto 18px;display:grid;place-items:center;background:var(--salmon);border:var(--b) solid #17161C;color:#17161C;box-shadow:3px 3px 0 var(--sh);font-size:28px}
+.modal h3{font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-.03em;line-height:1.1}
+.modal p{color:var(--muted);font-size:15px;line-height:1.55;margin-top:12px;font-weight:600}
+.m-btns{display:flex;gap:10px;margin-top:24px}
+.m-btns .btn{flex:1;padding:0 14px}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));z-index:650;transform:translate(-50%,20px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:100px;background:#17161C;color:#fff;font-weight:800;font-size:14px;transition:all .4s cubic-bezier(.3,1.5,.5,1);max-width:calc(100% - 32px);box-shadow:3px 3px 0 var(--yellow)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast .te{font-size:18px}
+#fxc{position:fixed;inset:0;z-index:700;pointer-events:none;width:100%;height:100%}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:30px 18px;border-radius:24px;border:var(--b) dashed var(--ink);background:var(--card);cursor:pointer;transition:background .2s,transform .2s}
+.drop:hover,.drop.over{background:var(--sky);color:#17161C;transform:translateY(-2px)}
+.drop .em{font-size:46px;line-height:1;animation:bob 3s ease-in-out infinite}
+.drop b{font-family:var(--display);font-size:20px}
+.drop small{font-size:13px;font-weight:700;color:var(--muted)}
+.isum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0 14px}
+.isum div{padding:12px;border-radius:18px;border:2px solid #17161C;background:var(--c,#fff);color:#17161C;min-width:0}
+.isum span{display:block;font-size:12px;font-weight:800;opacity:.7}
+.isum b{display:block;font-family:var(--display);font-size:22px;letter-spacing:-.03em;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.isum small{display:block;font-family:var(--mono);font-size:10.5px;margin-top:2px;opacity:.75}
+
+/* ============ RESPONSIVE ============ */
+@media (min-width:600px){
+  .top{padding:14px 28px}
+  .back .brand-txt{display:inline}
+  .ctrl .lbl{display:inline}
+  .wrap{padding:26px 28px 140px}
+  .card{padding:24px}
+  .hero{padding:30px}
+  .hero .art{width:210px;right:18px;top:16px}
+  .hero .row{max-width:calc(100% - 220px)}
+  .fabs{right:28px;bottom:28px}
+  .cal{gap:8px}
+  .day .rv{font-size:10.5px}
+}
+@media (min-width:1000px){
+  .mbar .chips{width:auto}
+  .grid{grid-template-columns:repeat(12,minmax(0,1fr))}
+  .s4{grid-column:span 4} .s8{grid-column:span 8} .s12{grid-column:1/-1}
+  .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .hero .art{width:236px;right:34px;top:8px}
+  .cal{gap:9px}
+}
+@media (max-width:999px){ .s4,.s8,.s12{grid-column:auto} }
+@media (max-width:599px){ .chart text{font-size:17px} .minis{grid-template-columns:1fr} .day .dn{font-size:9px;top:3px;left:4px} .day .rv{display:none} .day .o{margin-top:4px} }
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="bg" id="bgfx"></div>
+
+<header class="top">
+  <a class="back" href="../index.html#tools" aria-label="ZongaElements">
+    <span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+    <span class="brand-mark"><span></span><span></span></span><span class="brand-txt">Zonga<b>Elements</b></span>
+  </a>
+  <div class="controls">
+    <button class="ctrl" id="btnSettings" data-i18n-aria="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lbl" data-i18n="settings">Ajustes</span></button>
+    <button class="ctrl theme-btn" id="themeBtn" aria-label="Tema">
+      <span class="knob"></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hello">
+    <div><h1><span data-i18n="h1a">Pedidos</span> <em data-i18n="h1b">diarios</em></h1><p data-i18n="sub">Apunta cada día y mira cuánto ganas de verdad.</p></div>
+    <button class="fx" id="fxPill" data-i18n-title="fx.title"><i></i><span id="fxTxt">1 € = — $</span></button>
+  </div>
+  <div class="mbar">
+    <button class="nav-btn" data-act="prev" data-i18n-aria="prevM"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <div class="mtitle"><h2 id="mTitle"></h2></div>
+    <button class="nav-btn" data-act="next" data-i18n-aria="nextM"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="chips">
+      <button class="chip" data-act="today" id="todayChip">↺ <span data-i18n="toToday">Volver a hoy</span></button>
+      <button class="chip" data-act="month">📥 <span data-i18n="impMonth">Importar mes</span></button>
+    </div>
+  </div>
+  <div id="app"></div>
+</main>
+
+<div class="fabs"><button class="fab" id="todayBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="addToday">Apuntar hoy</span></button></div>
+
+<!-- CAJONES -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drDay" aria-hidden="true">
+  <div class="dr-head"><div><span class="dtag" id="dTag"></span><h2 id="dTitle"></h2></div><button class="ctrl" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dr-body">
+    <div class="warnbox" id="dWarn" hidden></div>
+    <div class="field"><label for="dOrders" data-i18n="d.orders">¿Cuántos pedidos has tenido?</label>
+      <div class="stepper"><button data-step="-1" aria-label="−">−</button><input id="dOrders" inputmode="numeric" autocomplete="off" placeholder="0"><button data-step="1" aria-label="+">+</button></div></div>
+    <div class="field"><span class="lab" data-i18n="d.cur">Moneda de este día</span><div class="seg-ctl" id="dCur"><button data-c="USD">$ USD</button><button data-c="EUR">€ EUR</button></div></div>
+    <div class="field"><label for="dRev" data-i18n="d.rev">Facturación total del día</label><div class="amt big"><input id="dRev" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="u" data-cu></span></div><span class="hint" id="dConv"></span></div>
+    <div class="field"><label for="dCost" data-i18n="d.cost">Coste de producto (total del día)</label><div class="amt"><input id="dCost" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="u" data-cu></span></div></div>
+    <div class="field"><span class="lab" data-i18n="d.fees">Comisiones</span>
+      <div class="fees"><div class="amt"><input id="dPct" inputmode="decimal" autocomplete="off" placeholder="0"><span class="u">%</span></div><div class="amt"><input id="dFix" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="u"><span data-cu></span>/<span data-i18n="perOrder">pedido</span></span></div></div>
+      <span class="hint" id="dFeeHint"></span></div>
+    <div class="dr-foot">
+      <div class="result" id="dResult"><div><span data-i18n="costs">Costes</span><b id="rCost">—</b></div><div class="pf"><span data-i18n="profit">Beneficio</span><b id="rProfit">—</b></div><div><span data-i18n="margin">Margen</span><b id="rMargin">—</b></div></div>
+      <button class="btn blue full" id="dSave" data-i18n="d.save">Guardar día</button>
+      <div class="row"><button class="btn" id="dZero" data-i18n="d.zero">Sin pedidos</button><button class="btn" id="dDel" style="color:var(--red)" data-i18n="del">Borrar</button></div>
+    </div>
+  </div>
+</aside>
+
+<aside class="drawer" id="drMonth" aria-hidden="true">
+  <div class="dr-head"><h2 data-i18n="m.t">Importar mes</h2><button class="ctrl" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dr-body">
+    <p class="muted" data-i18n="m.p" style="margin-bottom:16px"></p>
+    <div class="field"><span class="lab" data-i18n="m.which">Mes</span><div style="display:flex;gap:8px"><select class="select" id="mMon" style="flex:2"></select><select class="select" id="mYear" style="flex:1"></select></div></div>
+    <div class="field"><span class="lab" data-i18n="m.perDay">Pedidos por día</span><div class="mgrid" id="mGrid"></div><span class="hint" data-i18n="m.gridHint"></span></div>
+    <div class="field"><span class="lab" data-i18n="m.totals">Totales del mes (opcional)</span><div class="seg-ctl" id="mCur" style="margin-bottom:8px"><button data-c="USD">$ USD</button><button data-c="EUR">€ EUR</button></div>
+      <div class="amt" style="margin-bottom:8px"><input id="mRev" inputmode="decimal" autocomplete="off" data-i18n-ph="m.rev"><span class="u" data-mcu></span></div>
+      <div class="amt" style="margin-bottom:8px"><input id="mCost" inputmode="decimal" autocomplete="off" data-i18n-ph="m.cost"><span class="u" data-mcu></span></div>
+      <div class="amt"><input id="mFee" inputmode="decimal" autocomplete="off" data-i18n-ph="m.fee"><span class="u" data-mcu></span></div>
+      <span class="hint" data-i18n="m.totHint"></span></div>
+    <div class="dr-foot"><button class="btn blue full" id="mSave" data-i18n="m.save">Guardar mes</button><button class="btn full" id="mDel" style="color:var(--red)" data-i18n="m.del">Borrar mes</button></div>
+  </div>
+</aside>
+
+<aside class="drawer" id="drSettings" aria-hidden="true">
+  <div class="dr-head"><h2 data-i18n="set.title">Ajustes</h2><button class="ctrl" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dr-body">
+    <div class="sec" style="margin-top:4px"><span class="lab" data-i18n="set.cur">Moneda de las cifras</span><div class="seg-ctl" id="setCur" style="background:var(--card)"><button data-c="USD">$ USD</button><button data-c="EUR">€ EUR</button></div></div>
+    <div class="sec"><span class="lab" data-i18n="set.fees">Comisiones por defecto</span><p class="muted" data-i18n="set.feesP" style="margin:-4px 0 12px;font-size:13px"></p>
+      <div class="fees"><div class="amt"><input id="setPct" inputmode="decimal" autocomplete="off"><span class="u">%</span></div><div class="amt"><input id="setFix" inputmode="decimal" autocomplete="off"><span class="u"><span id="setFixCu"></span> / <span data-i18n="perOrder">pedido</span></span></div></div></div>
+    <div class="sec">
+      <label class="set-row"><span class="set-ic">🔊</span><span class="txt"><b data-i18n="set.sound">Efectos de sonido</b><small data-i18n="set.soundS">Monedas y confeti al apuntar ventas.</small></span><input type="checkbox" id="setSound"><span class="sw"></span></label>
+      <button class="set-row" id="setImp"><span class="set-ic">📦</span><span class="txt"><b data-i18n="imp.t">Importar copia de la web antigua</b><small data-i18n="imp.s">Tus pedidos y facturación de Zonga Elements.</small></span></button>
+      <button class="set-row" id="setCsv"><span class="set-ic">📥</span><span class="txt"><b data-i18n="csv">Exportar CSV</b><small data-i18n="csvS">Un día por fila con pedidos, facturación, costes y beneficio.</small></span></button>
+    </div>
+    <div class="sec"><span class="lab" data-i18n="set.lang">Idioma</span><div class="seg-ctl" id="setLang" style="background:var(--card)"><button data-lang="es">Español</button><button data-lang="en">English</button><button data-lang="ro">Română</button></div></div>
+    <div class="sec"><span class="lab" data-i18n="set.data">Datos</span><button class="btn full" id="setReset" style="color:var(--red)" data-i18n="set.reset">Borrar todos los datos</button></div>
+  </div>
+</aside>
+
+<aside class="drawer" id="drImp" aria-hidden="true">
+  <div class="dr-head"><h2 data-i18n="imp.h">Importar copia</h2><button class="ctrl" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dr-body">
+    <p class="muted" data-i18n="imp.p" style="margin-bottom:16px"></p>
+    <label class="drop" id="impDrop" for="impFile"><span class="em">📦</span><b data-i18n="imp.pick">Elige tu archivo .json</b><small data-i18n="imp.pickS">o arrástralo aquí</small></label>
+    <input type="file" id="impFile" accept=".json,application/json" hidden>
+    <div id="impRes"></div>
+  </div>
+</aside>
+
+<div class="scrim modal-scrim" id="mScrim"></div>
+<div class="card modal" id="modal" role="dialog" aria-modal="true"><div class="m-ic">🗑️</div><h3 id="mT"></h3><p id="mP"></p><div class="m-btns"><button class="btn" id="mNo"></button><button class="btn danger" id="mYes"></button></div></div>
+<div class="toast" id="toast"><span class="te" id="toastE">✅</span><span id="toastT"></span></div>
+<canvas id="fxc"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="../js/config.js?v=3"></script>
+<script src="../js/cuenta.js?v=4"></script>
+<script src="../js/novedades.js?v=2"></script>
+<script>
+(async () => {
+/* =========================================================
+   TEXTOS (ES / EN / RO) — mismo idioma que la web (ze-lang)
+   ========================================================= */
+const T = {
+es:{ tool:"Pedidos diarios", h1a:"Pedidos", h1b:"diarios", sub:"Apunta cada día y mira cuánto ganas de verdad.", settings:"Ajustes", cancel:"Cancelar", del:"Borrar",
+  prevM:"Mes anterior", nextM:"Mes siguiente", toToday:"Volver a hoy", impMonth:"Importar mes", addToday:"Apuntar hoy", perOrder:"pedido",
+  "fx.today":"hoy","fx.yday":"ayer","fx.off":"sin conexión","fx.def":"aproximado","fx.title":"Tipo de cambio oficial del BCE. Pulsa para actualizar.",
+  rev:"Facturación", orders:"Pedidos", costs:"Costes", cost:"Coste de producto", fees:"Comisiones", profit:"Beneficio", margin:"Margen", aov:"Ticket medio",
+  "hero.lab":"Facturación de {m}","hero.good":"¡El negocio se mueve!","hero.bad":"Este mes pierdes dinero: revisa costes","hero.zero":"Apunta tu primer día de ventas",
+  perDay:"{n} al día", vsPrev:"{p} vs {m} a este ritmo", noPrev:"sin datos de {m}", ofRev:"{p} de la facturación",
+  "split.t":"¿A dónde va tu dinero?","split.s":"De cada {c} que facturas",
+  "cal.t":"Calendario","cal.s":"Toca un día para apuntarlo","k.none":"Sin apuntar","k.zero":"Sin pedidos","k.sales":"Con ventas","k.loss":"Pierde dinero",
+  "cal.declared":"Este mes incluye un total importado: {r} de facturación.","cal.edit":"Editar",
+  "f.t":"Este mes","f.proj":"Previsión de cierre","f.projS":"{p} de beneficio","f.projNo":"Hacen falta 3 días","f.best":"Mejor día","f.days":"Días con ventas","f.daysS":"de {n} días","f.avg":"Media de pedidos","f.avgS":"por día",
+  "h.t":"Histórico","h.s":"Toca un mes para verlo","r6":"6 meses","r12":"12 meses",rAll:"Todo",
+  "h.cur":"Mes en curso","h.best":"Mejor mes cerrado","h.avg":"Media mensual","h.avgS":"{n} meses cerrados","h.none":"—","proj":"Previsión",
+  "tbl.t":"Mes a mes","tbl.month":"Mes","tbl.state":"Estado","st.cur":"En curso {a}/{b}","st.closed":"Cerrado · {a}/{b} días",
+  csv:"Exportar CSV", csvS:"Un día por fila con pedidos, facturación, costes y beneficio.", csvOk:"CSV descargado", csvNone:"No hay datos que exportar.",
+  "d.today":"Hoy","d.past":"Día pasado","d.future":"Día futuro","d.orders":"¿Cuántos pedidos has tenido?","d.cur":"Moneda de este día","d.rev":"Facturación total del día","d.cost":"Coste de producto (total del día)","d.fees":"Comisiones",
+  "d.feeHint":"{p} % de {r} + {n} × {f} = {t}","d.conv":"≈ {a} · 1 € = {r} $ del {d}","d.save":"Guardar día","d.zero":"Sin pedidos","d.saved":"Día guardado","d.savedZ":"Día sin pedidos guardado","d.deleted":"Día borrado","d.record":"¡Récord! Tu mejor día de facturación",
+  "d.bad":"Escribe la facturación del día (o pulsa «Sin pedidos»).","d.warnDecl":"Este mes tiene un total importado de {r}: lo que apuntes aquí se suma a ese total.","d.delT":"¿Borrar este día?","d.delP":"Se borrarán sus pedidos, facturación y costes.",
+  "m.t":"Importar mes","m.p":"Para cargar meses pasados de golpe. Escribe los pedidos de cada día y, si quieres, los totales del mes.","m.which":"Mes","m.perDay":"Pedidos por día","m.gridHint":"En blanco = no tocar · 0 = sin pedidos","m.totals":"Totales del mes (opcional)",
+  "m.rev":"Facturación del mes","m.cost":"Coste de producto del mes","m.fee":"Comisiones del mes","m.totHint":"Se guardan como un total del mes, sin repartir entre días. Déjalo vacío si apuntas la facturación día a día.",
+  "m.save":"Guardar mes","m.del":"Borrar mes","m.saved":"Mes guardado","m.deleted":"Mes borrado","m.delT":"¿Borrar {m}?","m.delP":"Se borrarán los pedidos de todos sus días y sus totales.",
+  "set.title":"Ajustes","set.cur":"Moneda de las cifras","set.fees":"Comisiones por defecto","set.feesP":"Lo que te cobra la pasarela de pago (Shopify Payments, Stripe…). Se rellena solo en cada día nuevo y puedes cambiarlo día a día.",
+  "set.sound":"Efectos de sonido","set.soundS":"Monedas y confeti al apuntar ventas.","set.lang":"Idioma","set.data":"Datos","set.reset":"Borrar todos los datos","set.resetT":"¿Borrar todos los datos?","set.resetP":"Se borrarán todos los días y meses apuntados. No se puede deshacer.","set.resetOk":"Borrar todo","set.resetDone":"Datos borrados",
+  "imp.t":"Importar copia de la web antigua","imp.s":"Tus pedidos y facturación de Zonga Elements.","imp.h":"Importar copia","imp.p":"Sube el archivo .json de copia de seguridad de tu web antigua. Se añaden tus días y los totales de cada mes sin borrar lo que ya tengas aquí, y si lo importas dos veces no se duplica nada.",
+  "imp.pick":"Elige tu archivo .json","imp.pickS":"o arrástralo aquí","imp.reading":"Leyendo el archivo…","imp.bad":"Este archivo no es una copia de Zonga Elements con datos de Pedidos diarios.","imp.err":"No se pudo leer el archivo.",
+  "imp.found":"Esto es lo que hay en tu copia","imp.days":"Días con datos","imp.ord":"Pedidos","imp.rev":"Facturación","imp.months":"Totales de mes","imp.skip":"{n} días ya los tenías y se saltarán.",
+  "imp.fees":"Aplicar tus comisiones","imp.feesS":"{p} % + {f} por pedido a los días con facturación (la web antigua no las guardaba).","imp.go":"Importar","imp.none":"No hay nada nuevo que importar.","imp.ok":"¡Importado! {d} días y {m} totales de mes","imp.cost":"Los días importados no tienen coste de producto: añádelo en cada día o en «Importar mes» para ver tu beneficio real.",
+  wd:["L","M","X","J","V","S","D"], csvH:["fecha","pedidos","moneda","facturacion","coste_producto","comisiones","beneficio","tasa_eur_usd"] },
+en:{ tool:"Daily orders", h1a:"Daily", h1b:"orders", sub:"Log every day and see what you really earn.", settings:"Settings", cancel:"Cancel", del:"Delete",
+  prevM:"Previous month", nextM:"Next month", toToday:"Back to today", impMonth:"Import month", addToday:"Log today", perOrder:"order",
+  "fx.today":"today","fx.yday":"yesterday","fx.off":"offline","fx.def":"approximate","fx.title":"Official ECB exchange rate. Tap to refresh.",
+  rev:"Revenue", orders:"Orders", costs:"Costs", cost:"Product cost", fees:"Fees", profit:"Profit", margin:"Margin", aov:"Average order",
+  "hero.lab":"{m} revenue","hero.good":"Business is moving!","hero.bad":"You're losing money this month: check your costs","hero.zero":"Log your first sales day",
+  perDay:"{n} per day", vsPrev:"{p} vs {m} at this pace", noPrev:"no data for {m}", ofRev:"{p} of revenue",
+  "split.t":"Where does your money go?","split.s":"Out of every {c} you bill",
+  "cal.t":"Calendar","cal.s":"Tap a day to log it","k.none":"Not logged","k.zero":"No orders","k.sales":"Sales","k.loss":"Losing money",
+  "cal.declared":"This month includes an imported total: {r} revenue.","cal.edit":"Edit",
+  "f.t":"This month","f.proj":"Month-end forecast","f.projS":"{p} profit","f.projNo":"Needs 3 days","f.best":"Best day","f.days":"Days with sales","f.daysS":"out of {n} days","f.avg":"Average orders","f.avgS":"per day",
+  "h.t":"History","h.s":"Tap a month to open it","r6":"6 months","r12":"12 months",rAll:"All",
+  "h.cur":"Current month","h.best":"Best closed month","h.avg":"Monthly average","h.avgS":"{n} closed months","h.none":"—","proj":"Forecast",
+  "tbl.t":"Month by month","tbl.month":"Month","tbl.state":"Status","st.cur":"Ongoing {a}/{b}","st.closed":"Closed · {a}/{b} days",
+  csv:"Export CSV", csvS:"One day per row with orders, revenue, costs and profit.", csvOk:"CSV downloaded", csvNone:"There's no data to export.",
+  "d.today":"Today","d.past":"Past day","d.future":"Future day","d.orders":"How many orders did you get?","d.cur":"Currency for this day","d.rev":"Total revenue for the day","d.cost":"Product cost (day total)","d.fees":"Fees",
+  "d.feeHint":"{p}% of {r} + {n} × {f} = {t}","d.conv":"≈ {a} · 1 € = {r} $ on {d}","d.save":"Save day","d.zero":"No orders","d.saved":"Day saved","d.savedZ":"No-orders day saved","d.deleted":"Day deleted","d.record":"Record! Your best revenue day",
+  "d.bad":"Enter the day's revenue (or tap “No orders”).","d.warnDecl":"This month has an imported total of {r}: whatever you log here is added to it.","d.delT":"Delete this day?","d.delP":"Its orders, revenue and costs will be deleted.",
+  "m.t":"Import month","m.p":"To load past months in one go. Enter each day's orders and, if you like, the month totals.","m.which":"Month","m.perDay":"Orders per day","m.gridHint":"Blank = leave as is · 0 = no orders","m.totals":"Month totals (optional)",
+  "m.rev":"Month revenue","m.cost":"Month product cost","m.fee":"Month fees","m.totHint":"Saved as a monthly total, not split across days. Leave it empty if you log revenue day by day.",
+  "m.save":"Save month","m.del":"Delete month","m.saved":"Month saved","m.deleted":"Month deleted","m.delT":"Delete {m}?","m.delP":"Orders for all its days and its totals will be deleted.",
+  "set.title":"Settings","set.cur":"Currency for figures","set.fees":"Default fees","set.feesP":"What your payment gateway charges (Shopify Payments, Stripe…). It's filled in for each new day and you can change it day by day.",
+  "set.sound":"Sound effects","set.soundS":"Coins and confetti when you log sales.","set.lang":"Language","set.data":"Data","set.reset":"Delete all data","set.resetT":"Delete all data?","set.resetP":"Every logged day and month will be deleted. This can't be undone.","set.resetOk":"Delete everything","set.resetDone":"Data deleted",
+  "imp.t":"Import a backup from the old site","imp.s":"Your orders and revenue from Zonga Elements.","imp.h":"Import backup","imp.p":"Upload the backup .json from your old site. Your days and monthly totals are added without deleting what you have here, and importing twice won't duplicate anything.",
+  "imp.pick":"Choose your .json file","imp.pickS":"or drop it here","imp.reading":"Reading the file…","imp.bad":"This file isn't a Zonga Elements backup with Daily orders data.","imp.err":"The file couldn't be read.",
+  "imp.found":"Here's what's in your backup","imp.days":"Days with data","imp.ord":"Orders","imp.rev":"Revenue","imp.months":"Monthly totals","imp.skip":"You already had {n} days; they'll be skipped.",
+  "imp.fees":"Apply your fees","imp.feesS":"{p}% + {f} per order to days with revenue (the old site didn't store them).","imp.go":"Import","imp.none":"Nothing new to import.","imp.ok":"Imported! {d} days and {m} monthly totals","imp.cost":"Imported days have no product cost: add it per day or in “Import month” to see your real profit.",
+  wd:["M","T","W","T","F","S","S"], csvH:["date","orders","currency","revenue","product_cost","fees","profit","eur_usd_rate"] },
+ro:{ tool:"Comenzi zilnice", h1a:"Comenzi", h1b:"zilnice", sub:"Notează fiecare zi și vezi cât câștigi de fapt.", settings:"Setări", cancel:"Anulează", del:"Șterge",
+  prevM:"Luna trecută", nextM:"Luna următoare", toToday:"Înapoi la azi", impMonth:"Importă luna", addToday:"Notează azi", perOrder:"comandă",
+  "fx.today":"azi","fx.yday":"ieri","fx.off":"fără conexiune","fx.def":"aproximativ","fx.title":"Cursul oficial BCE. Apasă ca să-l actualizezi.",
+  rev:"Încasări", orders:"Comenzi", costs:"Costuri", cost:"Cost produs", fees:"Comisioane", profit:"Profit", margin:"Marjă", aov:"Valoare medie",
+  "hero.lab":"Încasări în {m}","hero.good":"Afacerea merge!","hero.bad":"Luna asta pierzi bani: verifică costurile","hero.zero":"Notează prima zi cu vânzări",
+  perDay:"{n} pe zi", vsPrev:"{p} vs {m} în același ritm", noPrev:"fără date în {m}", ofRev:"{p} din încasări",
+  "split.t":"Unde se duc banii?","split.s":"Din fiecare {c} încasat",
+  "cal.t":"Calendar","cal.s":"Atinge o zi ca s-o notezi","k.none":"Nenotată","k.zero":"Fără comenzi","k.sales":"Cu vânzări","k.loss":"Pierde bani",
+  "cal.declared":"Luna asta include un total importat: {r} încasări.","cal.edit":"Editează",
+  "f.t":"Luna asta","f.proj":"Estimare la final de lună","f.projS":"{p} profit","f.projNo":"Sunt necesare 3 zile","f.best":"Cea mai bună zi","f.days":"Zile cu vânzări","f.daysS":"din {n} zile","f.avg":"Comenzi medii","f.avgS":"pe zi",
+  "h.t":"Istoric","h.s":"Atinge o lună ca s-o deschizi","r6":"6 luni","r12":"12 luni",rAll:"Tot",
+  "h.cur":"Luna curentă","h.best":"Cea mai bună lună închisă","h.avg":"Medie lunară","h.avgS":"{n} luni închise","h.none":"—","proj":"Estimare",
+  "tbl.t":"Lună cu lună","tbl.month":"Luna","tbl.state":"Stare","st.cur":"În curs {a}/{b}","st.closed":"Închisă · {a}/{b} zile",
+  csv:"Exportă CSV", csvS:"O zi pe rând cu comenzi, încasări, costuri și profit.", csvOk:"CSV descărcat", csvNone:"Nu există date de exportat.",
+  "d.today":"Azi","d.past":"Zi trecută","d.future":"Zi viitoare","d.orders":"Câte comenzi ai avut?","d.cur":"Moneda acestei zile","d.rev":"Încasări totale în ziua asta","d.cost":"Cost produs (total pe zi)","d.fees":"Comisioane",
+  "d.feeHint":"{p}% din {r} + {n} × {f} = {t}","d.conv":"≈ {a} · 1 € = {r} $ din {d}","d.save":"Salvează ziua","d.zero":"Fără comenzi","d.saved":"Zi salvată","d.savedZ":"Zi fără comenzi salvată","d.deleted":"Zi ștearsă","d.record":"Record! Cea mai bună zi de încasări",
+  "d.bad":"Scrie încasările zilei (sau apasă „Fără comenzi”).","d.warnDecl":"Luna asta are un total importat de {r}: ce notezi aici se adaugă la el.","d.delT":"Ștergi ziua asta?","d.delP":"Se vor șterge comenzile, încasările și costurile ei.",
+  "m.t":"Importă luna","m.p":"Pentru a încărca luni trecute dintr-odată. Scrie comenzile fiecărei zile și, dacă vrei, totalurile lunii.","m.which":"Luna","m.perDay":"Comenzi pe zi","m.gridHint":"Gol = nu modifica · 0 = fără comenzi","m.totals":"Totalurile lunii (opțional)",
+  "m.rev":"Încasările lunii","m.cost":"Costul produselor în lună","m.fee":"Comisioanele lunii","m.totHint":"Se salvează ca total lunar, fără împărțire pe zile. Lasă gol dacă notezi încasările zilnic.",
+  "m.save":"Salvează luna","m.del":"Șterge luna","m.saved":"Lună salvată","m.deleted":"Lună ștearsă","m.delT":"Ștergi {m}?","m.delP":"Se vor șterge comenzile din toate zilele și totalurile ei.",
+  "set.title":"Setări","set.cur":"Moneda cifrelor","set.fees":"Comisioane implicite","set.feesP":"Ce îți ia procesatorul de plăți (Shopify Payments, Stripe…). Se completează singur la fiecare zi nouă și îl poți schimba zi de zi.",
+  "set.sound":"Efecte sonore","set.soundS":"Monede și confetti când notezi vânzări.","set.lang":"Limbă","set.data":"Date","set.reset":"Șterge toate datele","set.resetT":"Ștergi toate datele?","set.resetP":"Se vor șterge toate zilele și lunile notate. Nu se poate anula.","set.resetOk":"Șterge tot","set.resetDone":"Date șterse",
+  "imp.t":"Importă o copie de pe site-ul vechi","imp.s":"Comenzile și încasările tale din Zonga Elements.","imp.h":"Importă copia","imp.p":"Încarcă fișierul .json de backup de pe site-ul vechi. Zilele și totalurile lunare se adaugă fără să se șteargă ce ai aici, iar dacă imporți de două ori nu se dublează nimic.",
+  "imp.pick":"Alege fișierul .json","imp.pickS":"sau trage-l aici","imp.reading":"Se citește fișierul…","imp.bad":"Fișierul nu e o copie Zonga Elements cu date de Comenzi zilnice.","imp.err":"Fișierul nu a putut fi citit.",
+  "imp.found":"Iată ce conține copia ta","imp.days":"Zile cu date","imp.ord":"Comenzi","imp.rev":"Încasări","imp.months":"Totaluri lunare","imp.skip":"Aveai deja {n} zile; vor fi sărite.",
+  "imp.fees":"Aplică comisioanele tale","imp.feesS":"{p}% + {f} pe comandă la zilele cu încasări (site-ul vechi nu le salva).","imp.go":"Importă","imp.none":"Nimic nou de importat.","imp.ok":"Importat! {d} zile și {m} totaluri lunare","imp.cost":"Zilele importate nu au cost de produs: adaugă-l pe fiecare zi sau în „Importă luna” ca să vezi profitul real.",
+  wd:["L","M","M","J","V","S","D"], csvH:["data","comenzi","moneda","incasari","cost_produs","comisioane","profit","curs_eur_usd"] }
+};
+const pref = { get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}} };
+let lang = pref.get("ze-lang") || "es"; if (!T[lang]) lang = "es";
+const t = (k, v={}) => String(T[lang][k] ?? T.es[k] ?? k).replace(/\{(\w+)\}/g, (_,x) => v[x] ?? "");
+const ta = k => T[lang][k] || T.es[k];
+const LOC = { es:"es-ES", en:"en-IE", ro:"ro-RO" };
+
+/* =========================================================
+   CAPA DE DATOS — nube, copia local y copias de seguridad: ../js/cuenta.js
+   S.days["2026-10-12"] = { o:pedidos, rev, cost, pct, fix, cu:"USD"|"EUR", r:tasa EUR→USD de ese día }
+   S.months["2026-05"]  = { rev, cost, fee, cu, r }   (totales del mes sin repartir por días)
+   ========================================================= */
+const DB = { load(){ return ZE.sync("orders").load(); }, save(state){ ZE.sync("orders").save(state); } };
+
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const clamp = (v, a=0, b=1) => Math.min(b, Math.max(a, v));
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const todayIso = () => iso(new Date());
+const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+const parseKey = k => { const [y,m] = k.split("-").map(Number); return { y, m }; };
+const shiftKey = (k, n) => { const { y, m } = parseKey(k); return keyOf(new Date(y, m - 1 + n, 1)); };
+const daysIn = k => { const { y, m } = parseKey(k); return new Date(y, m, 0).getDate(); };
+const dateOfIso = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const monthName = (k, opts={ month:"long", year:"numeric" }) => { const { y, m } = parseKey(k); const s = new Date(y, m-1, 1).toLocaleDateString(LOC[lang], opts); return opts.year || lang === "en" ? cap(s) : s; };
+const monthShort = k => monthName(k, { month:"short" }).replace(".","");
+const dayShort = s => dateOfIso(s).toLocaleDateString(LOC[lang], { day:"numeric", month:"short" });
+function parseNum(v){
+  let s = String(v ?? "").replace(/[^\d.,-]/g, "");
+  if (!s) return NaN;
+  const c = s.lastIndexOf(","), d = s.lastIndexOf(".");
+  if (c > -1 && d > -1) s = c > d ? s.replace(/\./g,"").replace(",",".") : s.replace(/,/g,"");
+  else if (c > -1) s = s.replace(/\./g,"").replace(",",".");
+  return parseFloat(s);
+}
+const r2 = v => Math.round(v * 100) / 100;
+const numIn = v => v == null || v === "" ? "" : String(v).replace(".", lang === "en" ? "." : ",");
+
+/* =========================================================
+   ESTADO
+   ========================================================= */
+await ZE.requireUser();
+const fresh = () => ({ v:1, settings:{ cur:"USD", feePct:2.9, feeFix:0.3, feeCu:"USD", sound:true }, days:{}, months:{}, flags:{} });
+let S = await DB.load();
+if (!S || S.v !== 1) S = fresh();
+S.days = S.days || {}; S.months = S.months || {}; S.flags = S.flags || {};
+const save = () => DB.save(S);
+
+/* =========================================================
+   TIPO DE CAMBIO EUR → USD (BCE vía Frankfurter). Cada día guarda la tasa de su fecha.
+   ========================================================= */
+const FX = (() => {
+  const KEY = "ze-fx-usd-v1", DEF = 1.16;
+  let st = null; try { st = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  st = st || { rate:null, date:null, hist:{}, from:null, to:null };
+  let keys = Object.keys(st.hist).sort(), status = st.rate ? "cache" : "none", busy = false, onChange = () => {};
+  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+  const getJ = async url => { const r = await fetch(url, { cache:"no-store" }); if (!r.ok) throw new Error(r.status); return r.json(); };
+  function rateFor(d){
+    if (st.hist[d]) return st.hist[d];
+    let lo = 0, hi = keys.length - 1, best = null;
+    while (lo <= hi){ const mid = (lo + hi) >> 1; if (keys[mid] <= d){ best = keys[mid]; lo = mid + 1; } else hi = mid - 1; }
+    if (best && (!st.date || d < st.date)) return st.hist[best];
+    return st.rate || (best && st.hist[best]) || DEF;
+  }
+  async function ensure(from){
+    if (st.from && st.from <= from) return;
+    try {
+      const j = await getJ(`https://api.frankfurter.dev/v1/${from}..${st.from || todayIso()}?base=EUR&symbols=USD`);
+      Object.entries(j.rates || {}).forEach(([d, r]) => st.hist[d] = r.USD);
+      st.from = from; st.to = st.to || todayIso(); keys = Object.keys(st.hist).sort(); persist();
+    } catch (e) {}
+  }
+  async function load(){
+    if (busy) return; busy = true; onChange();
+    let ok = false;
+    try { const j = await getJ("https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD"); st.rate = j.rates.USD; st.date = j.date; ok = true; }
+    catch (e) { try { const j = await getJ("https://open.er-api.com/v6/latest/EUR"); st.rate = j.rates.USD; st.date = todayIso(); ok = true; } catch (e2) {} }
+    status = ok ? "live" : (st.rate ? "off" : "none");
+    const oldest = Object.keys(S.days).reduce((m, d) => d < m ? d : m, iso(new Date(Date.now() - 365*864e5)));
+    if (ok && (!st.from || oldest < st.from || !st.to || st.to < iso(new Date(Date.now() - 864e5)))){
+      try {
+        const from = st.from && st.from <= oldest && st.to ? st.to : oldest;
+        const j = await getJ(`https://api.frankfurter.dev/v1/${from}..${todayIso()}?base=EUR&symbols=USD`);
+        Object.entries(j.rates || {}).forEach(([d, r]) => st.hist[d] = r.USD);
+        st.from = st.from && st.from < oldest ? st.from : oldest; st.to = todayIso(); keys = Object.keys(st.hist).sort();
+      } catch (e) {}
+    }
+    persist(); busy = false; onChange();
+  }
+  return {
+    load, ensure, rateFor,
+    get rate(){ return st.rate || DEF; },
+    set onChange(f){ onChange = f; },
+    label(){
+      const r = `1 € = ${this.rate.toLocaleString(LOC[lang], { minimumFractionDigits:4, maximumFractionDigits:4 })} $`;
+      if (busy) return { txt:r, cls:"spin" };
+      if (status === "none") return { txt:`${r} · ${t("fx.def")}`, cls:"off" };
+      if (status !== "live") return { txt:`${r} · ${t("fx.off")}`, cls:"off" };
+      const diff = Math.round((dateOfIso(todayIso()) - dateOfIso(st.date)) / 864e5);
+      return { txt:`${r} · ${diff <= 0 ? t("fx.today") : diff === 1 ? t("fx.yday") : dayShort(st.date)}`, cls:"" };
+    }
+  };
+})();
+
+/* =========================================================
+   CÁLCULOS — todo en la moneda elegida en ajustes (D)
+   Beneficio = facturación − coste de producto − comisiones
+   Comisiones = facturación × % + pedidos × fijo
+   ========================================================= */
+const D = () => S.settings.cur;
+const conv = (a, cu, r) => !a ? 0 : cu === D() ? a : cu === "EUR" ? a * r : a / r;
+const nf = {};
+const fmt = (v, dec=2, cur=D()) => { const k = lang+cur+dec; nf[k] = nf[k] || new Intl.NumberFormat(LOC[lang], { style:"currency", currency:cur, currencyDisplay:"narrowSymbol", minimumFractionDigits:dec, maximumFractionDigits:dec }); return nf[k].format(Math.abs(v) < .005 ? 0 : v); };
+const fmtSigned = v => (v > .004 ? "+" : v < -.004 ? "−" : "") + fmt(Math.abs(v));
+const fmtPct = v => (v*100).toLocaleString(LOC[lang], { maximumFractionDigits: Math.abs(v) < .1 ? 1 : 0 }) + " %";
+const compact = v => { const a = Math.abs(v); return a >= 1000 ? (v/1000).toLocaleString(LOC[lang], { maximumFractionDigits:1 }) + "k" : Math.round(v).toLocaleString(LOC[lang]); };
+function moneyH(v){
+  const k = "p"+lang+D(); nf[k] = nf[k] || new Intl.NumberFormat(LOC[lang], { style:"currency", currency:D(), currencyDisplay:"narrowSymbol", minimumFractionDigits:2, maximumFractionDigits:2 });
+  let out = v < -.004 ? "−" : "", small = false;
+  for (const p of nf[k].formatToParts(Math.abs(v) < .005 ? 0 : Math.abs(v))){
+    if (p.type === "minusSign") continue;
+    if (p.type === "decimal") small = true;
+    out += small && (p.type === "decimal" || p.type === "fraction") ? `<small>${esc(p.value)}</small>` : esc(p.value);
+  }
+  return out;
+}
+const feeOf = x => (x.rev || 0) * (x.pct || 0) / 100 + (x.o || 0) * (x.fix || 0);
+function dayVals(x){
+  const rev = conv(x.rev || 0, x.cu, x.r), cost = conv(x.cost || 0, x.cu, x.r), fee = conv(feeOf(x), x.cu, x.r);
+  return { o:x.o || 0, rev, cost, fee, profit:rev - cost - fee };
+}
+function monthAgg(k){
+  const n = daysIn(k), a = { k, o:0, rev:0, cost:0, fee:0, logged:0, sales:0, best:null, loss:false, declared:null };
+  for (let d = 1; d <= n; d++){
+    const ds = `${k}-${pad(d)}`, x = S.days[ds]; if (!x) continue;
+    const v = dayVals(x); a.logged++; if (v.o > 0 || v.rev > 0) a.sales++;
+    a.o += v.o; a.rev += v.rev; a.cost += v.cost; a.fee += v.fee;
+    if (!a.best || v.rev > a.best.rev) a.best = { d:ds, ...v };
+  }
+  const m = S.months[k];
+  if (m){ const dr = conv(m.rev || 0, m.cu, m.r); a.declared = { rev:dr }; a.rev += dr; a.cost += conv(m.cost || 0, m.cu, m.r); a.fee += conv(m.fee || 0, m.cu, m.r); }
+  a.profit = a.rev - a.cost - a.fee; a.margin = a.rev > 0 ? a.profit / a.rev : null;
+  if (a.best && !(a.best.rev > 0)) a.best = null;
+  return a;
+}
+const dataMonths = () => [...new Set([...Object.keys(S.days).map(d => d.slice(0,7)), ...Object.keys(S.months)])].sort();
+/* días transcurridos del mes (para medias y previsión) */
+const elapsed = k => { const nk = keyOf(new Date()); return k < nk ? daysIn(k) : k > nk ? 0 : new Date().getDate(); };
+function projection(a){
+  const k = a.k, e = elapsed(k);
+  if (k !== keyOf(new Date()) || e < 3 || a.declared || !(a.rev > 0)) return null;
+  const f = daysIn(k) / e;
+  return { rev:a.rev * f, profit:a.profit * f, o:a.o * f };
+}
+const bestRevDay = () => { let b = null; for (const [d, x] of Object.entries(S.days)){ const v = dayVals(x).rev; if (!b || v > b.v) b = { d, v }; } return b; };
+
+/* =========================================================
+   EFECTOS
+   ========================================================= */
+const SFX = (() => {
+  let ctx = null;
+  const C = () => { if (!ctx){ const A = window.AudioContext || window.webkitAudioContext; if (!A) return null; ctx = new A(); } if (ctx.state === "suspended") ctx.resume(); return ctx; };
+  function tone(f, { d=.12, type="sine", v=.12, to=null, at=0 } = {}){
+    const c = C(); if (!c) return;
+    const t0 = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t0); if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + d);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + .012); g.gain.exponentialRampToValueAtTime(.0001, t0 + d);
+    o.connect(g).connect(c.destination); o.start(t0); o.stop(t0 + d + .05);
+  }
+  const lib = {
+    tick:() => tone(2000, { d:.022, type:"triangle", v:.03 }), click:() => tone(880, { d:.05, type:"triangle", v:.06 }),
+    coin:() => { tone(988, { d:.08, v:.08, type:"square" }); tone(1319, { d:.3, v:.06, at:.08, type:"square" }); },
+    remove:() => tone(440, { d:.16, v:.08, to:200, type:"triangle" }), pop:() => { tone(660, { d:.08, v:.13, to:990 }); tone(1320, { d:.18, v:.07, at:.07 }); },
+    warn:() => { tone(240, { d:.12, type:"square", v:.035 }); tone(196, { d:.18, type:"square", v:.035, at:.14 }); },
+    success:() => [523,659,784,1047,1319].forEach((f,i) => tone(f, { d:.4, v:.08, at:i*.08, type:"triangle" })),
+    open:() => tone(500, { d:.12, v:.05, to:820 }), close:() => tone(820, { d:.12, v:.05, to:500 })
+  };
+  return { play(n){ if (!S.settings.sound) return; try { lib[n] && lib[n](); } catch(e){} } };
+})();
+const FXC = (() => {
+  const cv = $("#fxc"), cx = cv.getContext("2d"); let parts = [], raf = 0, dpr = 1;
+  const resize = () => { dpr = Math.min(2, devicePixelRatio || 1); cv.width = innerWidth*dpr; cv.height = innerHeight*dpr; };
+  resize(); addEventListener("resize", resize);
+  const COLS = ["#2F5BFF","#FFC83D","#22C55E","#FF6FB0","#FF5A4E","#8B5CF6"];
+  function loop(){
+    cx.setTransform(dpr,0,0,dpr,0,0); cx.clearRect(0,0,innerWidth,innerHeight);
+    parts = parts.filter(p => p.y < innerHeight + 40 && p.life > 0);
+    for (const p of parts){
+      p.vx *= .99; p.vy += p.g; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life -= p.decay;
+      cx.save(); cx.globalAlpha = Math.min(1, p.life*2); cx.translate(p.x, p.y);
+      if (p.coin){ cx.scale(Math.abs(Math.cos(p.rot)) * .8 + .2, 1); cx.beginPath(); cx.arc(0,0,p.s,0,7); cx.fillStyle = "#FFC83D"; cx.fill(); cx.lineWidth = 2.5; cx.strokeStyle = "#17161C"; cx.stroke(); cx.beginPath(); cx.arc(0,0,p.s*.62,0,7); cx.strokeStyle = "#E09B12"; cx.lineWidth = 2; cx.stroke(); }
+      else { cx.rotate(p.rot); cx.fillStyle = p.c; cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); cx.strokeStyle = "#17161C"; cx.lineWidth = 1.2; cx.strokeRect(-p.s/2,-p.s/4,p.s,p.s/2); }
+      cx.restore();
+    }
+    raf = parts.length ? requestAnimationFrame(loop) : 0;
+    if (!raf) cx.clearRect(0,0,innerWidth,innerHeight);
+  }
+  const start = () => { if (!raf) raf = requestAnimationFrame(loop); };
+  return {
+    confetti(n=140){ if (reduced) return; for (let i = 0; i < n; i++){ const a = -Math.PI/2 + (Math.random()-.5)*1.6, sp = Math.random()*11 + 6, left = i % 2;
+      parts.push({ x:left ? 0 : innerWidth, y:innerHeight*.75, vx:(left ? 1 : -1)*Math.abs(Math.cos(a))*sp, vy:Math.sin(a)*sp - 4, g:.22, s:Math.random()*9+7, rot:Math.random()*6, vr:(Math.random()-.5)*.4, c:COLS[i%COLS.length], life:1.3, decay:.006 }); } start(); },
+    coins(n=22){ if (reduced) return; for (let i = 0; i < n; i++) parts.push({ coin:true, x:Math.random()*innerWidth, y:-30 - Math.random()*innerHeight*.5, vx:(Math.random()-.5)*1.5, vy:Math.random()*2+3, g:.18, s:Math.random()*6+11, rot:Math.random()*6, vr:.12 + Math.random()*.1, life:1.5, decay:.004 }); start(); }
+  };
+})();
+function countUp(el, to, format, dur=900){
+  if (reduced){ el.innerHTML = format(to); return; }
+  const t0 = performance.now();
+  const step = now => { const k = Math.min(1, (now - t0)/dur), e = 1 - Math.pow(1-k, 3); el.innerHTML = format(to*e); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+let toastT = 0;
+function toast(msg, em="✅"){ $("#toastT").textContent = msg; $("#toastE").textContent = em; $("#toast").classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => $("#toast").classList.remove("on"), 2600); }
+let modalRes = null;
+function confirmBox(title, text, ok){
+  return new Promise(res => {
+    $("#mT").textContent = title; $("#mP").textContent = text; $("#mYes").textContent = ok || t("del"); $("#mNo").textContent = t("cancel");
+    $("#modal").classList.add("on"); $("#mScrim").classList.add("on"); SFX.play("warn");
+    modalRes = v => { $("#modal").classList.remove("on"); $("#mScrim").classList.remove("on"); modalRes = null; res(v); };
+  });
+}
+$("#mYes").onclick = () => modalRes && modalRes(true);
+$("#mNo").onclick = () => modalRes && modalRes(false);
+$("#mScrim").onclick = () => modalRes && modalRes(false);
+function openDrawer(id){
+  $$(".drawer").forEach(d => { d.classList.toggle("on", d.id === id); d.setAttribute("aria-hidden", d.id === id ? "false" : "true"); });
+  $("#" + id).scrollTop = 0; $("#scrim").classList.add("on"); document.body.classList.add("locked"); SFX.play("open");
+}
+function closeDrawers(){
+  if (!$(".drawer.on")) return;
+  $$(".drawer").forEach(d => { d.classList.remove("on"); d.setAttribute("aria-hidden","true"); });
+  $("#scrim").classList.remove("on"); document.body.classList.remove("locked"); SFX.play("close");
+}
+$("#scrim").addEventListener("click", closeDrawers);
+$$("[data-close]").forEach(b => b.addEventListener("click", closeDrawers));
+const shake = el => { el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); SFX.play("warn"); };
+const COIN = '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="#FFC83D" stroke="#17161C" stroke-width="3"/><circle cx="20" cy="20" r="11.5" fill="none" stroke="#E09B12" stroke-width="2.5"/><text x="20" y="25.5" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="15" fill="#B7790F">$</text></svg>';
+(() => {
+  const cols = ["#2F5BFF","#FFC83D","#22C55E","#FF6FB0","#8B5CF6"]; let h = "";
+  for (let i = 0; i < 20; i++) h += `<i style="left:${(i*37)%100}%;top:${(i*53)%100}%;background:${cols[i%5]};transform:rotate(${i*29}deg);animation-delay:-${i*.7}s"></i>`;
+  [[-1,30],[96,10],[96,55],[-1,80]].forEach(([x,y], i) => h += `<span class="c" style="left:${x}%;top:${y}%;animation-delay:-${i*1.3}s">${COIN}</span>`);
+  $("#bgfx").innerHTML = h;
+})();
+
+/* =========================================================
+   VISTA
+   ========================================================= */
+const view = { key:keyOf(new Date()), metric:pref.get("ze-orders-metric") || "rev", range:pref.get("ze-orders-range") || "12" };
+const afterPaint = f => requestAnimationFrame(() => requestAnimationFrame(f));
+
+function render(){
+  const lb = FX.label(); $("#fxTxt").textContent = lb.txt; $("#fxPill").className = "fx " + lb.cls;
+  $("#mTitle").textContent = monthName(view.key);
+  $("#todayChip").hidden = view.key === keyOf(new Date());
+  const a = monthAgg(view.key), pk = shiftKey(view.key, -1), pa = monthAgg(pk);
+  $("#app").innerHTML = `<div class="grid">${heroHTML(a, pa)}${splitHTML(a)}${kpisHTML(a, pa)}${calHTML(a)}${factsHTML(a)}${histHTML()}${tableHTML()}</div>`;
+  afterPaint(() => $$("[data-count]").forEach(el => countUp(el, +el.dataset.count, moneyH)));
+}
+function cmpPace(v, pv, pk){
+  const k = view.key, e = elapsed(k), n = daysIn(k);
+  if (!(pv > 0)) return { txt:t("noPrev", { m:monthShort(pk) }), cls:"" };
+  const scaled = k === keyOf(new Date()) ? pv * e / n : pv;   // mes anterior al mismo ritmo
+  if (!(scaled > 0)) return { txt:t("noPrev", { m:monthShort(pk) }), cls:"" };
+  const p = (v - scaled) / scaled;
+  return { txt:t("vsPrev", { p:`${p >= 0 ? "↑ +" : "↓ −"}${fmtPct(Math.abs(p))}`, m:monthShort(pk) }), cls:p >= 0 ? "good" : "bad", p };
+}
+function heroHTML(a, pa){
+  const c = cmpPace(a.rev, pa.rev, pa.k), neg = a.profit < -.004;
+  return `<article class="card hero s8 rise">
+    <div class="art"><img class="mascot" src="img/caja.webp" width="640" height="736" alt="" decoding="async"></div>
+    <span class="lab">📦 ${esc(t("hero.lab", { m:monthName(view.key, { month:"long" }) }))}</span>
+    <b class="big num" data-count="${a.rev}">${moneyH(0)}</b>
+    <div class="sec">${a.o} ${t("orders").toLowerCase()} · ${t("aov")} ${a.o ? fmt(a.rev / a.o) : "—"}</div>
+    <div class="row"><span class="pillx ${neg ? "neg" : "pos"}">${t("profit")} ${fmtSigned(a.profit)}</span><span class="pillx">${t("margin")} ${a.margin == null ? "—" : fmtPct(a.margin)}</span>${pa.rev > 0 ? `<span class="pillx dark">${esc(c.txt)}</span>` : ""}</div>
+    <div class="hand">${!a.rev ? t("hero.zero") : neg ? t("hero.bad") : t("hero.good")}</div></article>`;
+}
+function splitHTML(a){
+  const sym = fmt(1, 0).replace(/[\d\s.,]/g, "") || D();
+  if (!(a.rev > 0)) return `<article class="card c-sky s4 rise"><div class="ct"><div><h3>💸 ${t("split.t")}</h3></div></div><div class="empty"><span class="em">🧾</span>${t("hero.zero")}</div></article>`;
+  const parts = [["cost", a.cost, "#FF9636"], ["fees", a.fee, "#8B5CF6"], ["profit", Math.max(0, a.profit), "#22C55E"]];
+  const tot = Math.max(a.rev, a.cost + a.fee);
+  return `<article class="card c-sky s4 rise"><div class="ct"><div><h3>💸 ${t("split.t")}</h3><span class="subt">${t("split.s", { c:"1 " + sym })}</span></div></div>
+    <div class="split">${parts.filter(p => p[1] > 0).map(([, v, c], i) => `<i style="width:${(v / tot) * 100}%;background:${c};animation-delay:${i*.15}s"></i>`).join("")}</div>
+    <div class="legend2">${parts.map(([k, v, c]) => `<div class="lg"><i style="background:${c}"></i><span>${t(k)}</span><b class="num">${k === "profit" ? fmtSigned(a.profit) : fmt(v)}</b><small>${t("ofRev", { p:fmtPct((k === "profit" ? a.profit : v) / a.rev) })}</small></div>`).join("")}</div></article>`;
+}
+function kpisHTML(a, pa){
+  const e = elapsed(a.k) || daysIn(a.k);
+  const c = (v, pv) => { const x = cmpPace(v, pv, pa.k); return pa.rev > 0 || pa.o > 0 ? `<small class="${x.cls}">${esc(x.txt)}</small>` : `<small>${esc(t("noPrev", { m:monthShort(pa.k) }))}</small>`; };
+  return `<div class="kpis s12 rise">
+    <div class="kpi" style="background:var(--sky)"><span class="k"><i>📦</i>${t("orders")}</span><b class="num">${a.o}</b>${c(a.o, pa.o)}</div>
+    <div class="kpi" style="background:var(--mint)"><span class="k"><i>💰</i>${t("profit")}</span><b class="num">${fmtSigned(a.profit)}</b><small>${t("margin")} ${a.margin == null ? "—" : fmtPct(a.margin)}</small></div>
+    <div class="kpi" style="background:var(--butter)"><span class="k"><i>🛒</i>${t("aov")}</span><b class="num">${a.o ? fmt(a.rev / a.o) : "—"}</b><small>${t("perDay", { n:(a.o / e).toLocaleString(LOC[lang], { maximumFractionDigits:1 }) })} ${t("orders").toLowerCase()}</small></div>
+    <div class="kpi" style="background:var(--salmon)"><span class="k"><i>🧾</i>${t("costs")}</span><b class="num">${fmt(a.cost + a.fee)}</b><small>${t("cost")} ${fmt(a.cost, 0)} · ${t("fees")} ${fmt(a.fee, 0)}</small></div></div>`;
+}
+function calHTML(a){
+  const k = view.key, n = daysIn(k), { y, m } = parseKey(k), lead = (new Date(y, m-1, 1).getDay() + 6) % 7, today = todayIso();
+  let mx = 0; for (let d = 1; d <= n; d++){ const x = S.days[`${k}-${pad(d)}`]; if (x) mx = Math.max(mx, x.o || 0); }
+  const cells = [...Array(n)].map((_, i) => {
+    const ds = `${k}-${pad(i+1)}`, x = S.days[ds], v = x && dayVals(x);
+    const cls = !x ? "none" : v.o > 0 || v.rev > 0 ? "has" : "zero", h = x && v.o > 0 ? .18 + .82 * (v.o / (mx || 1)) : 0;
+    return `<button class="day ${cls} ${h > .6 ? "hi" : ""} ${x && v.profit < -.004 ? "loss" : ""} ${ds === today ? "today" : ""} ${ds > today ? "fut" : ""} ${a.best && a.best.d === ds ? "best" : ""}" style="--h:${h.toFixed(2)};animation-delay:${i*.012}s" data-day="${ds}" aria-label="${esc(dayShort(ds))}">
+      <span class="dn">${i+1}</span><span class="o">${!x ? "·" : v.o}</span>${x && v.rev > 0 ? `<span class="rv">${compact(v.rev)}</span>` : ""}</button>`;
+  }).join("");
+  return `<article class="card s8 rise"><div class="ct"><div><h3>🗓️ ${t("cal.t")}</h3><span class="subt">${t("cal.s")}</span></div></div>
+    <div class="cal">${ta("wd").map(w => `<span class="wd">${w}</span>`).join("")}${"<span></span>".repeat(lead)}${cells}</div>
+    <div class="keyrow"><span><i style="background:var(--card)"></i>${t("k.none")}</span><span><i style="background:var(--bg-2)"></i>${t("k.zero")}</span><span><i style="background:var(--blue)"></i>${t("k.sales")}</span><span><i style="background:var(--red);border-radius:50%"></i>${t("k.loss")}</span></div>
+    ${a.declared ? `<div class="calnote">📥 ${esc(t("cal.declared", { r:fmt(a.declared.rev) }))}<button class="btn sm" data-act="month" style="height:34px;box-shadow:2px 2px 0 var(--sh)">${t("cal.edit")}</button></div>` : ""}</article>`;
+}
+function factsHTML(a){
+  const p = projection(a), e = elapsed(a.k) || daysIn(a.k);
+  return `<article class="card c-yellow s4 rise"><div class="ct"><div><h3>⚡ ${t("f.t")}</h3></div></div><div class="facts">
+    <div class="fact"><span class="e">🔮</span><div><span>${t("f.proj")}</span><b class="num">${p ? fmt(p.rev, 0) : "—"}</b><small>${p ? esc(t("f.projS", { p:fmtSigned(p.profit) })) : esc(a.k === keyOf(new Date()) ? t("f.projNo") : "—")}</small></div></div>
+    <div class="fact"><span class="e">🏆</span><div><span>${t("f.best")}</span><b class="num">${a.best ? fmt(a.best.rev) : "—"}</b><small>${a.best ? esc(dayShort(a.best.d)) + " · " + a.best.o + " " + t("orders").toLowerCase() : "—"}</small></div></div>
+    <div class="fact"><span class="e">📅</span><div><span>${t("f.days")}</span><b class="num">${a.sales}</b><small>${esc(t("f.daysS", { n:e }))}</small></div></div>
+    <div class="fact"><span class="e">📈</span><div><span>${t("f.avg")}</span><b class="num">${(a.o / e).toLocaleString(LOC[lang], { maximumFractionDigits:1 })}</b><small>${t("f.avgS")}</small></div></div></div></article>`;
+}
+function histMonths(){
+  const ms = dataMonths(), now = keyOf(new Date()); if (!ms.length) return [];
+  const out = []; for (let k = ms[0]; k <= (now > ms[ms.length-1] ? now : ms[ms.length-1]); k = shiftKey(k, 1)) out.push(k);
+  return view.range === "all" ? out : out.slice(-(+view.range));
+}
+const metricOf = (a, m) => m === "rev" ? a.rev : m === "profit" ? a.profit : a.o;
+const fmtM = (v, m) => m === "o" ? Math.round(v).toLocaleString(LOC[lang]) : fmt(v, 0);
+function histHTML(){
+  const ks = histMonths(), m = view.metric, now = keyOf(new Date());
+  const seg = (id, cur, opts) => `<div class="seg-ctl" data-seg="${id}">${opts.map(([v, l]) => `<button data-v="${v}" class="${cur === v ? "on" : ""}">${l}</button>`).join("")}</div>`;
+  const ctl = `<div class="hctl">${seg("metric", m, [["rev", t("rev")], ["profit", t("profit")], ["o", t("orders")]])}${seg("range", view.range, [["6", t("r6")], ["12", t("r12")], ["all", t("rAll")]])}</div>`;
+  if (!ks.length) return `<article class="card s12 rise"><div class="ct"><div><h3>📊 ${t("h.t")}</h3></div>${ctl}</div><div class="empty"><span class="em">📊</span>${t("hero.zero")}</div></article>`;
+  const ag = ks.map(monthAgg), vals = ag.map(a => metricOf(a, m)), pj = ag.map(a => { const p = projection(a); return p ? metricOf(p, m) : null; });
+  const cur = ag.find(a => a.k === now), closed = ag.filter(a => a.k < now && (a.logged || a.declared));
+  // mes en curso sin ningún registro: no se dibuja (evita una caída falsa a cero)
+  const show = ag.map(a => a.k !== now || a.logged || a.declared);
+  const mx = Math.max(1, ...vals.map((v, i) => show[i] ? Math.abs(v) : 0), ...pj.filter(Boolean).map(Math.abs)), mn = Math.min(0, ...vals.filter((_, i) => show[i]));
+  const W = 640, H = 240, top = 14, base = mn < 0 ? 170 : 200, scale = (base - top) / (mx || 1), gw = (W - 40) / ag.length, bw = Math.min(34, gw * .55);
+  const col = m === "rev" ? "var(--blue)" : m === "profit" ? "var(--green)" : "var(--yellow)";
+  const grid = [0, .5, 1].map(f => { const y = base - f*(base - top); return `<line class="gl" x1="40" x2="${W}" y1="${y}" y2="${y}"/><text x="0" y="${y + 3}">${compact(mx*f)}</text>`; }).join("");
+  const bars = ag.map((a, i) => {
+    const x = 40 + i*gw + (gw - bw)/2, v = vals[i], h = Math.abs(v) * scale, neg = v < 0, cx = x + bw/2;
+    const p = pj[i] ? `<rect class="proj" x="${x}" y="${base - pj[i]*scale}" width="${bw}" height="${Math.max(0, (pj[i] - Math.max(0, v))*scale)}" rx="6"/>` : "";
+    return `<g class="grp ${a.k === view.key ? "cur" : ""}" data-goto="${a.k}"><title>${esc(monthName(a.k))} · ${fmtM(v, m)}${pj[i] ? ` · ${t("proj")} ${fmtM(pj[i], m)}` : ""}</title>
+      <rect class="hit" x="${40 + i*gw + 2}" y="${top - 8}" width="${gw - 4}" height="${H - top - 8}" rx="10"/>${p}
+      ${show[i] && Math.abs(v) > 0 ? `<rect class="b" x="${x}" y="${neg ? base : base - h}" width="${bw}" height="${Math.max(1, h)}" rx="6" fill="${neg ? "var(--red)" : col}" style="animation-delay:${i*.05}s;${neg ? "transform-origin:top" : ""}"/>` : ""}
+      <text x="${cx}" y="${H - 8}" text-anchor="middle">${esc(monthShort(a.k))}</text></g>`;
+  }).join("");
+  const best = closed.reduce((b, a) => !b || metricOf(a, m) > metricOf(b, m) ? a : b, null);
+  const avg = closed.length ? closed.reduce((s, a) => s + metricOf(a, m), 0) / closed.length : null;
+  let curTxt = "", curCls = "";
+  if (cur && (cur.logged || cur.declared)){ const prev = monthAgg(shiftKey(now, -1)), pv = metricOf(prev, m) * elapsed(now) / daysIn(now);
+    if (pv > 0){ const p = (metricOf(cur, m) - pv) / pv; curTxt = `${p >= 0 ? "↑ +" : "↓ −"}${fmtPct(Math.abs(p))} vs ${monthShort(prev.k)}`; curCls = p >= 0 ? "good" : "bad"; } }
+  return `<article class="card s12 rise"><div class="ct"><div><h3>📊 ${t("h.t")}</h3><span class="subt">${t("h.s")}</span></div>${ctl}</div>
+    <svg class="chart" viewBox="0 0 ${W} ${H}">${grid}${mn < 0 ? `<line x1="40" x2="${W}" y1="${base}" y2="${base}" stroke="var(--ink)" stroke-width="2"/>` : ""}${bars}</svg>
+    <div class="legend"><span><i style="background:${col}"></i>${t(m === "o" ? "orders" : m)}</span><span><i style="background:transparent;border-style:dashed"></i>${t("proj")}</span></div>
+    <div class="minis">
+      <div class="mini"><span>${t("h.cur")}</span><b class="num">${cur ? fmtM(metricOf(cur, m), m) : "—"}</b><small class="${curCls}">${esc(curTxt || "—")}</small></div>
+      <div class="mini"><span>${t("h.best")}</span><b class="num">${best ? fmtM(metricOf(best, m), m) : "—"}</b><small>${best ? esc(monthName(best.k)) : "—"}</small></div>
+      <div class="mini"><span>${t("h.avg")}</span><b class="num">${avg == null ? "—" : fmtM(avg, m)}</b><small>${esc(t("h.avgS", { n:closed.length }))}</small></div></div></article>`;
+}
+function tableHTML(){
+  const now = keyOf(new Date()), ks = histMonths().slice().reverse().filter(k => k <= now || S.months[k] || Object.keys(S.days).some(d => d.startsWith(k)));
+  if (!ks.length) return "";
+  const cls = v => v > .004 ? "p" : v < -.004 ? "n" : "z";
+  return `<article class="card s12 rise"><div class="ct"><div><h3>🧮 ${t("tbl.t")}</h3></div><button class="btn sm" data-act="csv">📥 ${t("csv")}</button></div>
+    <div class="tblw"><table class="tbl"><thead><tr><th>${t("tbl.month")}</th><th>${t("orders")}</th><th>${t("rev")}</th><th>${t("costs")}</th><th>${t("profit")}</th><th>${t("margin")}</th><th>${t("tbl.state")}</th></tr></thead><tbody>
+    ${ks.map(k => { const a = monthAgg(k);
+      return `<tr class="click" data-goto="${k}"><td>${esc(monthName(k))}</td><td>${a.o}</td><td>${fmt(a.rev)}</td><td>${fmt(a.cost + a.fee)}</td><td class="${cls(a.profit)}">${fmtSigned(a.profit)}</td><td class="${a.margin == null ? "z" : cls(a.margin)}">${a.margin == null ? "—" : fmtPct(a.margin)}</td>
+      <td class="st">${esc(k === now ? t("st.cur", { a:a.logged, b:daysIn(k) }) : t("st.closed", { a:a.logged, b:daysIn(k) }))}</td></tr>`; }).join("")}
+    </tbody></table></div></article>`;
+}
+
+/* ---------- eventos ---------- */
+function setMonth(k){ view.key = k; render(); }
+document.addEventListener("click", e => {
+  const a = e.target.closest("[data-act]");
+  if (a){
+    const act = a.dataset.act;
+    if (act === "prev"){ SFX.play("tick"); setMonth(shiftKey(view.key, -1)); }
+    else if (act === "next"){ SFX.play("tick"); setMonth(shiftKey(view.key, 1)); }
+    else if (act === "today"){ SFX.play("click"); setMonth(keyOf(new Date())); }
+    else if (act === "month") openMonth(view.key);
+    else if (act === "csv") exportCsv();
+    return;
+  }
+  const d = e.target.closest("[data-day]"); if (d) return openDay(d.dataset.day);
+  const g = e.target.closest("[data-goto]"); if (g){ SFX.play("click"); setMonth(g.dataset.goto); scrollTo({ top:0, behavior:"smooth" }); return; }
+  const s = e.target.closest("[data-seg] [data-v]");
+  if (s){ const id = s.closest("[data-seg]").dataset.seg; view[id] = s.dataset.v; pref.set("ze-orders-" + id, s.dataset.v); SFX.play("tick"); render(); }
+});
+$("#todayBtn").addEventListener("click", () => openDay(todayIso()));
+
+/* =========================================================
+   FICHA DEL DÍA
+   ========================================================= */
+const F = { d:null, cu:"USD", r:null };
+function openDay(ds){
+  const x = S.days[ds], today = todayIso();
+  F.d = ds; F.cu = x ? x.cu : (pref.get("ze-orders-cu") || D()); F.r = x ? x.r : FX.rateFor(ds);
+  const tag = ds === today ? ["today", t("d.today")] : ds > today ? ["fut", t("d.future")] : ["", t("d.past")];
+  $("#dTag").className = "dtag " + tag[0]; $("#dTag").textContent = tag[1];
+  $("#dTitle").textContent = cap(dateOfIso(ds).toLocaleDateString(LOC[lang], { weekday:"long", day:"numeric", month:"long", year:"numeric" }));
+  const fixDef = S.settings.feeCu === F.cu ? S.settings.feeFix : conv0(S.settings.feeFix, S.settings.feeCu, F.cu, F.r);
+  $("#dOrders").value = x ? x.o : ""; $("#dRev").value = x ? numIn(x.rev) : ""; $("#dCost").value = x ? numIn(x.cost) : "";
+  $("#dPct").value = numIn(x ? x.pct : S.settings.feePct); $("#dFix").value = numIn(x ? x.fix : r2(fixDef));
+  $("#dDel").hidden = !x; $("#dRev").classList.remove("bad");
+  const m = S.months[ds.slice(0,7)];
+  $("#dWarn").hidden = !m; if (m) $("#dWarn").textContent = t("d.warnDecl", { r:fmt(conv(m.rev, m.cu, m.r)) });
+  paintDay(); openDrawer("drDay");
+  if (!x && matchMedia("(pointer: fine)").matches) setTimeout(() => $("#dOrders").focus(), 450);
+}
+/* convertir entre monedas con una tasa concreta */
+const conv0 = (a, from, to, r) => from === to ? a : from === "EUR" ? a * r : a / r;
+function readDay(){
+  return { o:Math.max(0, Math.round(parseNum($("#dOrders").value) || 0)), rev:parseNum($("#dRev").value), cost:parseNum($("#dCost").value) || 0, pct:parseNum($("#dPct").value) || 0, fix:parseNum($("#dFix").value) || 0, cu:F.cu, r:F.r };
+}
+function paintDay(){
+  $$("#dCur button").forEach(b => b.classList.toggle("on", b.dataset.c === F.cu));
+  const sym = F.cu === "EUR" ? "€" : "$";
+  $$("#drDay [data-cu]").forEach(el => el.textContent = sym);
+  const x = readDay(), rev = x.rev || 0, fee = rev * x.pct / 100 + x.o * x.fix, profit = rev - x.cost - fee;
+  const f = v => fmt(v, 2, F.cu);
+  $("#dFeeHint").textContent = t("d.feeHint", { p:x.pct.toLocaleString(LOC[lang]), r:f(rev), n:x.o, f:f(x.fix), t:f(fee) });
+  const other = F.cu === "EUR" ? "USD" : "EUR";
+  $("#dConv").textContent = rev > 0 ? t("d.conv", { a:fmt(conv0(rev, F.cu, other, F.r), 2, other), r:F.r.toLocaleString(LOC[lang], { minimumFractionDigits:4, maximumFractionDigits:4 }), d:dayShort(F.d) }) : "";
+  $("#rCost").textContent = f(x.cost + fee); $("#rProfit").textContent = (profit < -.004 ? "−" : "") + f(Math.abs(profit));
+  $("#rMargin").textContent = rev > 0 ? fmtPct(profit / rev) : "—";
+  $("#dResult").classList.toggle("neg", profit < -.004);
+}
+$("#drDay").addEventListener("input", e => { if (e.target.matches("input")){ e.target.classList.remove("bad"); paintDay(); } });
+$("#drDay").addEventListener("click", e => {
+  const s = e.target.closest("[data-step]");
+  if (s){ const v = Math.max(0, (parseInt($("#dOrders").value) || 0) + +s.dataset.step); $("#dOrders").value = v; SFX.play("tick"); paintDay(); }
+});
+$("#dCur").addEventListener("click", e => {
+  const b = e.target.closest("[data-c]"); if (!b || b.dataset.c === F.cu) return;
+  // al cambiar de moneda, el fijo por pedido se convierte para no cambiar su valor real
+  const fix = parseNum($("#dFix").value); if (fix > 0) $("#dFix").value = numIn(r2(conv0(fix, F.cu, b.dataset.c, F.r)));
+  F.cu = b.dataset.c; pref.set("ze-orders-cu", F.cu); SFX.play("tick"); paintDay();
+});
+$("#drDay").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches("input")) $("#dSave").click(); });
+$("#dSave").addEventListener("click", () => {
+  const x = readDay();
+  if (!(x.rev >= 0) && x.o > 0){ $("#dRev").classList.add("bad"); toast(t("d.bad"), "⚠️"); return shake($("#dRev").closest(".amt")); }
+  if (!(x.rev > 0) && !x.o) return $("#dZero").click();
+  const prevBest = bestRevDay();
+  S.days[F.d] = { o:x.o, rev:r2(x.rev || 0), cost:r2(x.cost), pct:x.pct, fix:r2(x.fix), cu:x.cu, r:x.r };
+  save(); closeDrawers(); SFX.play("coin");
+  const v = dayVals(S.days[F.d]);
+  if (v.rev > 0 && (!prevBest || (v.rev > prevBest.v && prevBest.d !== F.d))){ FXC.confetti(); SFX.play("success"); toast(t("d.record"), "🏆"); }
+  else { if (x.o > 0) FXC.coins(); toast(t("d.saved"), "📦"); }
+  if (F.d.slice(0,7) !== view.key) view.key = F.d.slice(0,7);
+  render();
+});
+$("#dZero").addEventListener("click", () => {
+  S.days[F.d] = { o:0, rev:0, cost:0, pct:0, fix:0, cu:F.cu, r:F.r };
+  save(); closeDrawers(); SFX.play("pop"); toast(t("d.savedZ"), "😴");
+  if (F.d.slice(0,7) !== view.key) view.key = F.d.slice(0,7);
+  render();
+});
+$("#dDel").addEventListener("click", async () => {
+  if (!await confirmBox(t("d.delT"), t("d.delP"))) return;
+  delete S.days[F.d]; save(); closeDrawers(); SFX.play("remove"); toast(t("d.deleted"), "🗑️"); render();
+});
+
+/* =========================================================
+   IMPORTAR MES (meses pasados de golpe)
+   ========================================================= */
+const MF = { k:null, cu:"USD" };
+function openMonth(k){
+  MF.k = k || shiftKey(keyOf(new Date()), -1);
+  const y0 = new Date().getFullYear();
+  $("#mMon").innerHTML = [...Array(12)].map((_, i) => `<option value="${pad(i+1)}">${esc(cap(new Date(2000, i, 1).toLocaleDateString(LOC[lang], { month:"long" })))}</option>`).join("");
+  $("#mYear").innerHTML = [...Array(7)].map((_, i) => y0 - 5 + i).map(y => `<option value="${y}">${y}</option>`).join("");
+  fillMonth(); openDrawer("drMonth");
+}
+function fillMonth(){
+  const { y, m } = parseKey(MF.k), md = S.months[MF.k];
+  $("#mMon").value = pad(m); $("#mYear").value = String(y);
+  MF.cu = md ? md.cu : (pref.get("ze-orders-cu") || D());
+  $$("#mCur button").forEach(b => b.classList.toggle("on", b.dataset.c === MF.cu));
+  $$("[data-mcu]").forEach(el => el.textContent = MF.cu === "EUR" ? "€" : "$");
+  $("#mRev").value = md ? numIn(md.rev) : ""; $("#mCost").value = md ? numIn(md.cost) : ""; $("#mFee").value = md ? numIn(md.fee) : "";
+  const n = daysIn(MF.k), lead = (new Date(y, m-1, 1).getDay() + 6) % 7;
+  $("#mGrid").innerHTML = ta("wd").map(w => `<span class="wd">${w}</span>`).join("") + "<span></span>".repeat(lead) +
+    [...Array(n)].map((_, i) => { const x = S.days[`${MF.k}-${pad(i+1)}`]; return `<label>${i+1}<input inputmode="numeric" data-md="${i+1}" value="${x ? x.o : ""}" class="${x ? "has" : ""}"></label>`; }).join("");
+  $("#mDel").hidden = !(md || Object.keys(S.days).some(d => d.startsWith(MF.k)));
+}
+$("#mMon").addEventListener("change", () => { MF.k = `${$("#mYear").value}-${$("#mMon").value}`; fillMonth(); });
+$("#mYear").addEventListener("change", () => { MF.k = `${$("#mYear").value}-${$("#mMon").value}`; fillMonth(); });
+$("#mCur").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; MF.cu = b.dataset.c; $$("#mCur button").forEach(x => x.classList.toggle("on", x === b)); $$("[data-mcu]").forEach(el => el.textContent = MF.cu === "EUR" ? "€" : "$"); SFX.play("tick"); });
+$("#mGrid").addEventListener("input", e => e.target.classList.toggle("has", e.target.value !== ""));
+$("#mSave").addEventListener("click", () => {
+  $$("#mGrid [data-md]").forEach(inp => {
+    if (inp.value.trim() === "") return;   // en blanco = no tocar
+    const ds = `${MF.k}-${pad(+inp.dataset.md)}`, o = Math.max(0, Math.round(parseNum(inp.value) || 0)), x = S.days[ds];
+    S.days[ds] = x ? { ...x, o } : { o, rev:0, cost:0, pct:0, fix:0, cu:MF.cu, r:FX.rateFor(ds) };
+  });
+  const rev = parseNum($("#mRev").value), cost = parseNum($("#mCost").value), fee = parseNum($("#mFee").value);
+  if (rev > 0 || cost > 0 || fee > 0) S.months[MF.k] = { rev:r2(rev || 0), cost:r2(cost || 0), fee:r2(fee || 0), cu:MF.cu, r:FX.rateFor(`${MF.k}-15`) };
+  else delete S.months[MF.k];
+  save(); closeDrawers(); SFX.play("success"); toast(t("m.saved"), "📥"); setMonth(MF.k);
+});
+$("#mDel").addEventListener("click", async () => {
+  if (!await confirmBox(t("m.delT", { m:monthName(MF.k) }), t("m.delP"))) return;
+  Object.keys(S.days).forEach(d => { if (d.startsWith(MF.k)) delete S.days[d]; }); delete S.months[MF.k];
+  save(); closeDrawers(); SFX.play("remove"); toast(t("m.deleted"), "🗑️"); render();
+});
+
+/* =========================================================
+   AJUSTES, CSV E IMPORTACIÓN
+   ========================================================= */
+function paintSettings(){
+  $$("#setCur button").forEach(b => b.classList.toggle("on", b.dataset.c === D()));
+  $("#setPct").value = numIn(S.settings.feePct); $("#setFix").value = numIn(S.settings.feeFix); $("#setFixCu").textContent = S.settings.feeCu === "EUR" ? "€" : "$";
+  $("#setSound").checked = S.settings.sound;
+  $$("#setLang button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
+}
+$("#btnSettings").addEventListener("click", () => { paintSettings(); openDrawer("drSettings"); });
+$("#setCur").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; S.settings.cur = b.dataset.c; save(); SFX.play("tick"); paintSettings(); render(); });
+$("#setPct").addEventListener("change", e => { const v = parseNum(e.target.value); S.settings.feePct = v >= 0 ? v : 0; save(); paintSettings(); });
+$("#setFix").addEventListener("change", e => { const v = parseNum(e.target.value); S.settings.feeFix = v >= 0 ? r2(v) : 0; S.settings.feeCu = D(); save(); paintSettings(); });
+$("#setSound").addEventListener("change", e => { S.settings.sound = e.target.checked; save(); SFX.play("pop"); });
+$("#setLang").addEventListener("click", e => { const b = e.target.closest("[data-lang]"); if (!b) return; applyLang(b.dataset.lang); paintSettings(); SFX.play("click"); });
+$("#setCsv").addEventListener("click", exportCsv);
+$("#setReset").addEventListener("click", async () => {
+  if (!await confirmBox(t("set.resetT"), t("set.resetP"), t("set.resetOk"))) return;
+  const st = S.settings; S = fresh(); S.settings = st; save(); closeDrawers(); toast(t("set.resetDone"), "🧹"); render();
+});
+$("#fxPill").addEventListener("click", () => { SFX.play("tick"); FX.load(); });
+function download(blob, name){ const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
+function exportCsv(){
+  const days = Object.keys(S.days).sort(); if (!days.length) return toast(t("csvNone"), "🤷");
+  const sep = lang === "en" ? "," : ";", n = v => lang === "en" ? v.toFixed(2) : v.toFixed(2).replace(".", ","), q = s => `"${String(s).replace(/"/g, '""')}"`;
+  const rows = days.map(d => { const x = S.days[d]; const fee = feeOf(x); return [d, x.o, x.cu, n(x.rev || 0), n(x.cost || 0), n(fee), n((x.rev || 0) - (x.cost || 0) - fee), lang === "en" ? x.r.toFixed(4) : x.r.toFixed(4).replace(".", ",")].map(q).join(sep); });
+  download(new Blob(["﻿" + [ta("csvH").map(q).join(sep), ...rows].join("\r\n")], { type:"text/csv;charset=utf-8" }), `pedidos-${todayIso()}.csv`);
+  SFX.play("pop"); toast(t("csvOk"), "📥");
+}
+/* copia de la web antigua: { data:{ "pd:days":"LZ1:…", "pd:monthly":"LZ1:…" } } (lz-string) */
+let LZ = null, IMP = null;
+const loadLZ = () => LZ ? Promise.resolve(LZ) : new Promise((res, rej) => { const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"; sc.onload = () => res(LZ = window.LZString); sc.onerror = rej; document.head.appendChild(sc); });
+function readKey(data, k){
+  const v = data[k]; if (v == null) return null; if (typeof v !== "string") return v;
+  if (v.startsWith("LZ1:")){ for (const f of ["decompressFromEncodedURIComponent","decompressFromBase64","decompressFromUTF16","decompress"]){ try { const r = LZ[f](v.slice(4)); if (r) return JSON.parse(r); } catch (e) {} } return null; }
+  try { return JSON.parse(v); } catch (e) { return null; }
+}
+$("#setImp").addEventListener("click", () => { closeDrawers(); setTimeout(() => { IMP = null; $("#impRes").innerHTML = ""; $("#impFile").value = ""; openDrawer("drImp"); }, 350); });
+async function parseBackup(file){
+  const box = $("#impRes"); box.innerHTML = `<div class="empty"><span class="em">⏳</span>${t("imp.reading")}</div>`;
+  try {
+    const json = JSON.parse(await file.text()), data = json && (json.data || json);
+    if (!data || !data["pd:days"]) throw "bad";
+    await loadLZ();
+    const days = readKey(data, "pd:days") || {}, months = readKey(data, "pd:monthly") || {};
+    if (typeof days !== "object") throw "bad";
+    const ent = Object.entries(days).filter(([d, x]) => /^\d{4}-\d\d-\d\d$/.test(d) && x && typeof x === "object");
+    const nw = ent.filter(([d]) => !S.days[d]), mo = Object.entries(months).filter(([k, x]) => /^\d{4}-\d\d$/.test(k) && x && x.revenue > 0 && !S.months[k]);
+    IMP = { days:nw, months:mo, skip:ent.length - nw.length };
+    const o = ent.reduce((s, [, x]) => s + (x.orders || 0), 0);
+    const r = ent.reduce((s, [d, x]) => s + conv(x.revenue || 0, x.currency || "USD", FX.rateFor(d)), 0) + Object.entries(months).reduce((s, [k, x]) => s + conv(x.revenue || 0, x.currency || "USD", FX.rateFor(k + "-15")), 0);
+    const fixS = fmt(S.settings.feeFix, 2, S.settings.feeCu), ds = ent.map(e => e[0]).sort();
+    box.innerHTML = `<h3 style="font-family:var(--display);font-size:22px;letter-spacing:-.03em;margin-top:22px">${t("imp.found")}</h3>
+      <div class="isum"><div style="--c:var(--sky)"><span>${t("imp.days")}</span><b>${ent.length}</b><small>${ds.length ? esc(dayShort(ds[0]) + " → " + dayShort(ds[ds.length-1])) : "—"}</small></div>
+        <div style="--c:var(--butter)"><span>${t("imp.ord")}</span><b>${o}</b></div><div style="--c:var(--mint)"><span>${t("imp.rev")}</span><b>${fmt(r, 0)}</b></div>
+        <div style="--c:var(--lilac)"><span>${t("imp.months")}</span><b>${Object.keys(months).length}</b></div></div>
+      ${IMP.skip ? `<p class="muted" style="margin-bottom:12px">${t("imp.skip", { n:IMP.skip })}</p>` : ""}
+      <label class="set-row"><span class="set-ic">💳</span><span class="txt"><b>${t("imp.fees")}</b><small>${esc(t("imp.feesS", { p:S.settings.feePct.toLocaleString(LOC[lang]), f:fixS }))}</small></span><input type="checkbox" id="impFees" checked><span class="sw"></span></label>
+      <p class="muted" style="font-size:13px;margin:4px 0 10px">💡 ${t("imp.cost")}</p>
+      <div class="dr-foot"><button class="btn blue full" id="impGo" ${nw.length || mo.length ? "" : "disabled"}>📦 ${nw.length || mo.length ? t("imp.go") : t("imp.none")}</button></div>`;
+    $("#impGo").addEventListener("click", runImport); SFX.play("pop");
+  } catch (e){ box.innerHTML = `<div class="warnbox" style="margin-top:16px">⚠️ ${e === "bad" ? t("imp.bad") : t("imp.err")}</div>`; }
+}
+async function runImport(){
+  if (!IMP) return; const b = $("#impGo"); b.disabled = true;
+  const fees = $("#impFees").checked, oldest = IMP.days.reduce((m, [d]) => d < m ? d : m, todayIso());
+  await FX.ensure(IMP.months.reduce((m, [k]) => k + "-01" < m ? k + "-01" : m, oldest));
+  IMP.days.forEach(([d, x]) => {
+    const cu = x.currency === "EUR" ? "EUR" : "USD", rev = +x.revenue || 0, r = FX.rateFor(d);
+    S.days[d] = { o:Math.max(0, Math.round(+x.orders || 0)), rev:r2(rev), cost:0, pct:fees && rev > 0 ? S.settings.feePct : 0, fix:fees && rev > 0 ? r2(conv0(S.settings.feeFix, S.settings.feeCu, cu, r)) : 0, cu, r };
+  });
+  IMP.months.forEach(([k, x]) => { S.months[k] = { rev:r2(+x.revenue), cost:0, fee:0, cu:x.currency === "EUR" ? "EUR" : "USD", r:FX.rateFor(k + "-15") }; });
+  S.flags.imported = todayIso(); save(); closeDrawers(); SFX.play("success"); FXC.confetti(); FXC.coins(30);
+  toast(t("imp.ok", { d:IMP.days.length, m:IMP.months.length }), "📦"); FX.load(); render();
+}
+$("#impFile").addEventListener("change", e => { const f = e.target.files[0]; if (f) parseBackup(f); });
+["dragenter","dragover"].forEach(ev => $("#impDrop").addEventListener(ev, e => { e.preventDefault(); $("#impDrop").classList.add("over"); }));
+["dragleave","drop"].forEach(ev => $("#impDrop").addEventListener(ev, e => { e.preventDefault(); $("#impDrop").classList.remove("over"); }));
+$("#impDrop").addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (f) parseBackup(f); });
+
+/* =========================================================
+   IDIOMA, TEMA Y ARRANQUE
+   ========================================================= */
+function applyLang(l){
+  lang = T[l] ? l : "es"; pref.set("ze-lang", lang); document.documentElement.lang = lang;
+  document.title = `${t("tool")} · ZongaElements`;
+  $$("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+  $$("[data-i18n-ph]").forEach(el => el.placeholder = t(el.dataset.i18nPh));
+  $$("[data-i18n-aria]").forEach(el => el.setAttribute("aria-label", t(el.dataset.i18nAria)));
+  $$("[data-i18n-title]").forEach(el => el.title = t(el.dataset.i18nTitle));
+  render();
+  if ($("#drDay").classList.contains("on")) paintDay();
+}
+const root = document.documentElement;
+root.dataset.theme = pref.get("ze-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+$("#themeBtn").addEventListener("click", () => { root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark"; pref.set("ze-theme", root.dataset.theme); SFX.play("click"); });
+addEventListener("keydown", e => { if (e.key !== "Escape") return; if (modalRes) return modalRes(false); closeDrawers(); });
+/* cada día guarda su propia tasa: al llegar la de hoy solo cambian la etiqueta y la conversión de la ficha */
+FX.onChange = () => { const lb = FX.label(); $("#fxTxt").textContent = lb.txt; $("#fxPill").className = "fx " + lb.cls; if ($("#drDay").classList.contains("on")) paintDay(); };
+setTimeout(() => ZN.popup({ newsUrl: "../#novedades" }), 1200);
+try { ZE.mountAccount($(".controls")); } catch (e) {}
+applyLang(lang);
+FX.load();
+})();
+</script>
+</body>
+</html>

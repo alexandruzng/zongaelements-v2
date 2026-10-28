@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-10-29-pedidos-diarios",
+    "date": "2026-10-29",
+    "type": "nuevo",
+    "title": {
+      "es": "Nueva herramienta: Pedidos diarios",
+      "en": "New tool: Daily orders",
+      "ro": "Instrument nou: Comenzi zilnice"
+    },
+    "items": {
+      "es": [
+        "En la sección Orgánico: toca cada día del calendario y apunta tus pedidos, la facturación, el coste de producto y las comisiones.",
+        "Calcula solo tu beneficio y tu margen real, con previsión de cierre de mes, mejor día, ticket medio e histórico mes a mes.",
+        "En dólares o euros, con el cambio de cada día. Importa tus datos de la web antigua y exporta todo a CSV."
+      ],
+      "en": [
+        "In the Organic section: tap any day on the calendar and log your orders, revenue, product cost and fees.",
+        "It works out your real profit and margin, with a month-end forecast, best day, average order and month-by-month history.",
+        "In dollars or euros, using each day's rate. Import your data from the old site and export everything to CSV."
+      ],
+      "ro": [
+        "În secțiunea Organic: atinge orice zi din calendar și notează comenzile, încasările, costul produselor și comisioanele.",
+        "Calculează singur profitul și marja reală, cu estimare la final de lună, cea mai bună zi, valoarea medie și istoric lunar.",
+        "În dolari sau euro, cu cursul fiecărei zile. Importă datele de pe site-ul vechi și exportă totul în CSV."
+      ]
+    }
+  },
+  {
     "id": "2026-10-29-avisos-suscripciones",
     "date": "2026-10-29",
     "type": "nuevo",

@@ -98,7 +98,7 @@ language plpgsql security definer set search_path = public as $$
 declare d jsonb := p_data;
 begin
   if auth.uid() is null then raise exception 'not authenticated'; end if;
-  if p_tool not in ('planner', 'habits', 'finance') then raise exception 'bad tool'; end if;
+  if p_tool not in ('planner', 'habits', 'finance', 'orders') then raise exception 'bad tool'; end if;
   if d is null then
     select data into d from user_data where user_id = auth.uid() and tool = p_tool;
   end if;
@@ -117,7 +117,7 @@ grant execute on function public.add_backup(text, jsonb) to authenticated;
 -- Amplía la lista de herramientas permitidas (re-ejecutable).
 -- =========================================================
 alter table public.user_data drop constraint if exists user_data_tool_check;
-alter table public.user_data add constraint user_data_tool_check check (tool in ('planner', 'habits', 'finance'));
+alter table public.user_data add constraint user_data_tool_check check (tool in ('planner', 'habits', 'finance', 'orders'));
 
 -- =========================================================
 -- Avisos de suscripciones (notificaciones push) · 2026-10-29
