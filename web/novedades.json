@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-10-29-finanzas-importar",
+    "date": "2026-10-29",
+    "type": "nuevo",
+    "title": {
+      "es": "Finanzas: importa tu copia de la web antigua y crea categorías al vuelo",
+      "en": "Finances: import your old site backup and create categories on the fly",
+      "ro": "Finanțe: importă copia de pe site-ul vechi și creează categorii din mers"
+    },
+    "items": {
+      "es": [
+        "Sube el archivo .json de copia de seguridad de la web antigua y recupera todos tus movimientos, tus categorías propias y tus suscripciones activas en un clic.",
+        "No se borra nada de lo que ya tienes y, si lo importas dos veces, no se duplica nada.",
+        "Al apuntar un gasto o un ingreso, toca «+ Nueva» para crear tu propia categoría con nombre, icono y color sin salir del formulario."
+      ],
+      "en": [
+        "Upload the backup .json from the old site and get all your transactions, custom categories and active subscriptions back in one click.",
+        "Nothing you already have is deleted, and importing twice won't duplicate anything.",
+        "When logging an expense or income, tap “+ New” to create your own category with a name, icon and color without leaving the form."
+      ],
+      "ro": [
+        "Încarcă fișierul .json de backup de pe site-ul vechi și recuperează toate tranzacțiile, categoriile proprii și abonamentele active dintr-un clic.",
+        "Nu se șterge nimic din ce ai deja și, dacă imporți de două ori, nu se dublează nimic.",
+        "Când notezi o cheltuială sau un venit, atinge „+ Nouă” ca să-ți creezi propria categorie cu nume, iconiță și culoare fără să ieși din formular."
+      ]
+    }
+  },
+  {
     "id": "2026-10-29-finanzas-juego",
     "date": "2026-10-29",
     "type": "mejora",

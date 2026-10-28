@@ -317,6 +317,26 @@ svg{display:block}
 .addcard:hover{background:var(--card);transform:translateY(-2px)}
 .addcard span{width:34px;height:34px;border-radius:50%;background:var(--yellow);border:2px solid #17161C;display:grid;place-items:center;color:#17161C}
 .addcard svg{width:16px;height:16px}
+/* importar */
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:30px 18px;border-radius:24px;border:var(--b) dashed var(--ink);background:var(--card);cursor:pointer;transition:background .2s,transform .2s}
+.drop:hover,.drop.over{background:var(--butter);color:#17161C;transform:translateY(-2px)}
+.drop .em{font-size:46px;line-height:1;animation:bob 3s ease-in-out infinite}
+.drop b{font-family:var(--display);font-size:20px;letter-spacing:-.02em}
+.drop small{font-size:13px;font-weight:700;color:var(--muted)}
+.drop.busy{pointer-events:none;opacity:.6}
+.isum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0 14px}
+.isum div{padding:12px;border-radius:18px;border:2px solid #17161C;background:var(--c,#fff);color:#17161C;min-width:0}
+.isum span{display:block;font-size:12px;font-weight:800;opacity:.7}
+.isum b{display:block;font-family:var(--display);font-size:22px;letter-spacing:-.03em;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.isum small{display:block;font-family:var(--mono);font-size:10.5px;margin-top:2px;opacity:.75}
+.ichips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ichips>span{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px 0 4px;border-radius:100px;border:2px solid var(--ink);background:var(--card);font-size:12.5px;font-weight:800;max-width:100%}
+.ichips>span.nb{padding:0 10px}
+.ichips .cic{width:22px;height:22px;border-radius:7px;box-shadow:none;border-width:1.5px}
+.ichips .cic svg{width:12px;height:12px}
+.cp.add{border-style:dashed;background:transparent;color:var(--fg)}
+.cp.add .plus{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--yellow);color:#17161C;border:2px solid #17161C}
+.cp.add .plus svg{width:17px;height:17px}
 
 /* logros */
 .medals{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
@@ -698,6 +718,12 @@ input:checked+.sw::after{transform:translateX(20px)}
     <p class="conv" id="txConv"></p>
     <div class="field"><label for="txConcept" data-i18n="tx.concept">Concepto</label><input class="input" id="txConcept" maxlength="80" autocomplete="off" data-i18n-ph="tx.conceptPh"></div>
     <div class="field"><span class="lab" data-i18n="tx.cat">Categoría</span><div class="catpick" id="txCats"></div></div>
+    <div class="cedit" id="txNew" hidden>
+      <div class="field"><label for="tnName" data-i18n="c.newFor"></label><input class="input" id="tnName" maxlength="24" autocomplete="off" data-i18n-ph="c.namePh"></div>
+      <div class="field"><span class="lab" data-i18n="c.color">Color</span><div class="swatches" id="tnColors"></div></div>
+      <div class="field"><span class="lab" data-i18n="c.icon">Icono</span><div class="icons" id="tnIcons"></div></div>
+      <div class="cbtns"><button class="btn" id="tnCancel" data-i18n="cancel">Cancelar</button><button class="btn accent" id="tnCreate" data-i18n="c.create">Crear categoría</button></div>
+    </div>
     <div class="field"><label for="txDate" data-i18n="tx.date">Fecha</label><input class="input" type="date" id="txDate"></div>
     <p class="msg" id="txMsg" hidden></p>
     <div class="dr-foot">
@@ -736,10 +762,20 @@ input:checked+.sw::after{transform:translateX(20px)}
     <div class="sec">
       <button class="set-row" id="setCats"><span class="set-ic">🎨</span><span class="txt"><b data-i18n="set.cats">Categorías</b><small data-i18n="set.catsS">Crea las tuyas o cambia nombre, color e icono.</small></span></button>
       <button class="set-row" id="setBud"><span class="set-ic">🧪</span><span class="txt"><b data-i18n="set.bud">Presupuestos</b><small data-i18n="set.budS">Límite mensual por categoría de gasto.</small></span></button>
+      <button class="set-row" id="setImp"><span class="set-ic">📦</span><span class="txt"><b data-i18n="imp.t">Importar copia de la web antigua</b><small data-i18n="imp.s">Movimientos, categorías y suscripciones de Zonga Elements.</small></span></button>
       <button class="set-row" id="setCsv"><span class="set-ic">📥</span><span class="txt"><b data-i18n="csv">Exportar CSV</b><small data-i18n="set.csvS">Fecha, tipo, categoría, concepto, EUR, RON y tasa.</small></span></button>
     </div>
     <div class="sec"><span class="lab" data-i18n="set.lang">Idioma</span><div class="seg-ctl" id="setLang"><button data-lang="es">Español</button><button data-lang="en">English</button><button data-lang="ro">Română</button></div></div>
     <div class="sec"><span class="lab" data-i18n="set.data">Datos</span><button class="btn full" id="setReset" style="color:var(--red)" data-i18n="set.reset">Borrar todos los datos</button></div>
+  </div>
+</aside>
+<aside class="drawer" id="drImp" aria-hidden="true">
+  <div class="dr-head"><h2 data-i18n="imp.h">Importar copia</h2><button class="ctrl" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dr-body">
+    <p class="muted" data-i18n="imp.p" style="margin-bottom:16px"></p>
+    <label class="drop" id="impDrop" for="impFile"><span class="em">📦</span><b data-i18n="imp.pick">Elige tu archivo .json</b><small data-i18n="imp.pickS">o arrástralo aquí</small></label>
+    <input type="file" id="impFile" accept=".json,application/json" hidden>
+    <div id="impRes"></div>
   </div>
 </aside>
 <aside class="drawer" id="drCats" aria-hidden="true">
@@ -825,6 +861,8 @@ es:{ tool:"Finanzas", tagline:"Mejores decisiones, grandes sueños.", settings:"
   "q.add":"Sumar","q.sub":"Restar","q.next":"Siguiente","q.back":"Atrás","q.saveAll":"Guardar {n}","q.none":"No has marcado ningún día. Vuelve atrás y toca los días con movimientos.","q.ok":"{n} movimientos guardados","q.count":"{n} marcados","q.bad":"Revisa las filas en rojo: el concepto necesita al menos 2 caracteres.","q.empty":"Escribe la cantidad de al menos un movimiento.",
   wd:["L","M","X","J","V","S","D"],
   "set.title":"Ajustes","set.name":"Tu nombre","set.sound":"Efectos de sonido","set.soundS":"Monedas, logros y confeti con sonido.","set.whims":"Tus caprichos","set.whimsP":"Las categorías que rompen tu racha si gastas en ellas.","set.cats":"Categorías","set.catsS":"Crea las tuyas o cambia nombre, color e icono.","set.bud":"Presupuestos","set.budS":"Límite mensual por categoría de gasto.","set.csvS":"Fecha, tipo, categoría, concepto, EUR, RON y tasa.",
+  "imp.t":"Importar copia de la web antigua","imp.s":"Movimientos, categorías y suscripciones de Zonga Elements.","imp.h":"Importar copia","imp.p":"Sube el archivo de copia de seguridad (.json) de tu web antigua de Zonga Elements. Se añadirán tus movimientos, tus categorías propias y tus suscripciones activas sin borrar nada de lo que ya tienes aquí. Si lo importas dos veces, no se duplica nada.","imp.pick":"Elige tu archivo .json","imp.pickS":"o arrástralo aquí","imp.reading":"Leyendo el archivo…","imp.bad":"Este archivo no es una copia de Zonga Elements con datos de Finanzas.","imp.err":"No se pudo leer el archivo. Comprueba que sea el .json de la copia de seguridad.","imp.found":"Esto es lo que hay en tu copia","imp.tx":"Movimientos","imp.range":"{a} → {b}","imp.inc":"Ingresos","imp.exp":"Gastos","imp.cats":"Categorías propias","imp.subs":"Suscripciones activas","imp.subsS":"{n} canceladas no se importan","imp.dup":"{n} ya estaban importados y se saltarán.","imp.optTx":"Movimientos","imp.optTxS":"Con el tipo de cambio de cada día.","imp.optCats":"Categorías propias","imp.optCatsS":"Con su nombre, color e icono.","imp.optSubs":"Suscripciones activas","imp.optSubsS":"Con su próximo cobro.","imp.go":"Importar todo","imp.going":"Importando…","imp.none":"No hay nada nuevo que importar: ya lo tienes todo.","imp.ok":"¡Importado! {n} movimientos, {c} categorías y {s} suscripciones","imp.cta":"¿Vienes de la web antigua?","imp.ctaP":"Importa tu copia de seguridad y recupera todos tus meses de un golpe.","imp.ctaB":"Importar copia",
+  "c.newFor":"Nombre de la categoría","c.namePh":"Ej: Meta Ads","c.create":"Crear categoría","c.addNew":"Nueva","c.created":"Categoría creada",
   "set.lang":"Idioma","set.data":"Datos","set.reset":"Borrar todos los datos","set.resetT":"¿Borrar todos los datos?","set.resetP":"Se eliminarán tus movimientos, metas, suscripciones, presupuestos, logros y categorías propias. No se puede deshacer.","set.resetOk":"Borrar todo","set.resetDone":"Datos borrados",
   "c.t":"Categorías","c.new":"Nueva categoría","c.name":"Nombre","c.color":"Color","c.icon":"Icono","c.restore":"Restablecer las de serie","c.restoreT":"¿Restablecer las categorías de serie?","c.restoreP":"Vuelven sus nombres, colores e iconos originales y reaparecen las que borraste. Tus categorías propias se mantienen.","c.restored":"Categorías restablecidas",
   "c.delT":"¿Eliminar «{c}»?","c.delP":"Sus movimientos pasarán a mostrarse como «Otros».","c.saved":"Categoría guardada","c.deleted":"Categoría eliminada","c.edit":"Toca una categoría para editarla.","c.own":"propia","c.short":"El nombre necesita al menos 2 caracteres.",
@@ -882,6 +920,8 @@ en:{ tool:"Finances", tagline:"Better decisions, big dreams.", settings:"Setting
   "q.add":"Add","q.sub":"Remove","q.next":"Next","q.back":"Back","q.saveAll":"Save {n}","q.none":"You haven't marked any day. Go back and tap the days with transactions.","q.ok":"{n} transactions saved","q.count":"{n} marked","q.bad":"Check the rows in red: the description needs at least 2 characters.","q.empty":"Enter the amount of at least one transaction.",
   wd:["M","T","W","T","F","S","S"],
   "set.title":"Settings","set.name":"Your name","set.sound":"Sound effects","set.soundS":"Coins, achievements and confetti with sound.","set.whims":"Your treats","set.whimsP":"Categories that break your streak when you spend on them.","set.cats":"Categories","set.catsS":"Create your own or change name, color and icon.","set.bud":"Budgets","set.budS":"Monthly limit per spending category.","set.csvS":"Date, type, category, description, EUR, RON and rate.",
+  "imp.t":"Import a backup from the old site","imp.s":"Transactions, categories and subscriptions from Zonga Elements.","imp.h":"Import backup","imp.p":"Upload the backup file (.json) from your old Zonga Elements site. Your transactions, custom categories and active subscriptions will be added without deleting anything you already have here. Importing twice won't duplicate anything.","imp.pick":"Choose your .json file","imp.pickS":"or drop it here","imp.reading":"Reading the file…","imp.bad":"This file isn't a Zonga Elements backup with Finances data.","imp.err":"The file couldn't be read. Check that it's the backup .json.","imp.found":"Here's what's in your backup","imp.tx":"Transactions","imp.range":"{a} → {b}","imp.inc":"Income","imp.exp":"Expenses","imp.cats":"Custom categories","imp.subs":"Active subscriptions","imp.subsS":"{n} cancelled won't be imported","imp.dup":"{n} were already imported and will be skipped.","imp.optTx":"Transactions","imp.optTxS":"With each day's exchange rate.","imp.optCats":"Custom categories","imp.optCatsS":"With their name, color and icon.","imp.optSubs":"Active subscriptions","imp.optSubsS":"With their next charge.","imp.go":"Import everything","imp.going":"Importing…","imp.none":"Nothing new to import: you already have it all.","imp.ok":"Imported! {n} transactions, {c} categories and {s} subscriptions","imp.cta":"Coming from the old site?","imp.ctaP":"Import your backup and get all your months back in one go.","imp.ctaB":"Import backup",
+  "c.newFor":"Category name","c.namePh":"E.g. Meta Ads","c.create":"Create category","c.addNew":"New","c.created":"Category created",
   "set.lang":"Language","set.data":"Data","set.reset":"Delete all data","set.resetT":"Delete all data?","set.resetP":"Your transactions, goals, subscriptions, budgets, achievements and custom categories will be deleted. This can't be undone.","set.resetOk":"Delete everything","set.resetDone":"Data deleted",
   "c.t":"Categories","c.new":"New category","c.name":"Name","c.color":"Color","c.icon":"Icon","c.restore":"Restore defaults","c.restoreT":"Restore the default categories?","c.restoreP":"Their original names, colors and icons come back, and any you deleted reappear. Your own categories stay.","c.restored":"Categories restored",
   "c.delT":"Delete “{c}”?","c.delP":"Its transactions will be shown as “Other”.","c.saved":"Category saved","c.deleted":"Category deleted","c.edit":"Tap a category to edit it.","c.own":"custom","c.short":"The name needs at least 2 characters.",
@@ -939,6 +979,8 @@ ro:{ tool:"Finanțe", tagline:"Decizii mai bune, vise mari.", settings:"Setări"
   "q.add":"Adaugă","q.sub":"Scade","q.next":"Înainte","q.back":"Înapoi","q.saveAll":"Salvează {n}","q.none":"N-ai marcat nicio zi. Întoarce-te și atinge zilele cu tranzacții.","q.ok":"{n} tranzacții salvate","q.count":"{n} marcate","q.bad":"Verifică rândurile roșii: descrierea are nevoie de cel puțin 2 caractere.","q.empty":"Scrie suma pentru cel puțin o tranzacție.",
   wd:["L","M","M","J","V","S","D"],
   "set.title":"Setări","set.name":"Numele tău","set.sound":"Efecte sonore","set.soundS":"Monede, realizări și confetti cu sunet.","set.whims":"Capriciile tale","set.whimsP":"Categoriile care îți rup seria dacă cheltuiești pe ele.","set.cats":"Categorii","set.catsS":"Creează-le pe ale tale sau schimbă numele, culoarea și iconița.","set.bud":"Bugete","set.budS":"Limită lunară pe categorie de cheltuieli.","set.csvS":"Data, tip, categorie, descriere, EUR, RON și curs.",
+  "imp.t":"Importă o copie de pe site-ul vechi","imp.s":"Tranzacții, categorii și abonamente din Zonga Elements.","imp.h":"Importă copia","imp.p":"Încarcă fișierul de backup (.json) de pe vechiul site Zonga Elements. Tranzacțiile, categoriile proprii și abonamentele active se adaugă fără să se șteargă nimic din ce ai aici. Dacă imporți de două ori, nu se dublează nimic.","imp.pick":"Alege fișierul .json","imp.pickS":"sau trage-l aici","imp.reading":"Se citește fișierul…","imp.bad":"Fișierul nu e o copie Zonga Elements cu date de Finanțe.","imp.err":"Fișierul nu a putut fi citit. Verifică dacă e .json-ul de backup.","imp.found":"Iată ce conține copia ta","imp.tx":"Tranzacții","imp.range":"{a} → {b}","imp.inc":"Venituri","imp.exp":"Cheltuieli","imp.cats":"Categorii proprii","imp.subs":"Abonamente active","imp.subsS":"{n} anulate nu se importă","imp.dup":"{n} erau deja importate și vor fi sărite.","imp.optTx":"Tranzacții","imp.optTxS":"Cu cursul de schimb al fiecărei zile.","imp.optCats":"Categorii proprii","imp.optCatsS":"Cu numele, culoarea și iconița lor.","imp.optSubs":"Abonamente active","imp.optSubsS":"Cu următoarea plată.","imp.go":"Importă tot","imp.going":"Se importă…","imp.none":"Nimic nou de importat: ai deja totul.","imp.ok":"Importat! {n} tranzacții, {c} categorii și {s} abonamente","imp.cta":"Vii de pe site-ul vechi?","imp.ctaP":"Importă copia de siguranță și recuperează toate lunile dintr-odată.","imp.ctaB":"Importă copia",
+  "c.newFor":"Numele categoriei","c.namePh":"Ex: Meta Ads","c.create":"Creează categoria","c.addNew":"Nouă","c.created":"Categorie creată",
   "set.lang":"Limbă","set.data":"Date","set.reset":"Șterge toate datele","set.resetT":"Ștergi toate datele?","set.resetP":"Se vor șterge tranzacțiile, obiectivele, abonamentele, bugetele, realizările și categoriile proprii. Nu se poate anula.","set.resetOk":"Șterge tot","set.resetDone":"Date șterse",
   "c.t":"Categorii","c.new":"Categorie nouă","c.name":"Nume","c.color":"Culoare","c.icon":"Iconiță","c.restore":"Restabilește categoriile de bază","c.restoreT":"Restabilești categoriile de bază?","c.restoreP":"Revin numele, culorile și iconițele originale și reapar cele șterse. Categoriile tale rămân.","c.restored":"Categorii restabilite",
   "c.delT":"Ștergi „{c}”?","c.delP":"Tranzacțiile ei vor apărea ca „Altele”.","c.saved":"Categorie salvată","c.deleted":"Categorie ștearsă","c.edit":"Atinge o categorie ca s-o editezi.","c.own":"proprie","c.short":"Numele are nevoie de cel puțin 2 caractere.",
@@ -1050,6 +1092,12 @@ const CI = {
   store:'<path d="M3 9l2-5h14l2 5"/><path d="M3 9h18v1a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M5 13v8h14v-8"/>',
   trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   paw:'<circle cx="5" cy="10" r="1.6"/><circle cx="9" cy="5" r="1.6"/><circle cx="15" cy="5" r="1.6"/><circle cx="19" cy="10" r="1.6"/><path d="M12 11c-3 0-6 4-6 7a3 3 0 0 0 3 3c1 0 2-1 3-1s2 1 3 1a3 3 0 0 0 3-3c0-3-3-7-6-7z"/>',
+  wallet:'<path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15V9H5a2 2 0 0 1-2-2z"/><path d="M16 14.5h.01"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
+  sparkles:'<path d="m12 3 1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"/><path d="M19 17v4M17 19h4"/>',
+  music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  gamepad:'<rect x="2" y="6" width="20" height="12" rx="6"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/>',
+  shirt:'<path d="M20.4 6.6 16 4a4 4 0 0 1-8 0L3.6 6.6a1 1 0 0 0-.5 1.2l1.2 3.4a1 1 0 0 0 1.3.6L7 11v9h10v-9l1.4.8a1 1 0 0 0 1.3-.6l1.2-3.4a1 1 0 0 0-.5-1.2z"/>',
   piggy:'<path d="M19 9.5c1 .2 2 1 2 2.5h-1.6a7 7 0 0 1-2.4 3.4V19h-3v-2h-4v2H7v-3.6A6 6 0 0 1 10 5h4a6 6 0 0 1 5 4.5z"/><path d="M15 9h.01M2 9a2 2 0 0 0 3 1.7"/>'
 };
 const ICON = {
@@ -1158,8 +1206,17 @@ const FX = (() => {
     }
     persist(); busy = false; onChange();
   }
+  /* descarga el histórico que falte desde «from» (para importar meses antiguos) */
+  async function ensure(from){
+    if (st.from && st.from <= from) return;
+    try {
+      const j = await getJ(`https://api.frankfurter.dev/v1/${from}..${st.from || todayIso()}?base=EUR&symbols=RON`);
+      Object.entries(j.rates || {}).forEach(([d, r]) => st.hist[d] = r.RON);
+      st.from = from; st.to = st.to || todayIso(); keys = Object.keys(st.hist).sort(); persist();
+    } catch (e) {}
+  }
   return {
-    load, rateFor,
+    load, rateFor, ensure,
     get rate(){ return st.rate || 5.0; },
     set onChange(f){ onChange = f; },
     label(){
@@ -1660,7 +1717,8 @@ function renderHome(){
   } else {
     const k = view.key, list = inMonth(k), s = sum(list);
     const keys = [...Array(7)].map((_, i) => shiftKey(k, i - 6));
-    el.innerHTML = `<div class="grid">${heroHTML(s, shiftKey(k, -1), t("hero.lab", { m:monthName(k, { month:"long" }) }))}${levelHTML()}${kpisHTML(list, s, k)}
+    const cta = S.tx.length ? "" : `<article class="card c-yellow s12 rise" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><span style="font-size:44px">📦</span><div style="flex:1 1 220px"><h3 style="font-family:var(--display);font-size:22px;letter-spacing:-.03em">${t("imp.cta")}</h3><p class="muted" style="margin-top:4px">${t("imp.ctaP")}</p></div><button class="btn primary sm" data-act="import">${t("imp.ctaB")}</button></article>`;
+    el.innerHTML = `<div class="grid">${cta}${heroHTML(s, shiftKey(k, -1), t("hero.lab", { m:monthName(k, { month:"long" }) }))}${levelHTML()}${kpisHTML(list, s, k)}
       ${goalsPreviewHTML()}${tubesHTML(list)}${healthHTML(list, k)}${evoHTML(keys)}${subsPreviewHTML()}${achPreviewHTML()}${donutHTML(list)}${tipsHTML(list, s, k)}${wrappedBanner(k)}
       <article class="card s12 rise"><div class="ct"><div><h3>🧾 ${t("last.t")}</h3></div><button class="xs" data-tab="movs">${t("seeAll")}</button></div>${txRows(list, 6, false)}</article></div>`;
   }
@@ -1759,6 +1817,7 @@ document.addEventListener("click", async e => {
   else if (act === "snew") openSub(null);
   else if (act === "sedit") openSub(S.subs.find(s => s.id === a.dataset.id));
   else if (act === "wrapped") openWrapped(a.dataset.k);
+  else if (act === "import") openImport();
   else if (act === "gdel") {
     const g = S.goals.find(x => x.id === a.dataset.id); if (!g) return;
     if (!await modal({ title:t("g.delT", { g:g.name }), text:t("g.delP"), ok:t("del"), warn:true, danger:true, icon:ICON.trash })) return;
@@ -1859,7 +1918,7 @@ function openTx(x){
   $("#txAmt").value = x ? String(x.a).replace(".", lang === "en" ? "." : ",") : "";
   $("#txConcept").value = x ? x.n : "";
   $("#txDate").value = x ? x.d : (S.lastDate || todayIso());
-  $("#txDel").hidden = !x; $("#txMsg").hidden = true;
+  $("#txDel").hidden = !x; $("#txMsg").hidden = true; $("#txNew").hidden = true;
   $("#txAmt").classList.remove("bad"); $("#txConcept").classList.remove("bad");
   paintTx(); openDrawer("drTx");
   if (!x && matchMedia("(pointer: fine)").matches) setTimeout(() => $("#txAmt").focus(), 450);
@@ -1871,7 +1930,8 @@ function paintTx(){
   $("#txSave").className = "btn full " + (F.t === "inc" ? "accent" : "danger");
   const cats = catsFor(F.t);
   if (!cats.find(c => c.id === F.c)) F.c = cats[0] && cats[0].id;
-  $("#txCats").innerHTML = cats.map(c => `<button class="cp ${c.id === F.c ? "on" : ""}" data-c="${c.id}">${cic(c)}<span>${esc(catName(c))}</span></button>`).join("");
+  $("#txCats").innerHTML = cats.map(c => `<button class="cp ${c.id === F.c ? "on" : ""}" data-c="${c.id}">${cic(c)}<span>${esc(catName(c))}</span></button>`).join("")
+    + `<button class="cp add" data-newcat><span class="plus">${ICON.plus}</span><span>${t("c.addNew")}</span></button>`;
   paintConv();
 }
 const txRate = () => { const d = $("#txDate").value || todayIso(); return F.id && F.r && d === F.d0 ? F.r : FX.rateFor(d); };   // al editar sin cambiar la fecha se conserva la tasa original
@@ -1879,9 +1939,31 @@ function paintConv(){
   const a = parseNum($("#txAmt").value), r = txRate(), d = $("#txDate").value || todayIso();
   $("#txConv").textContent = a > 0 ? t("tx.conv", { a:F.cu === "EUR" ? fmtR(a*r) : fmtE(a/r), r:fmtRate(r), d:dayShort(d) }) : "";
 }
-$("#txType").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; F.t = b.dataset.t; SFX.play("tick"); paintTx(); });
+$("#txType").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; F.t = b.dataset.t; $("#txNew").hidden = true; SFX.play("tick"); paintTx(); });
 $("#txCur").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; F.cu = b.dataset.c; pref.set("ze-fin-cur", F.cu); SFX.play("tick"); paintTx(); });
-$("#txCats").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; F.c = b.dataset.c; $$("#txCats .cp").forEach(x => x.classList.toggle("on", x === b)); SFX.play("tick"); });
+const TN = { color:COLORS[5], icon:"cart" };
+function paintTN(){
+  swatches($("#tnColors"), TN.color);
+  $("#tnIcons").innerHTML = Object.keys(CI).map(k => `<button class="ic-b ${k === TN.icon ? "on" : ""}" data-v="${k}" aria-label="${k}">${SV(CI[k])}</button>`).join("");
+  $("#txNew").style.setProperty("--cc", TN.color);
+}
+function openTN(){
+  TN.color = COLORS[(allCats().length * 3 + 1) % COLORS.length]; TN.icon = F.t === "inc" ? "trend" : "cart";
+  $("#tnName").value = ""; $("#tnName").classList.remove("bad"); paintTN(); $("#txNew").hidden = false; SFX.play("open");
+  $("#txNew").scrollIntoView({ block:"center", behavior:"smooth" }); setTimeout(() => $("#tnName").focus(), 300);
+}
+$("#tnColors").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; TN.color = b.dataset.c; paintTN(); SFX.play("tick"); });
+$("#tnIcons").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; TN.icon = b.dataset.v; paintTN(); SFX.play("tick"); });
+$("#tnCancel").addEventListener("click", () => { $("#txNew").hidden = true; SFX.play("close"); });
+$("#tnName").addEventListener("keydown", e => { if (e.key === "Enter") $("#tnCreate").click(); });
+$("#tnCreate").addEventListener("click", () => {
+  const name = $("#tnName").value.trim();
+  if (name.length < 2){ $("#tnName").classList.add("bad"); toast(t("c.short"), "⚠️"); return shake($("#tnName")); }
+  const c = { id:"c_" + uid(), type:F.t, name, color:TN.color, icon:TN.icon };
+  S.cats.custom.push(c); F.c = c.id; save();
+  $("#txNew").hidden = true; paintTx(); SFX.play("pop"); toast(t("c.created"), "🎨");
+});
+$("#txCats").addEventListener("click", e => { if (e.target.closest("[data-newcat]")) return openTN(); const b = e.target.closest("[data-c]"); if (!b) return; F.c = b.dataset.c; $$("#txCats .cp").forEach(x => x.classList.toggle("on", x === b)); SFX.play("tick"); });
 $("#txAmt").addEventListener("input", () => { $("#txAmt").classList.remove("bad"); paintConv(); });
 $("#txDate").addEventListener("change", paintConv);
 $("#txConcept").addEventListener("input", () => $("#txConcept").classList.remove("bad"));
@@ -2071,6 +2153,113 @@ $("#setSound").addEventListener("change", e => { S.settings.sound = e.target.che
 $("#setCats").addEventListener("click", () => { closeDrawers(); setTimeout(openCats, 350); });
 $("#setBud").addEventListener("click", () => { closeDrawers(); setTimeout(openBudgets, 350); });
 $("#setCsv").addEventListener("click", exportCsv);
+$("#setImp").addEventListener("click", () => { closeDrawers(); setTimeout(openImport, 350); });
+
+/* =========================================================
+   IMPORTAR COPIA DE LA WEB ANTIGUA (Zonga Elements)
+   La copia es { app, data:{ "fz:transactions": "LZ1:…", … } }: cada valor va
+   comprimido con lz-string (compressToEncodedURIComponent) o en JSON normal.
+   Solo se leen las claves de Finanzas y del gestor de suscripciones.
+   ========================================================= */
+let LZ = null;
+const loadLZ = () => LZ ? Promise.resolve(LZ) : new Promise((res, rej) => {
+  const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js";
+  sc.onload = () => res(LZ = window.LZString); sc.onerror = rej; document.head.appendChild(sc);
+});
+const OLD_CATS = { food:"comida", transport:"transporte", home:"hogar", leisure:"ocio", health:"salud", shopping:"compras", subs:"suscripciones", other:"otros", salary:"sueldo", freelance:"freelance", gift:"regalo" };
+const OLD_ICONS = { utensils:"food", bag:"bag", wallet:"wallet", laptop:"laptop", heart:"heart", bell:"bell", repeat:"repeat", sparkles:"sparkles", car:"car", home:"home", gift:"gift", briefcase:"briefcase", plane:"plane", coffee:"coffee", book:"book", phone:"phone", dumbbell:"dumbbell", zap:"zap", cart:"cart", music:"music", gamepad:"gamepad", shirt:"shirt", ticket:"ticket", film:"ticket", trend:"trend", store:"store", megaphone:"megaphone" };
+let IMP = null;
+function openImport(){ IMP = null; $("#impRes").innerHTML = ""; $("#impFile").value = ""; $("#impDrop").classList.remove("busy"); openDrawer("drImp"); }
+function readKey(data, k){
+  const v = data[k]; if (v == null) return null;
+  if (typeof v !== "string") return v;
+  if (v.startsWith("LZ1:")){
+    const raw = v.slice(4);
+    for (const f of ["decompressFromEncodedURIComponent", "decompressFromBase64", "decompressFromUTF16", "decompress"]){
+      try { const r = LZ[f](raw); if (r) return JSON.parse(r); } catch (e) {}
+    }
+    return null;
+  }
+  try { return JSON.parse(v); } catch (e) { return v; }
+}
+async function parseBackup(file){
+  const box = $("#impRes"); $("#impDrop").classList.add("busy");
+  box.innerHTML = `<div class="empty"><span class="em">⏳</span>${t("imp.reading")}</div>`;
+  try {
+    const json = JSON.parse(await file.text()), data = json && (json.data || json);
+    if (!data || !data["fz:transactions"]) throw "bad";
+    await loadLZ();
+    const tx = readKey(data, "fz:transactions"), cats = readKey(data, "fz:categories") || [], over = readKey(data, "fz:categoryOverrides") || {}, subs = readKey(data, "suscrito.v1") || [];
+    if (!Array.isArray(tx)) throw "bad";
+    const have = new Set(S.tx.map(x => x.id)), haveSubs = new Set(S.subs.map(x => x.id)), haveCats = new Set(allCats().map(c => c.id));
+    const custom = cats.filter(c => c && c.custom && c.key);
+    const newTx = tx.filter(x => x && x.date && x.amount > 0 && !have.has("imp-" + x.id));
+    const active = subs.filter(x => x && x.status !== "cancelada" && x.amount > 0);
+    IMP = { tx:newTx, dup:tx.length - newTx.length, cats:custom.filter(c => !haveCats.has("c_" + c.key)), over, subs:active.filter(x => !haveSubs.has("imp-" + x.id)), cancelled:subs.length - active.length };
+    drawImport(tx);
+  } catch (e){
+    box.innerHTML = `<div class="tip warn" style="margin-top:16px"><span class="ti">⚠️</span><span>${e === "bad" ? t("imp.bad") : t("imp.err")}</span></div>`;
+  }
+  $("#impDrop").classList.remove("busy");
+}
+const impCat = c => ({ id:"c_" + c.key, type:c.type === "income" ? "inc" : "exp", name:String(c.label || c.key).slice(0, 24), color:/^#[0-9a-f]{6}$/i.test(c.color) ? c.color : COLORS[5], icon:OLD_ICONS[c.icon] || "dots" });
+function drawImport(all){
+  const I = IMP, ds = all.map(x => x.date).sort();
+  const inc = all.filter(x => x.type === "income").reduce((a, x) => a + x.amount, 0), exp = all.filter(x => x.type !== "income").reduce((a, x) => a + x.amount, 0);
+  const opt = (id, on, n, ti, sub) => `<label class="set-row"><span class="set-ic">${n}</span><span class="txt"><b>${ti}</b><small>${sub}</small></span><input type="checkbox" id="${id}" ${on ? "checked" : ""} ${on ? "" : "disabled"}><span class="sw"></span></label>`;
+  $("#impRes").innerHTML = `<h3 style="font-family:var(--display);font-size:22px;letter-spacing:-.03em;margin-top:22px">${t("imp.found")}</h3>
+    <div class="isum">
+      <div style="--c:var(--sky)"><span>${t("imp.tx")}</span><b>${all.length}</b><small>${ds.length ? esc(t("imp.range", { a:dayShort(ds[0]), b:dayShort(ds[ds.length - 1]) })) : "—"}</small></div>
+      <div style="--c:var(--butter)"><span>${t("imp.cats")}</span><b>${I.cats.length}</b></div>
+      <div style="--c:var(--mint)"><span>${t("imp.inc")}</span><b>${fmtE(inc, 0)}</b></div>
+      <div style="--c:var(--salmon)"><span>${t("imp.exp")}</span><b>${fmtE(exp, 0)}</b></div>
+      <div style="--c:var(--rose);grid-column:1/-1"><span>${t("imp.subs")}</span><b>${I.subs.length}</b>${I.cancelled ? `<small>${t("imp.subsS", { n:I.cancelled })}</small>` : ""}</div>
+    </div>
+    ${I.cats.length ? `<div class="ichips" style="margin-bottom:10px">${I.cats.map(c => { const n = impCat(c); return `<span>${cic(n)}${esc(n.name)}</span>`; }).join("")}</div>` : ""}
+    ${I.subs.length ? `<div class="ichips" style="margin-bottom:16px">${I.subs.map(x => `<span class="nb">🔔 ${esc(x.name)} · ${fmtE(x.amount)}</span>`).join("")}</div>` : ""}
+    ${I.dup ? `<p class="muted" style="margin-bottom:12px">${t("imp.dup", { n:I.dup })}</p>` : ""}
+    ${opt("impTx", I.tx.length, "🧾", `${t("imp.optTx")} · ${I.tx.length}`, t("imp.optTxS"))}
+    ${opt("impCats", I.cats.length, "🎨", `${t("imp.optCats")} · ${I.cats.length}`, t("imp.optCatsS"))}
+    ${opt("impSubs", I.subs.length, "🔔", `${t("imp.optSubs")} · ${I.subs.length}`, t("imp.optSubsS"))}
+    <div class="dr-foot"><button class="btn accent full" id="impGo" ${I.tx.length || I.cats.length || I.subs.length ? "" : "disabled"}>📦 ${I.tx.length || I.cats.length || I.subs.length ? t("imp.go") : t("imp.none")}</button></div>`;
+  $("#impGo").addEventListener("click", runImport);
+  SFX.play("pop");
+}
+async function runImport(){
+  const I = IMP, b = $("#impGo"); if (!I) return;
+  const wTx = $("#impTx").checked, wCats = $("#impCats").checked, wSubs = $("#impSubs").checked;
+  b.disabled = true; b.textContent = t("imp.going");
+  let nc = 0, nt = 0, ns = 0;
+  // categorías: primero, para que los movimientos las encuentren
+  if (wCats){ I.cats.forEach(c => { S.cats.custom.push(impCat(c)); nc++; });
+    const o = I.over.leisure; if (o && !S.cats.over.ocio){ const oo = {}; if (o.color) oo.color = o.color; if (OLD_ICONS[o.icon]) oo.icon = OLD_ICONS[o.icon]; if (Object.keys(oo).length) S.cats.over.ocio = oo; } }
+  if (wTx){
+    const oldest = I.tx.reduce((m, x) => x.date < m ? x.date : m, todayIso());
+    await FX.ensure(oldest);   // tipo de cambio de cada día para los que no traen tasa
+    const known = new Set(allCats().map(c => c.id));
+    I.tx.forEach(x => {
+      const c = OLD_CATS[x.category] || (known.has("c_" + x.category) ? "c_" + x.category : "otros");
+      S.tx.push({ id:"imp-" + x.id, ts:+String(x.id).replace(/\D/g, "").slice(0, 13) || 0, d:x.date, t:x.type === "income" ? "inc" : "exp", c,
+        n:String(x.concept || catName(catOf(c))).slice(0, 80), a:Math.round(x.amount * 100) / 100, cu:"EUR", r:x.rate > 0 ? x.rate : FX.rateFor(x.date) });
+      nt++;
+    });
+  }
+  if (wSubs) I.subs.forEach((x, i) => {
+    const f = x.cycle === "anual" || x.months === 12 ? "y" : x.cycle === "semanal" ? "w" : "m";
+    S.subs.push({ id:"imp-" + x.id, name:String(x.name).slice(0, 40), a:Math.round(x.amount * 100) / 100, cu:"EUR", f, d0:/^\d{4}-\d\d-\d\d$/.test(x.next) ? x.next : todayIso(), color:COLORS[(i * 3 + 5) % COLORS.length], logged:[] });
+    ns++;
+  });
+  S.flags.imported = todayIso();
+  checkAch(true);   // los logros que salgan con los datos importados se desbloquean sin una ristra de avisos
+  save(); FX.load(); closeDrawers();
+  SFX.play("success"); FXC.coins(40); FXC.confetti();
+  toast(t("imp.ok", { n:nt, c:nc, s:ns }), "📦");
+  view.tab = "home"; setMonth(keyOf(new Date()));
+}
+$("#impFile").addEventListener("change", e => { const f = e.target.files[0]; if (f) parseBackup(f); });
+["dragenter","dragover"].forEach(ev => $("#impDrop").addEventListener(ev, e => { e.preventDefault(); $("#impDrop").classList.add("over"); }));
+["dragleave","drop"].forEach(ev => $("#impDrop").addEventListener(ev, e => { e.preventDefault(); $("#impDrop").classList.remove("over"); }));
+$("#impDrop").addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (f) parseBackup(f); });
 $("#setLang").addEventListener("click", e => { const b = e.target.closest("[data-lang]"); if (!b) return; applyLang(b.dataset.lang); $$("#setLang button").forEach(x => x.classList.toggle("on", x === b)); paintWhims(); SFX.play("click"); });
 $("#setReset").addEventListener("click", async () => {
   if (!await modal({ title:t("set.resetT"), text:t("set.resetP"), ok:t("set.resetOk"), warn:true, danger:true, icon:ICON.trash })) return;
