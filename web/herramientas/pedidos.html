@@ -277,7 +277,7 @@ svg{display:block}
 .fees .amt input{font-size:20px;height:38px}
 .hint{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:2px}
 .result{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:12px;border-radius:20px;border:var(--b) solid #17161C;box-shadow:4px 4px 0 var(--sh);background:var(--mint);color:#17161C;margin:6px 0 4px}
-.result.neg{background:var(--salmon)}
+.result.neg{background:var(--salmon)} .result.wait{background:var(--card);color:var(--fg)}
 .result div{min-width:0}
 .result span{display:block;font-size:11.5px;font-weight:800;opacity:.7}
 .result b{display:block;font-family:var(--display);font-size:19px;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -411,6 +411,7 @@ input:checked+.sw::after{transform:translateX(20px)}
     <div class="field"><label for="dCost" data-i18n="d.cost">Coste de producto (total del día)</label><div class="amt"><input id="dCost" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="u" data-cu></span></div></div>
     <div class="field"><label for="dFee" data-i18n="d.fees">Comisiones (total del día)</label><div class="amt"><input id="dFee" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="u" data-cu></span></div><span class="hint" data-i18n="d.feeHint"></span></div>
     <div class="dr-foot">
+      <p class="hint" id="dNeedCost" hidden style="font-family:var(--body);font-weight:700;font-size:13px">💡 <span data-i18n="d.needCost"></span></p>
       <div class="result" id="dResult"><div><span data-i18n="costs">Costes</span><b id="rCost">—</b></div><div class="pf"><span data-i18n="profit">Beneficio</span><b id="rProfit">—</b></div><div><span data-i18n="margin">Margen</span><b id="rMargin">—</b></div></div>
       <button class="btn blue full" id="dSave" data-i18n="d.save">Guardar día</button>
       <div class="row"><button class="btn" id="dZero" data-i18n="d.zero">Sin pedidos</button><button class="btn" id="dDel" style="color:var(--red)" data-i18n="del">Borrar</button></div>
@@ -478,7 +479,7 @@ es:{ tool:"Pedidos diarios", h1a:"Pedidos", h1b:"diarios", sub:"Apunta cada día
   rev:"Facturación", orders:"Pedidos", costs:"Costes", cost:"Coste de producto", fees:"Comisiones", profit:"Beneficio", margin:"Margen", aov:"Ticket medio",
   "hero.lab":"Facturación de {m}","hero.good":"¡El negocio se mueve!","hero.bad":"Este mes pierdes dinero: revisa costes","hero.zero":"Apunta tu primer día de ventas",
   perDay:"{n} al día", vsPrev:"{p} vs {m} a este ritmo", noPrev:"sin datos de {m}", ofRev:"{p} de la facturación",
-  "split.t":"¿A dónde va tu dinero?","split.s":"De cada {c} que facturas",
+  "noCost":"Sin costes apuntados","noCostP":"Lo importado de la web antigua no tiene coste de producto, así que no cuenta para el beneficio. Añade el coste en cada día para incluirlo.","noCostHand":"Añade tus costes para ver el beneficio","partial":"Calculado sobre {r} con costes apuntados","partialT":"* Solo los días con coste de producto apuntado cuentan para el beneficio y el margen. Lo importado de la web antigua no tiene costes y queda fuera.","histNoCost":"Los meses sin costes apuntados no tienen barra de beneficio.","d.needCost":"Añade el coste de producto para calcular el beneficio.","split.t":"¿A dónde va tu dinero?","split.s":"De cada {c} que facturas",
   "cal.t":"Calendario","cal.s":"Toca un día para apuntarlo","k.none":"Sin apuntar","k.zero":"Sin pedidos","k.sales":"Con ventas","k.loss":"Pierde dinero",
   "cal.declared":"Este mes incluye un total importado: {r} de facturación.","cal.edit":"Editar",
   "f.t":"Este mes","f.proj":"Previsión de cierre","f.projS":"{p} de beneficio","f.projNo":"Hacen falta 3 días","f.best":"Mejor día","f.days":"Días con ventas","f.daysS":"de {n} días","f.avg":"Media de pedidos","f.avgS":"por día",
@@ -505,7 +506,7 @@ en:{ tool:"Daily orders", h1a:"Daily", h1b:"orders", sub:"Log every day and see 
   rev:"Revenue", orders:"Orders", costs:"Costs", cost:"Product cost", fees:"Fees", profit:"Profit", margin:"Margin", aov:"Average order",
   "hero.lab":"{m} revenue","hero.good":"Business is moving!","hero.bad":"You're losing money this month: check your costs","hero.zero":"Log your first sales day",
   perDay:"{n} per day", vsPrev:"{p} vs {m} at this pace", noPrev:"no data for {m}", ofRev:"{p} of revenue",
-  "split.t":"Where does your money go?","split.s":"Out of every {c} you bill",
+  "noCost":"No costs logged","noCostP":"What you imported from the old site has no product cost, so it doesn't count towards profit. Add the cost on each day to include it.","noCostHand":"Add your costs to see your profit","partial":"Worked out on {r} with costs logged","partialT":"* Only days with a product cost logged count towards profit and margin. Data imported from the old site has no costs and is left out.","histNoCost":"Months with no costs logged have no profit bar.","d.needCost":"Add the product cost to work out the profit.","split.t":"Where does your money go?","split.s":"Out of every {c} you bill",
   "cal.t":"Calendar","cal.s":"Tap a day to log it","k.none":"Not logged","k.zero":"No orders","k.sales":"Sales","k.loss":"Losing money",
   "cal.declared":"This month includes an imported total: {r} revenue.","cal.edit":"Edit",
   "f.t":"This month","f.proj":"Month-end forecast","f.projS":"{p} profit","f.projNo":"Needs 3 days","f.best":"Best day","f.days":"Days with sales","f.daysS":"out of {n} days","f.avg":"Average orders","f.avgS":"per day",
@@ -532,7 +533,7 @@ ro:{ tool:"Comenzi zilnice", h1a:"Comenzi", h1b:"zilnice", sub:"Notează fiecare
   rev:"Încasări", orders:"Comenzi", costs:"Costuri", cost:"Cost produs", fees:"Comisioane", profit:"Profit", margin:"Marjă", aov:"Valoare medie",
   "hero.lab":"Încasări în {m}","hero.good":"Afacerea merge!","hero.bad":"Luna asta pierzi bani: verifică costurile","hero.zero":"Notează prima zi cu vânzări",
   perDay:"{n} pe zi", vsPrev:"{p} vs {m} în același ritm", noPrev:"fără date în {m}", ofRev:"{p} din încasări",
-  "split.t":"Unde se duc banii?","split.s":"Din fiecare {c} încasat",
+  "noCost":"Fără costuri notate","noCostP":"Ce ai importat de pe site-ul vechi nu are cost de produs, așa că nu intră în profit. Adaugă costul pe fiecare zi ca să-l incluzi.","noCostHand":"Adaugă costurile ca să vezi profitul","partial":"Calculat pe {r} cu costuri notate","partialT":"* Doar zilele cu cost de produs notat intră în profit și marjă. Datele importate de pe site-ul vechi nu au costuri și rămân pe dinafară.","histNoCost":"Lunile fără costuri notate nu au bară de profit.","d.needCost":"Adaugă costul produsului ca să calculăm profitul.","split.t":"Unde se duc banii?","split.s":"Din fiecare {c} încasat",
   "cal.t":"Calendar","cal.s":"Atinge o zi ca s-o notezi","k.none":"Nenotată","k.zero":"Fără comenzi","k.sales":"Cu vânzări","k.loss":"Pierde bani",
   "cal.declared":"Luna asta include un total importat: {r} încasări.","cal.edit":"Editează",
   "f.t":"Luna asta","f.proj":"Estimare la final de lună","f.projS":"{p} profit","f.projNo":"Sunt necesare 3 zile","f.best":"Cea mai bună zi","f.days":"Zile cu vânzări","f.daysS":"din {n} zile","f.avg":"Comenzi medii","f.avgS":"pe zi",
@@ -686,21 +687,31 @@ function moneyH(v){
 }
 /* comisiones: importe que escribe el usuario (los días guardados con % + fijo de la primera versión siguen funcionando) */
 const feeOf = x => x.fee != null ? x.fee : (x.rev || 0) * (x.pct || 0) / 100 + (x.o || 0) * (x.fix || 0);
+/* Solo cuenta para el beneficio lo que tiene coste de producto apuntado.
+   Lo importado de la web antigua (sin costes) no da un 100 % de margen falso: queda fuera. */
 function dayVals(x){
-  const rev = conv(x.rev || 0, x.cu, x.r), cost = conv(x.cost || 0, x.cu, x.r), fee = conv(feeOf(x), x.cu, x.r);
-  return { o:x.o || 0, rev, cost, fee, profit:rev - cost - fee };
+  const rev = conv(x.rev || 0, x.cu, x.r), cost = conv(x.cost || 0, x.cu, x.r), fee = conv(feeOf(x), x.cu, x.r), ok = (x.cost || 0) > 0;
+  return { o:x.o || 0, rev, cost, fee, ok, profit:ok ? rev - cost - fee : null };
 }
 function monthAgg(k){
-  const n = daysIn(k), a = { k, o:0, rev:0, cost:0, fee:0, logged:0, sales:0, best:null, loss:false, declared:null };
+  const n = daysIn(k), a = { k, o:0, rev:0, cost:0, fee:0, revC:0, costC:0, feeC:0, logged:0, sales:0, best:null, declared:null };
   for (let d = 1; d <= n; d++){
     const ds = `${k}-${pad(d)}`, x = S.days[ds]; if (!x) continue;
     const v = dayVals(x); a.logged++; if (v.o > 0 || v.rev > 0) a.sales++;
     a.o += v.o; a.rev += v.rev; a.cost += v.cost; a.fee += v.fee;
+    if (v.ok){ a.revC += v.rev; a.costC += v.cost; a.feeC += v.fee; }
     if (!a.best || v.rev > a.best.rev) a.best = { d:ds, ...v };
   }
   const m = S.months[k];
-  if (m){ const dr = conv(m.rev || 0, m.cu, m.r); a.declared = { rev:dr }; a.rev += dr; a.cost += conv(m.cost || 0, m.cu, m.r); a.fee += conv(m.fee || 0, m.cu, m.r); }
-  a.profit = a.rev - a.cost - a.fee; a.margin = a.rev > 0 ? a.profit / a.rev : null;
+  if (m){
+    const dr = conv(m.rev || 0, m.cu, m.r), dc = conv(m.cost || 0, m.cu, m.r), df = conv(m.fee || 0, m.cu, m.r);
+    a.declared = { rev:dr }; a.rev += dr; a.cost += dc; a.fee += df;
+    if (dc > 0){ a.revC += dr; a.costC += dc; a.feeC += df; }
+  }
+  // beneficio y margen solo sobre la facturación con costes; null = no hay costes apuntados
+  a.profit = a.revC > 0 ? a.revC - a.costC - a.feeC : null;
+  a.margin = a.revC > 0 ? a.profit / a.revC : null;
+  a.partial = a.revC > 0 && a.revC < a.rev - .005;
   if (a.best && !(a.best.rev > 0)) a.best = null;
   return a;
 }
@@ -711,7 +722,7 @@ function projection(a){
   const k = a.k, e = elapsed(k);
   if (k !== keyOf(new Date()) || e < 3 || a.declared || !(a.rev > 0)) return null;
   const f = daysIn(k) / e;
-  return { rev:a.rev * f, profit:a.profit * f, o:a.o * f };
+  return { rev:a.rev * f, profit:a.profit == null ? null : a.profit * f, o:a.o * f };
 }
 const bestRevDay = () => { let b = null; for (const [d, x] of Object.entries(S.days)){ const v = dayVals(x).rev; if (!b || v > b.v) b = { d, v }; } return b; };
 
@@ -825,30 +836,31 @@ function cmpPace(v, pv, pk){
   return { txt:t("vsPrev", { p:`${p >= 0 ? "↑ +" : "↓ −"}${fmtPct(Math.abs(p))}`, m:monthShort(pk) }), cls:p >= 0 ? "good" : "bad", p };
 }
 function heroHTML(a, pa){
-  const c = cmpPace(a.rev, pa.rev, pa.k), neg = a.profit < -.004;
+  const c = cmpPace(a.rev, pa.rev, pa.k), neg = a.profit != null && a.profit < -.004;
   return `<article class="card hero s8 rise">
     <div class="art"><img class="mascot" src="img/caja.webp" width="640" height="736" alt="" decoding="async"></div>
     <span class="lab">📦 ${esc(t("hero.lab", { m:monthName(view.key, { month:"long" }) }))}</span>
     <b class="big num" data-count="${a.rev}">${moneyH(0)}</b>
     <div class="sec">${a.o} ${t("orders").toLowerCase()} · ${t("aov")} ${a.o ? fmt(a.rev / a.o) : "—"}</div>
-    <div class="row"><span class="pillx ${neg ? "neg" : "pos"}">${t("profit")} ${fmtSigned(a.profit)}</span><span class="pillx">${t("margin")} ${a.margin == null ? "—" : fmtPct(a.margin)}</span>${pa.rev > 0 ? `<span class="pillx dark">${esc(c.txt)}</span>` : ""}</div>
-    <div class="hand">${!a.rev ? t("hero.zero") : neg ? t("hero.bad") : t("hero.good")}</div></article>`;
+    <div class="row"><span class="pillx ${a.profit == null ? "" : neg ? "neg" : "pos"}">${t("profit")} ${a.profit == null ? "—" : fmtSigned(a.profit) + (a.partial ? "*" : "")}</span><span class="pillx">${t("margin")} ${a.margin == null ? "—" : fmtPct(a.margin)}</span>${pa.rev > 0 ? `<span class="pillx dark">${esc(c.txt)}</span>` : ""}</div>
+    <div class="hand">${!a.rev ? t("hero.zero") : a.profit == null ? t("noCostHand") : neg ? t("hero.bad") : t("hero.good")}</div></article>`;
 }
 function splitHTML(a){
   const sym = fmt(1, 0).replace(/[\d\s.,]/g, "") || D();
   if (!(a.rev > 0)) return `<article class="card c-sky s4 rise"><div class="ct"><div><h3>💸 ${t("split.t")}</h3></div></div><div class="empty"><span class="em">🧾</span>${t("hero.zero")}</div></article>`;
-  const parts = [["cost", a.cost, "#FF9636"], ["fees", a.fee, "#8B5CF6"], ["profit", Math.max(0, a.profit), "#22C55E"]];
-  const tot = Math.max(a.rev, a.cost + a.fee);
-  return `<article class="card c-sky s4 rise"><div class="ct"><div><h3>💸 ${t("split.t")}</h3><span class="subt">${t("split.s", { c:"1 " + sym })}</span></div></div>
+  if (a.profit == null) return `<article class="card c-sky s4 rise"><div class="ct"><div><h3>💸 ${t("split.t")}</h3></div></div><div class="empty"><span class="em">📭</span><b>${t("noCost")}</b><span class="muted" style="font-size:13px">${t("noCostP")}</span></div></article>`;
+  const parts = [["cost", a.costC, "#FF9636"], ["fees", a.feeC, "#8B5CF6"], ["profit", Math.max(0, a.profit), "#22C55E"]];
+  const tot = Math.max(a.revC, a.costC + a.feeC);
+  return `<article class="card c-sky s4 rise"><div class="ct"><div><h3>💸 ${t("split.t")}</h3><span class="subt">${a.partial ? esc(t("partial", { r:fmt(a.revC, 0) })) : t("split.s", { c:"1 " + sym })}</span></div></div>
     <div class="split">${parts.filter(p => p[1] > 0).map(([, v, c], i) => `<i style="width:${(v / tot) * 100}%;background:${c};animation-delay:${i*.15}s"></i>`).join("")}</div>
-    <div class="legend2">${parts.map(([k, v, c]) => `<div class="lg"><i style="background:${c}"></i><span>${t(k)}</span><b class="num">${k === "profit" ? fmtSigned(a.profit) : fmt(v)}</b><small>${t("ofRev", { p:fmtPct((k === "profit" ? a.profit : v) / a.rev) })}</small></div>`).join("")}</div></article>`;
+    <div class="legend2">${parts.map(([k, v, c]) => `<div class="lg"><i style="background:${c}"></i><span>${t(k)}</span><b class="num">${k === "profit" ? fmtSigned(a.profit) : fmt(v)}</b><small>${t("ofRev", { p:fmtPct((k === "profit" ? a.profit : v) / a.revC) })}</small></div>`).join("")}</div></article>`;
 }
 function kpisHTML(a, pa){
   const e = elapsed(a.k) || daysIn(a.k);
   const c = (v, pv) => { const x = cmpPace(v, pv, pa.k); return pa.rev > 0 || pa.o > 0 ? `<small class="${x.cls}">${esc(x.txt)}</small>` : `<small>${esc(t("noPrev", { m:monthShort(pa.k) }))}</small>`; };
   return `<div class="kpis s12 rise">
     <div class="kpi" style="background:var(--sky)"><span class="k"><i>📦</i>${t("orders")}</span><b class="num">${a.o}</b>${c(a.o, pa.o)}</div>
-    <div class="kpi" style="background:var(--mint)"><span class="k"><i>💰</i>${t("profit")}</span><b class="num">${fmtSigned(a.profit)}</b><small>${t("margin")} ${a.margin == null ? "—" : fmtPct(a.margin)}</small></div>
+    <div class="kpi" style="background:var(--mint)"><span class="k"><i>💰</i>${t("profit")}</span><b class="num">${a.profit == null ? "—" : fmtSigned(a.profit) + (a.partial ? "*" : "")}</b><small>${a.profit == null ? (a.rev > 0 ? t("noCost") : "—") : t("margin") + " " + fmtPct(a.margin)}</small></div>
     <div class="kpi" style="background:var(--butter)"><span class="k"><i>🛒</i>${t("aov")}</span><b class="num">${a.o ? fmt(a.rev / a.o) : "—"}</b><small>${t("perDay", { n:(a.o / e).toLocaleString(LOC[lang], { maximumFractionDigits:1 }) })} ${t("orders").toLowerCase()}</small></div>
     <div class="kpi" style="background:var(--salmon)"><span class="k"><i>🧾</i>${t("costs")}</span><b class="num">${fmt(a.cost + a.fee)}</b><small>${t("cost")} ${fmt(a.cost, 0)} · ${t("fees")} ${fmt(a.fee, 0)}</small></div></div>`;
 }
@@ -858,7 +870,7 @@ function calHTML(a){
   const cells = [...Array(n)].map((_, i) => {
     const ds = `${k}-${pad(i+1)}`, x = S.days[ds], v = x && dayVals(x);
     const cls = !x ? "none" : v.o > 0 || v.rev > 0 ? "has" : "zero", h = x && v.o > 0 ? .18 + .82 * (v.o / (mx || 1)) : 0;
-    return `<button class="day ${cls} ${h > .6 ? "hi" : ""} ${x && v.profit < -.004 ? "loss" : ""} ${ds === today ? "today" : ""} ${ds > today ? "fut" : ""} ${a.best && a.best.d === ds ? "best" : ""}" style="--h:${h.toFixed(2)};animation-delay:${i*.012}s" data-day="${ds}" aria-label="${esc(dayShort(ds))}">
+    return `<button class="day ${cls} ${h > .6 ? "hi" : ""} ${x && v.profit != null && v.profit < -.004 ? "loss" : ""} ${ds === today ? "today" : ""} ${ds > today ? "fut" : ""} ${a.best && a.best.d === ds ? "best" : ""}" style="--h:${h.toFixed(2)};animation-delay:${i*.012}s" data-day="${ds}" aria-label="${esc(dayShort(ds))}">
       <span class="dn">${i+1}</span><span class="o">${!x ? "·" : v.o}</span>${x && v.rev > 0 ? `<span class="rv">${compact(v.rev)}</span>` : ""}</button>`;
   }).join("");
   return `<article class="card s8 rise"><div class="ct"><div><h3>🗓️ ${t("cal.t")}</h3><span class="subt">${t("cal.s")}</span></div></div>
@@ -869,7 +881,7 @@ function calHTML(a){
 function factsHTML(a){
   const p = projection(a), e = elapsed(a.k) || daysIn(a.k);
   return `<article class="card c-yellow s4 rise"><div class="ct"><div><h3>⚡ ${t("f.t")}</h3></div></div><div class="facts">
-    <div class="fact"><span class="e">🔮</span><div><span>${t("f.proj")}</span><b class="num">${p ? fmt(p.rev, 0) : "—"}</b><small>${p ? esc(t("f.projS", { p:fmtSigned(p.profit) })) : esc(a.k === keyOf(new Date()) ? t("f.projNo") : "—")}</small></div></div>
+    <div class="fact"><span class="e">🔮</span><div><span>${t("f.proj")}</span><b class="num">${p ? fmt(p.rev, 0) : "—"}</b><small>${p ? (p.profit == null ? "—" : esc(t("f.projS", { p:fmtSigned(p.profit) }))) : esc(a.k === keyOf(new Date()) ? t("f.projNo") : "—")}</small></div></div>
     <div class="fact"><span class="e">🏆</span><div><span>${t("f.best")}</span><b class="num">${a.best ? fmt(a.best.rev) : "—"}</b><small>${a.best ? esc(dayShort(a.best.d)) + " · " + a.best.o + " " + t("orders").toLowerCase() : "—"}</small></div></div>
     <div class="fact"><span class="e">📅</span><div><span>${t("f.days")}</span><b class="num">${a.sales}</b><small>${esc(t("f.daysS", { n:e }))}</small></div></div>
     <div class="fact"><span class="e">📈</span><div><span>${t("f.avg")}</span><b class="num">${(a.o / e).toLocaleString(LOC[lang], { maximumFractionDigits:1 })}</b><small>${t("f.avgS")}</small></div></div></div></article>`;
@@ -887,17 +899,17 @@ function histHTML(){
   const ctl = `<div class="hctl">${seg("metric", m, [["rev", t("rev")], ["profit", t("profit")], ["o", t("orders")]])}${seg("range", view.range, [["6", t("r6")], ["12", t("r12")], ["all", t("rAll")]])}</div>`;
   if (!ks.length) return `<article class="card s12 rise"><div class="ct"><div><h3>📊 ${t("h.t")}</h3></div>${ctl}</div><div class="empty"><span class="em">📊</span>${t("hero.zero")}</div></article>`;
   const ag = ks.map(monthAgg), vals = ag.map(a => metricOf(a, m)), pj = ag.map(a => { const p = projection(a); return p ? metricOf(p, m) : null; });
-  const cur = ag.find(a => a.k === now), closed = ag.filter(a => a.k < now && (a.logged || a.declared));
-  // mes en curso sin ningún registro: no se dibuja (evita una caída falsa a cero)
-  const show = ag.map(a => a.k !== now || a.logged || a.declared);
+  const cur = ag.find(a => a.k === now), closed = ag.filter((a, i) => a.k < now && (a.logged || a.declared) && vals[i] != null);
+  // mes en curso sin ningún registro (o sin costes, en beneficio): no se dibuja, para no inventar ceros
+  const show = ag.map((a, i) => (a.k !== now || a.logged || a.declared) && vals[i] != null);
   const mx = Math.max(1, ...vals.map((v, i) => show[i] ? Math.abs(v) : 0), ...pj.filter(Boolean).map(Math.abs)), mn = Math.min(0, ...vals.filter((_, i) => show[i]));
   const W = 640, H = 240, top = 14, base = mn < 0 ? 170 : 200, scale = (base - top) / (mx || 1), gw = (W - 40) / ag.length, bw = Math.min(34, gw * .55);
   const col = m === "rev" ? "var(--blue)" : m === "profit" ? "var(--green)" : "var(--yellow)";
   const grid = [0, .5, 1].map(f => { const y = base - f*(base - top); return `<line class="gl" x1="40" x2="${W}" y1="${y}" y2="${y}"/><text x="0" y="${y + 3}">${compact(mx*f)}</text>`; }).join("");
   const bars = ag.map((a, i) => {
-    const x = 40 + i*gw + (gw - bw)/2, v = vals[i], h = Math.abs(v) * scale, neg = v < 0, cx = x + bw/2;
+    const x = 40 + i*gw + (gw - bw)/2, v = vals[i] || 0, h = Math.abs(v) * scale, neg = v < 0, cx = x + bw/2;
     const p = pj[i] ? `<rect class="proj" x="${x}" y="${base - pj[i]*scale}" width="${bw}" height="${Math.max(0, (pj[i] - Math.max(0, v))*scale)}" rx="6"/>` : "";
-    return `<g class="grp ${a.k === view.key ? "cur" : ""}" data-goto="${a.k}"><title>${esc(monthName(a.k))} · ${fmtM(v, m)}${pj[i] ? ` · ${t("proj")} ${fmtM(pj[i], m)}` : ""}</title>
+    return `<g class="grp ${a.k === view.key ? "cur" : ""}" data-goto="${a.k}"><title>${esc(monthName(a.k))} · ${vals[i] == null ? t("noCost") : fmtM(v, m)}${pj[i] ? ` · ${t("proj")} ${fmtM(pj[i], m)}` : ""}</title>
       <rect class="hit" x="${40 + i*gw + 2}" y="${top - 8}" width="${gw - 4}" height="${H - top - 8}" rx="10"/>${p}
       ${show[i] && Math.abs(v) > 0 ? `<rect class="b" x="${x}" y="${neg ? base : base - h}" width="${bw}" height="${Math.max(1, h)}" rx="6" fill="${neg ? "var(--red)" : col}" style="animation-delay:${i*.05}s;${neg ? "transform-origin:top" : ""}"/>` : ""}
       <text x="${cx}" y="${H - 8}" text-anchor="middle">${esc(monthShort(a.k))}</text></g>`;
@@ -905,13 +917,14 @@ function histHTML(){
   const best = closed.reduce((b, a) => !b || metricOf(a, m) > metricOf(b, m) ? a : b, null);
   const avg = closed.length ? closed.reduce((s, a) => s + metricOf(a, m), 0) / closed.length : null;
   let curTxt = "", curCls = "";
-  if (cur && (cur.logged || cur.declared)){ const prev = monthAgg(shiftKey(now, -1)), pv = metricOf(prev, m) * elapsed(now) / daysIn(now);
+  if (cur && (cur.logged || cur.declared) && metricOf(cur, m) != null){ const prev = monthAgg(shiftKey(now, -1)), pv = (metricOf(prev, m) || 0) * elapsed(now) / daysIn(now);
     if (pv > 0){ const p = (metricOf(cur, m) - pv) / pv; curTxt = `${p >= 0 ? "↑ +" : "↓ −"}${fmtPct(Math.abs(p))} vs ${monthShort(prev.k)}`; curCls = p >= 0 ? "good" : "bad"; } }
   return `<article class="card s12 rise"><div class="ct"><div><h3>📊 ${t("h.t")}</h3><span class="subt">${t("h.s")}</span></div>${ctl}</div>
     <svg class="chart" viewBox="0 0 ${W} ${H}">${grid}${mn < 0 ? `<line x1="40" x2="${W}" y1="${base}" y2="${base}" stroke="var(--ink)" stroke-width="2"/>` : ""}${bars}</svg>
     <div class="legend"><span><i style="background:${col}"></i>${t(m === "o" ? "orders" : m)}</span><span><i style="background:transparent;border-style:dashed"></i>${t("proj")}</span></div>
+    ${m === "profit" && vals.some(v => v == null) ? `<p class="muted" style="font-size:12.5px;margin-top:6px">${t("histNoCost")}</p>` : ""}
     <div class="minis">
-      <div class="mini"><span>${t("h.cur")}</span><b class="num">${cur ? fmtM(metricOf(cur, m), m) : "—"}</b><small class="${curCls}">${esc(curTxt || "—")}</small></div>
+      <div class="mini"><span>${t("h.cur")}</span><b class="num">${cur && metricOf(cur, m) != null ? fmtM(metricOf(cur, m), m) : "—"}</b><small class="${curCls}">${esc(curTxt || "—")}</small></div>
       <div class="mini"><span>${t("h.best")}</span><b class="num">${best ? fmtM(metricOf(best, m), m) : "—"}</b><small>${best ? esc(monthName(best.k)) : "—"}</small></div>
       <div class="mini"><span>${t("h.avg")}</span><b class="num">${avg == null ? "—" : fmtM(avg, m)}</b><small>${esc(t("h.avgS", { n:closed.length }))}</small></div></div></article>`;
 }
@@ -922,9 +935,9 @@ function tableHTML(){
   return `<article class="card s12 rise"><div class="ct"><div><h3>🧮 ${t("tbl.t")}</h3></div><button class="btn sm" data-act="csv">📥 ${t("csv")}</button></div>
     <div class="tblw"><table class="tbl"><thead><tr><th>${t("tbl.month")}</th><th>${t("orders")}</th><th>${t("rev")}</th><th>${t("costs")}</th><th>${t("profit")}</th><th>${t("margin")}</th><th>${t("tbl.state")}</th></tr></thead><tbody>
     ${ks.map(k => { const a = monthAgg(k);
-      return `<tr class="click" data-goto="${k}"><td>${esc(monthName(k))}</td><td>${a.o}</td><td>${fmt(a.rev)}</td><td>${fmt(a.cost + a.fee)}</td><td class="${cls(a.profit)}">${fmtSigned(a.profit)}</td><td class="${a.margin == null ? "z" : cls(a.margin)}">${a.margin == null ? "—" : fmtPct(a.margin)}</td>
+      return `<tr class="click" data-goto="${k}"><td>${esc(monthName(k))}</td><td>${a.o}</td><td>${fmt(a.rev)}</td><td>${fmt(a.cost + a.fee)}</td><td class="${a.profit == null ? "z" : cls(a.profit)}">${a.profit == null ? "—" : fmtSigned(a.profit) + (a.partial ? "*" : "")}</td><td class="${a.margin == null ? "z" : cls(a.margin)}">${a.margin == null ? "—" : fmtPct(a.margin) + (a.partial ? "*" : "")}</td>
       <td class="st">${esc(k === now ? t("st.cur", { a:a.logged, b:daysIn(k) }) : t("st.closed", { a:a.logged, b:daysIn(k) }))}</td></tr>`; }).join("")}
-    </tbody></table></div></article>`;
+    </tbody></table></div><p class="muted" style="font-size:12.5px;margin-top:12px">${t("partialT")}</p></article>`;
 }
 
 /* ---------- eventos ---------- */
@@ -978,9 +991,12 @@ function paintDay(){
   const f = v => fmt(v, 2, F.cu);
   const other = F.cu === "EUR" ? "USD" : "EUR";
   $("#dConv").textContent = rev > 0 ? t("d.conv", { a:fmt(conv0(rev, F.cu, other, F.r), 2, other), r:F.r.toLocaleString(LOC[lang], { minimumFractionDigits:4, maximumFractionDigits:4 }), d:dayShort(F.d) }) : "";
-  $("#rCost").textContent = f(x.cost + fee); $("#rProfit").textContent = (profit < -.004 ? "−" : "") + f(Math.abs(profit));
-  $("#rMargin").textContent = rev > 0 ? fmtPct(profit / rev) : "—";
-  $("#dResult").classList.toggle("neg", profit < -.004);
+  const ok = x.cost > 0;   // sin coste de producto no se calcula el beneficio
+  $("#rCost").textContent = f(x.cost + fee); $("#rProfit").textContent = ok ? (profit < -.004 ? "−" : "") + f(Math.abs(profit)) : "—";
+  $("#rMargin").textContent = ok && rev > 0 ? fmtPct(profit / rev) : "—";
+  $("#dResult").classList.toggle("neg", ok && profit < -.004);
+  $("#dResult").classList.toggle("wait", !ok);
+  $("#dNeedCost").hidden = ok || !(rev > 0);
 }
 $("#drDay").addEventListener("input", e => { if (e.target.matches("input")){ e.target.classList.remove("bad"); paintDay(); } });
 $("#drDay").addEventListener("click", e => {
