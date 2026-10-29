@@ -2727,15 +2727,18 @@ if (matchMedia("(hover:hover)").matches){
 const TIP = document.createElement("div"); TIP.className = "ftip"; document.body.appendChild(TIP);
 let tipEl = null;
 function showTip(el, x, y){
-  if (tipEl !== el){ tipEl = el; TIP.textContent = el.dataset.tip; TIP.classList.remove("on"); void TIP.offsetWidth; TIP.classList.add("on"); }
-  const w = TIP.offsetWidth; TIP.style.left = Math.min(innerWidth - w - 8, Math.max(8, x - w / 2)) + "px"; TIP.style.top = (y - 44) + "px";
   const card = el.closest(".dcard");
-  if (card && el.dataset.ci != null){
+  if (card && el.dataset.ci != null){   // en la rueda los datos ya salen en el centro: sin etiqueta flotante
+    if (tipEl === el) return;
+    tipEl = el; TIP.classList.remove("on");
     card.classList.add("hov"); $$("[data-ci]", card).forEach(e => e.classList.toggle("hl", e.dataset.ci === el.dataset.ci));
     const seg = $(`circle[data-ci="${el.dataset.ci}"]`, card), [nm, am, pc] = el.dataset.tip.split(" · ");
     $(".ctr", card).innerHTML = `<span class="pop">${esc(nm)}</span><b class="num pop">${esc(am)}</b><em class="pop">${esc(pc || "")}</em>`;
     if (seg) $(".ctr", card).style.setProperty("--sc", seg.getAttribute("stroke"));
+    return;
   }
+  if (tipEl !== el){ hideTip(); tipEl = el; TIP.textContent = el.dataset.tip; TIP.classList.remove("on"); void TIP.offsetWidth; TIP.classList.add("on"); }
+  const w = TIP.offsetWidth; TIP.style.left = Math.min(innerWidth - w - 8, Math.max(8, x - w / 2)) + "px"; TIP.style.top = (y - 44) + "px";
 }
 function hideTip(){
   if (!tipEl) return;
