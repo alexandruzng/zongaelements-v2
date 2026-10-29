@@ -114,6 +114,16 @@ svg{display:block}
 .stp.done .n{background:var(--accent);color:#fff}
 .stp.done:hover{border-color:var(--accent)}
 .stp:disabled{cursor:default}
+.stp.skip{cursor:pointer;border-style:dashed}
+.stp.skip:hover{border-color:var(--fg)}
+.skip-link{margin-top:22px;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:100px;border:1px dashed var(--line-2);font-weight:700;font-size:14px;color:var(--fg);transition:border-color .3s,transform .3s}
+.skip-link:hover{border-color:var(--accent);color:var(--accent)}
+.skip-link:active{transform:scale(.96)}
+.skip-link svg{width:16px;height:16px}
+.skip-note{display:none;margin-bottom:18px;padding:16px 18px;color:var(--muted);font-size:14px;line-height:1.5}
+.skipped .skip-note{display:flex}
+.skipped #budget{display:none}
+.skipped #rSleepRow{display:none}
 
 .stage{display:none}
 .stage.on{display:block}
@@ -615,6 +625,7 @@ input:focus-visible+.sw{box-shadow:0 0 0 4px var(--accent-soft)}
           <div class="kicker mono"><b>01</b><i></i><span data-i18n="w.kick">Tu día</span></div>
           <h1 class="h1"><span data-i18n="w.h1a">¿Cuándo empieza</span><br><em data-i18n="w.h1b">y acaba tu día?</em></h1>
           <p class="lead" data-i18n="w.lead">Arrastra el sol y la luna por el reloj, o usa los botones. Así sabremos cuántas horas tienes de verdad.</p>
+          <button type="button" class="skip-link" id="wSkip"><span data-i18n="w.skip">Saltar e ir directo a mis tareas</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l7 7-7 7M13 5l7 7-7 7"/></svg></button>
         </div>
         <div class="time-cards rise">
           <div class="card tcard">
@@ -672,6 +683,7 @@ input:focus-visible+.sw{box-shadow:0 0 0 4px var(--accent-soft)}
       <h1 class="h1"><span data-i18n="t.h1a">Tus tareas</span> <em data-i18n="t.h1b">de hoy.</em></h1>
       <p class="lead" data-i18n="t.lead">Ponle nombre, cuánto tarda más o menos y su importancia. Se ordenan solas.</p>
     </div>
+    <div class="card skip-note rise"><span data-i18n="t.skipNote">Has saltado las horas y la rutina: tus tareas no tienen límite de tiempo. Se ordenan por importancia.</span></div>
     <div class="card budget rise" id="budget">
       <div class="bx"><span class="mono" data-i18n="t.work">Para trabajar</span><b id="bWork">0</b></div>
       <div class="bx"><span class="mono" data-i18n="t.used">Asignado</span><b id="bUsed">0</b></div>
@@ -709,7 +721,7 @@ input:focus-visible+.sw{box-shadow:0 0 0 4px var(--accent-soft)}
           <div class="ring-c"><b id="ringPct">0<small>%</small></b><span class="mono" id="ringCnt">0/0</span></div>
         </div>
         <div class="rstats">
-          <div class="rstat"><span class="mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span data-i18n="run.toSleep">Hasta dormir</span></span><b id="rSleep">—</b></div>
+          <div class="rstat" id="rSleepRow"><span class="mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span data-i18n="run.toSleep">Hasta dormir</span></span><b id="rSleep">—</b></div>
           <div class="rstat"><span class="mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span data-i18n="run.pending">Trabajo pendiente</span></span><b id="rPend">—</b></div>
           <div class="rstat"><span class="mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg><span data-i18n="run.doneTime">Ya hecho</span></span><b id="rDone">—</b></div>
         </div>
@@ -795,7 +807,7 @@ const T = {
 es:{ tool:"Planificador del día", stats:"Estadísticas", settings:"Ajustes",
   "st.1":"Tu día","st.2":"Personal","st.3":"Tareas","st.4":"En marcha",
   "w.kick":"Tu día","w.h1a":"¿Cuándo empieza","w.h1b":"y acaba tu día?","w.lead":"Arrastra el sol y la luna por el reloj, o usa los botones. Así sabremos cuántas horas tienes de verdad.",
-  "w.wake":"Me despierto","w.sleep":"Me voy a dormir","w.awake":"Estás despierto","w.sleeping":"{x} durmiendo","w.now":"AHORA",
+  "w.wake":"Me despierto","w.sleep":"Me voy a dormir","w.awake":"Estás despierto","w.sleeping":"{x} durmiendo","w.now":"AHORA","w.skip":"Saltar e ir directo a mis tareas","d.skip":"Saltar","d.total":"Tiempo total","t.skipNote":"Has saltado las horas y la rutina: tus tareas no tienen límite de tiempo. Se ordenan por importancia.",
   "p.kick":"Fuera del trabajo","p.h1a":"¿Qué tienes que hacer hoy","p.h1b":"aparte de trabajar?","p.lead":"Gym, comidas, transporte, familia… Todo lo que te quita tiempo. Lo que sobre será tu tiempo de trabajo focus.",
   "p.quick":"Añadir rápido","p.name":"Actividad","p.ph":"Ej: Gym, comer, recoger a los niños…","p.dur":"Duración","p.add":"Añadir actividad",
   "p.empty":"Aún no has añadido nada. Usa los atajos de arriba o escribe tu actividad.","p.left":"Te quedan para trabajar","p.calc":"{a} despierto − {p} personal",
@@ -830,7 +842,7 @@ es:{ tool:"Planificador del día", stats:"Estadísticas", settings:"Ajustes",
 en:{ tool:"Daily planner", stats:"Stats", settings:"Settings",
   "st.1":"Your day","st.2":"Personal","st.3":"Tasks","st.4":"In progress",
   "w.kick":"Your day","w.h1a":"When does your day","w.h1b":"start and end?","w.lead":"Drag the sun and the moon around the clock, or use the buttons. That's how we know how many hours you really have.",
-  "w.wake":"I wake up","w.sleep":"I go to sleep","w.awake":"You're awake","w.sleeping":"{x} sleeping","w.now":"NOW",
+  "w.wake":"I wake up","w.sleep":"I go to sleep","w.awake":"You're awake","w.sleeping":"{x} sleeping","w.now":"NOW","w.skip":"Skip and go straight to my tasks","d.skip":"Skip","d.total":"Total time","t.skipNote":"You skipped your hours and routine: your tasks have no time limit. They're sorted by importance.",
   "p.kick":"Outside work","p.h1a":"What do you need to do today","p.h1b":"besides working?","p.lead":"Gym, meals, commuting, family… Everything that takes your time. Whatever is left is your focus work time.",
   "p.quick":"Quick add","p.name":"Activity","p.ph":"E.g. Gym, lunch, picking up the kids…","p.dur":"Duration","p.add":"Add activity",
   "p.empty":"Nothing added yet. Use the shortcuts above or type your activity.","p.left":"Left for work","p.calc":"{a} awake − {p} personal",
@@ -865,7 +877,7 @@ en:{ tool:"Daily planner", stats:"Stats", settings:"Settings",
 ro:{ tool:"Planificatorul zilei", stats:"Statistici", settings:"Setări",
   "st.1":"Ziua ta","st.2":"Personal","st.3":"Sarcini","st.4":"În desfășurare",
   "w.kick":"Ziua ta","w.h1a":"Când începe","w.h1b":"și când se termină ziua ta?","w.lead":"Trage soarele și luna pe ceas sau folosește butoanele. Așa aflăm câte ore ai cu adevărat.",
-  "w.wake":"Mă trezesc","w.sleep":"Mă culc","w.awake":"Ești treaz","w.sleeping":"{x} de somn","w.now":"ACUM",
+  "w.wake":"Mă trezesc","w.sleep":"Mă culc","w.awake":"Ești treaz","w.sleeping":"{x} de somn","w.now":"ACUM","w.skip":"Sari și mergi direct la sarcini","d.skip":"Sari","d.total":"Timp total","t.skipNote":"Ai sărit peste ore și rutină: sarcinile tale nu au limită de timp. Se ordonează după importanță.",
   "p.kick":"În afara muncii","p.h1a":"Ce ai de făcut azi","p.h1b":"în afară de muncă?","p.lead":"Sală, mese, drum, familie… Tot ce îți ia din timp. Ce rămâne e timpul tău de muncă focus.",
   "p.quick":"Adăugare rapidă","p.name":"Activitate","p.ph":"Ex: Sală, prânz, copiii de la școală…","p.dur":"Durată","p.add":"Adaugă activitatea",
   "p.empty":"Încă n-ai adăugat nimic. Folosește scurtăturile de sus sau scrie activitatea.","p.left":"Îți rămân pentru muncă","p.calc":"{a} treaz − {p} personal",
@@ -1164,6 +1176,7 @@ const step = m => (m < 15 ? 5 : 15);
 function go(stage, { scroll=true } = {}){
   const i = STAGES.indexOf(stage);
   D().stage = stage; D().reached = Math.max(D().reached || 0, i);
+  if (stage === "personal") D().skip = false;
   if (stage === "run" && !D().started){ D().started = true; D().date = iso(); }
   save();
   $$(".stage").forEach(s => s.classList.toggle("on", s.dataset.stage === stage));
@@ -1171,6 +1184,7 @@ function go(stage, { scroll=true } = {}){
   render();
 }
 function render(){
+  $("main.wrap").classList.toggle("skipped", !!D().skip);
   renderStepper();
   const st = D().stage;
   if (st === "wake") renderWake();
@@ -1183,7 +1197,8 @@ function render(){
 function renderStepper(){
   const cur = STAGES.indexOf(D().stage);
   $("#stepper").innerHTML = STAGES.map((s,i) => {
-    const cls = i === cur ? "cur" : i <= D().reached ? "done" : "";
+    const skipped = D().skip && i < 2 && i !== cur;
+    const cls = i === cur ? "cur" : skipped ? "skip" : i <= D().reached ? "done" : "";
     const canGo = i !== cur && i <= D().reached && !(s === "run" && !D().tasks.length);
     return `<button class="stp ${cls}" data-go="${s}" ${canGo ? "" : "disabled"}><span class="n">${cls === "done" ? ICON.check : pad(i+1)}</span><span class="t">${t("st."+(i+1))}</span></button>`;
   }).join("");
@@ -1199,14 +1214,15 @@ function renderDock(){
   const back = `<button class="btn ghost icon" data-act="back" aria-label="${t("back")}">${ICON.prev}<span class="txt-hide">${t("back")}</span></button>`;
   if (st === "wake"){
     lbl.textContent = t("d.awake"); tween(val, awake(), fmtD);
-    act.innerHTML = `<button class="btn primary" data-act="toPersonal">${t("next")}${ICON.next}</button>`;
+    act.innerHTML = `<button class="btn ghost" data-act="skip">${t("d.skip")}</button><button class="btn primary" data-act="toPersonal">${t("next")}${ICON.next}</button>`;
   } else if (st === "personal"){
     const w = workMin();
     lbl.textContent = t("d.work"); tween(val, w, fmtD); val.classList.add(w > 0 ? "pos" : "neg");
     act.innerHTML = back + `<button class="btn primary" data-act="toTasks" ${w > 0 ? "" : "disabled"}>${t("next")}${ICON.next}</button>`;
   } else if (st === "tasks"){
     const f = workMin() - tasksMin();
-    lbl.textContent = f < 0 ? t("d.over") : t("d.free"); tween(val, Math.abs(f), fmtD); val.classList.add(f < 0 ? "neg" : "pos");
+    if (D().skip){ lbl.textContent = t("d.total"); tween(val, tasksMin(), fmtD); }
+    else { lbl.textContent = f < 0 ? t("d.over") : t("d.free"); tween(val, Math.abs(f), fmtD); val.classList.add(f < 0 ? "neg" : "pos"); }
     act.innerHTML = back + `<button class="btn accent" data-act="toRun" ${D().tasks.length ? "" : "disabled"}><span class="long">${t("d.start")}</span><span class="short">${t("d.startS")}</span>${ICON.next}</button>`;
   } else {
     const done = D().tasks.filter(x => x.done).length, tot = D().tasks.length;
@@ -1218,13 +1234,18 @@ function renderDock(){
 $("#dockAct").addEventListener("click", e => {
   const b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
   const a = b.dataset.act, st = D().stage;
-  if (a === "back"){ SFX.play("click"); go(STAGES[STAGES.indexOf(st) - 1]); }
+  if (a === "back"){ SFX.play("click"); go(D().skip && st === "tasks" ? "wake" : STAGES[STAGES.indexOf(st) - 1]); }
+  if (a === "skip") skipToTasks();
   if (a === "toPersonal"){ SFX.play("click"); go("personal"); }
   if (a === "toTasks") openReveal(b);
   if (a === "toRun"){ SFX.play("impact"); go("run"); }
   if (a === "edit"){ SFX.play("click"); go("tasks"); }
   if (a === "finish") finishDay();
 });
+
+/* Saltar horas y rutina: directo a las tareas, sin límite de tiempo */
+function skipToTasks(){ SFX.play("click"); D().skip = true; go("tasks"); setTimeout(() => $("#tName").focus({ preventScroll:true }), 350); }
+$("#wSkip").addEventListener("click", skipToTasks);
 
 /* =========================================================
    PASO 1 · RELOJ DE 24 H
@@ -1425,7 +1446,7 @@ async function addTask(){
   const inp = $("#tName"), name = inp.value.trim();
   if (!name){ inp.classList.remove("shake"); void inp.offsetWidth; inp.classList.add("shake"); inp.focus(); SFX.play("warn"); return; }
   const min = tDur.get(), left = workMin() - tasksMin();
-  if (min > left){
+  if (min > left && !D().skip){
     const ok = await modal({ title:t("o.title"), warn:true, icon:ICON.warn, ok:t("o.ok"),
       text: left > 0 ? t("o.text", { left:fmt(left), dur:fmt(min), over:fmt(min-left) }) : t("o.text0", { dur:fmt(min) }) });
     if (!ok) return;

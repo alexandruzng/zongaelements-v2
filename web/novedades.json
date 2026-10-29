@@ -1,5 +1,29 @@
 [
   {
+    "id": "2026-10-29-planificador-saltar",
+    "date": "2026-10-29",
+    "type": "mejora",
+    "title": {
+      "es": "Planificador: salta directo a tus tareas",
+      "en": "Planner: skip straight to your tasks",
+      "ro": "Planificator: sari direct la sarcini"
+    },
+    "items": {
+      "es": [
+        "Nuevo botón «Saltar» en el primer paso: te saltas las horas de sueño y la rutina y vas directo a apuntar tus tareas, ordenadas por importancia.",
+        "En ese modo las tareas no tienen límite de tiempo; si un día quieres planificarlo entero, vuelves al paso 1 cuando quieras."
+      ],
+      "en": [
+        "New “Skip” button on the first step: skip your sleep hours and routine and go straight to writing your tasks, sorted by importance.",
+        "In that mode tasks have no time limit; if you want to plan the whole day, go back to step 1 whenever you like."
+      ],
+      "ro": [
+        "Buton nou „Sari” la primul pas: sari peste orele de somn și rutină și mergi direct la sarcini, ordonate după importanță.",
+        "În acest mod sarcinile nu au limită de timp; dacă vrei să planifici toată ziua, revii la pasul 1 oricând."
+      ]
+    }
+  },
+  {
     "id": "2026-10-29-mes-rapido",
     "date": "2026-10-29",
     "type": "mejora",
