@@ -709,6 +709,16 @@ button.cline:hover{border-color:var(--line-2)}
 .cmpc{flex-wrap:wrap}
 .cmpc .d{flex:1 0 100%;display:flex;align-items:baseline;justify-content:space-between;gap:8px;text-align:left;padding-top:10px;border-top:1px dashed color-mix(in srgb,var(--fg) 15%,transparent)}
 .cmpc .d small{margin:0}
+.hero{display:flex;flex-direction:column}
+.spark{margin-top:auto;padding-top:22px;position:relative;z-index:2}
+.sph{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+.sph span{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sph b{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.02em}
+.spark svg{display:block;width:100%;height:clamp(70px,14vw,140px);overflow:visible}
+.spark .sz{stroke:var(--line-2);stroke-dasharray:3 4;vector-effect:non-scaling-stroke}
+.spark .spl{fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:spDraw 1.4s .3s cubic-bezier(.2,.9,.2,1) forwards}
+@keyframes spDraw{to{stroke-dashoffset:0}}
+.spx{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:6px}
 /* 2) gastos por categoría, con resaltado */
 .donut-wrap.stack{flex-direction:column;align-items:stretch;gap:18px}
 .donut-wrap.stack .donut{margin:0 auto;width:170px;height:170px}
@@ -998,7 +1008,7 @@ es:{ tool:"Finanzas", tagline:"Mejores decisiones, grandes sueños.", settings:"
   prevM:"Mes anterior", nextM:"Mes siguiente", toToday:"Volver a hoy", allMonths:"Todos los meses", seeAll:"Ver todo →",
   "fx.today":"hoy","fx.yday":"ayer","fx.off":"sin conexión","fx.def":"aproximado","fx.title":"Tipo de cambio oficial del BCE. Pulsa para actualizar.",
   inc:"Ingresos", exp:"Gastos", bal:"Balance", vs:"vs {m}", noPrev:"sin datos de {m}",
-  "hero.lab":"Tu balance de {m}","hero.labAll":"Tu balance total","hero.good":"¡Vas por buen camino!","hero.bad":"¡Ojo! Gastas más de lo que entra","hero.zero":"Tu hucha te espera…",
+  "hero.lab":"Tu balance de {m}","hero.labAll":"Tu balance total","hero.good":"¡Vas por buen camino!","hero.bad":"¡Ojo! Gastas más de lo que entra","hero.zero":"Tu hucha te espera…","hero.sp":"Balance acumulado día a día","hero.spAll":"Balance acumulado mes a mes",
   "lvl.t":"Nivel {n} · {name}","lvl.next":"Te faltan {x} XP para el nivel {n}", lvn:["Novato","Aprendiz","Ahorrador","Ahorrador constante","Estratega","Ahorrador pro","Ahorrador experto","Maestro del ahorro","Leyenda financiera"],
   "st.t":"Racha de {n} días","st.t1":"Racha de 1 día","st.t0":"Sin racha todavía","st.s":"sin caprichos · récord {b}","st.s0":"Empieza hoy: un día sin caprichos","st.whims":"Rompen tu racha: {c}. Cámbialo en Ajustes.",
   "kpi.rate":"Tasa de ahorro","kpi.n":"Movimientos",
@@ -1062,7 +1072,7 @@ en:{ tool:"Finances", tagline:"Better decisions, big dreams.", settings:"Setting
   prevM:"Previous month", nextM:"Next month", toToday:"Back to today", allMonths:"All months", seeAll:"See all →",
   "fx.today":"today","fx.yday":"yesterday","fx.off":"offline","fx.def":"approximate","fx.title":"Official ECB exchange rate. Tap to refresh.",
   inc:"Income", exp:"Expenses", bal:"Balance", vs:"vs {m}", noPrev:"no data for {m}",
-  "hero.lab":"Your {m} balance","hero.labAll":"Your total balance","hero.good":"You're on the right track!","hero.bad":"Careful! You're spending more than you earn","hero.zero":"Your piggy bank is waiting…",
+  "hero.lab":"Your {m} balance","hero.sp":"Running balance, day by day","hero.spAll":"Running balance, month by month","hero.labAll":"Your total balance","hero.good":"You're on the right track!","hero.bad":"Careful! You're spending more than you earn","hero.zero":"Your piggy bank is waiting…",
   "lvl.t":"Level {n} · {name}","lvl.next":"{x} XP to level {n}", lvn:["Rookie","Apprentice","Saver","Steady saver","Strategist","Pro saver","Expert saver","Saving master","Money legend"],
   "st.t":"{n}-day streak","st.t1":"1-day streak","st.t0":"No streak yet","st.s":"without treats · record {b}","st.s0":"Start today: one day without treats","st.whims":"These break your streak: {c}. Change them in Settings.",
   "kpi.rate":"Savings rate","kpi.n":"Transactions",
@@ -1126,7 +1136,7 @@ ro:{ tool:"Finanțe", tagline:"Decizii mai bune, vise mari.", settings:"Setări"
   prevM:"Luna trecută", nextM:"Luna următoare", toToday:"Înapoi la azi", allMonths:"Toate lunile", seeAll:"Vezi tot →",
   "fx.today":"azi","fx.yday":"ieri","fx.off":"fără conexiune","fx.def":"aproximativ","fx.title":"Cursul oficial BCE. Apasă ca să-l actualizezi.",
   inc:"Venituri", exp:"Cheltuieli", bal:"Balanță", vs:"vs {m}", noPrev:"fără date în {m}",
-  "hero.lab":"Balanța ta din {m}","hero.labAll":"Balanța ta totală","hero.good":"Ești pe drumul cel bun!","hero.bad":"Atenție! Cheltuiești mai mult decât câștigi","hero.zero":"Pușculița te așteaptă…",
+  "hero.lab":"Balanța ta din {m}","hero.sp":"Sold cumulat, zi de zi","hero.spAll":"Sold cumulat, lună de lună","hero.labAll":"Balanța ta totală","hero.good":"Ești pe drumul cel bun!","hero.bad":"Atenție! Cheltuiești mai mult decât câștigi","hero.zero":"Pușculița te așteaptă…",
   "lvl.t":"Nivelul {n} · {name}","lvl.next":"Mai ai {x} XP până la nivelul {n}", lvn:["Începător","Ucenic","Econom","Econom constant","Strateg","Econom pro","Econom expert","Maestrul economiilor","Legendă financiară"],
   "st.t":"Serie de {n} zile","st.t1":"Serie de 1 zi","st.t0":"Încă nicio serie","st.s":"fără capricii · record {b}","st.s0":"Începe azi: o zi fără capricii","st.whims":"Îți rup seria: {c}. Schimbă-le în Setări.",
   "kpi.rate":"Rata de economisire","kpi.n":"Tranzacții",
@@ -1691,7 +1701,30 @@ function cmpTxt(v, pv, kind, pk){
   const p = (v - pv) / Math.abs(pv), up = p >= 0, good = kind === "exp" ? !up : up;
   return { txt:`${up ? "↑ +" : "↓ −"}${fmtPct(Math.abs(p))} ${t("vs", { m:monthShort(pk) })}`, cls:Math.abs(p) < .005 ? "" : good ? "good" : "bad" };
 }
-function heroHTML(s, pk, label){
+function sparkHTML(key){
+  let pts = [], lbs = [];
+  if (key){
+    const [y, m] = key.split("-").map(Number), dim = new Date(y, m, 0).getDate(), now = iso(new Date());
+    const last = now.startsWith(key) ? Number(now.slice(8)) : dim, per = {};
+    inMonth(key).forEach(x => { const d = Number(x.d.slice(8)); per[d] = (per[d] || 0) + (x.t === "inc" ? eur(x) : -eur(x)); });
+    let acc = 0; for (let d = 1; d <= last; d++){ acc += per[d] || 0; pts.push(acc); }
+    lbs = ["1", String(Math.ceil(last/2)), String(last)];
+  } else {
+    const ms = dataMonths(); let acc = 0;
+    ms.forEach(k => { acc += sum(inMonth(k)).bal; pts.push(acc); });
+    lbs = ms.length ? [monthShort(ms[0]), "", monthShort(ms[ms.length-1])] : [];
+  }
+  if (pts.length < 2) return "";
+  const W = 600, H = 120, mn = Math.min(0, ...pts), mx = Math.max(0, ...pts), rg = (mx - mn) || 1;
+  const X = i => (i / (pts.length - 1)) * W, Y = v => 8 + (1 - (v - mn) / rg) * (H - 16), z = Y(0);
+  const line = pts.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(" ");
+  const end = pts[pts.length - 1], col = end < -.004 ? "var(--coral)" : "var(--lime)";
+  return `<div class="spark"><div class="sph"><span>${t(key ? "hero.sp" : "hero.spAll")}</span><b class="num" style="color:${end < -.004 ? "var(--coral-t)" : "var(--lime-t)"}">${fmtSigned(end)}</b></div>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="spg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    <line x1="0" x2="${W}" y1="${z}" y2="${z}" class="sz"/><path d="${line} L${W} ${z} L0 ${z}Z" fill="url(#spg)"/><path class="spl" d="${line}" stroke="${end < -.004 ? "var(--coral-t)" : "var(--lime-t)"}" pathLength="1" vector-effect="non-scaling-stroke"/></svg>
+    <div class="spx">${lbs.map(l => `<span>${esc(l)}</span>`).join("")}</div></div>`;
+}
+function heroHTML(s, pk, label, key){
   const cls = !s.n ? "zero" : s.bal < -.004 ? "neg" : "";
   const c = pk ? cmpTxt(s.bal, sum(inMonth(pk)).bal, "bal", pk) : null;
   return `<article class="card hero ${cls} s8 rise">
@@ -1701,7 +1734,7 @@ function heroHTML(s, pk, label){
     <b class="big num" data-count="${s.bal}">${moneyH(0)}</b>
     <div class="ron">${fmtR(s.balR)}</div>
     <div class="row">${c ? `<span class="pillx">${esc(c.txt)}</span>` : ""}<span class="pillx w"><i class="d" style="background:var(--green)"></i>${t("inc")} ${fmtE(s.inc, 0)}</span><span class="pillx w"><i class="d" style="background:var(--red)"></i>${t("exp")} ${fmtE(s.exp, 0)}</span></div>
-    <div class="hand">${!s.n ? t("hero.zero") : s.bal < -.004 ? t("hero.bad") : t("hero.good")}</div></article>`;
+    <div class="hand">${!s.n ? t("hero.zero") : s.bal < -.004 ? t("hero.bad") : t("hero.good")}</div>${s.n ? sparkHTML(key) : ""}</article>`;
 }
 function levelHTML(cls="s4"){
   const x = xpInfo(), st = x.st;
@@ -1904,12 +1937,12 @@ function renderHome(){
   if (view.all){
     const s = sum(S.tx), ms = dataMonths();
     const keys = ms.length ? (() => { const out = []; for (let k = ms[0]; k <= ms[ms.length - 1]; k = shiftKey(k, 1)) out.push(k); return out.slice(-12); })() : [view.key];
-    el.innerHTML = `<div class="grid">${heroHTML(s, null, t("hero.labAll"))}${donutHTML(S.tx, "s4", t("cat.t"), true)}${kpisHTML(S.tx, s, null)}${healthHTML(S.tx, null)}${evoHTML(keys)}${allHTML()}${levelHTML("s6")}${tipsHTML(S.tx, s, null)}</div>`;
+    el.innerHTML = `<div class="grid">${heroHTML(s, null, t("hero.labAll"), null)}${donutHTML(S.tx, "s4", t("cat.t"), true)}${kpisHTML(S.tx, s, null)}${healthHTML(S.tx, null)}${evoHTML(keys)}${allHTML()}${levelHTML("s6")}${tipsHTML(S.tx, s, null)}</div>`;
   } else {
     const k = view.key, list = inMonth(k), s = sum(list);
     const keys = [...Array(7)].map((_, i) => shiftKey(k, i - 6));
     const cta = S.tx.length ? "" : `<article class="card c-yellow s12 rise" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><span style="font-size:44px"></span><div style="flex:1 1 220px"><h3 style="font-family:var(--display);font-size:22px;letter-spacing:-.03em">${t("imp.cta")}</h3><p class="muted" style="margin-top:4px">${t("imp.ctaP")}</p></div><button class="btn primary sm" data-act="import">${t("imp.ctaB")}</button></article>`;
-    el.innerHTML = `<div class="grid">${cta}${heroHTML(s, shiftKey(k, -1), t("hero.lab", { m:monthName(k, { month:"long" }) }))}${donutHTML(list, "s4", t("cat.t"), true)}${kpisHTML(list, s, k)}
+    el.innerHTML = `<div class="grid">${cta}${heroHTML(s, shiftKey(k, -1), t("hero.lab", { m:monthName(k, { month:"long" }) }), k)}${donutHTML(list, "s4", t("cat.t"), true)}${kpisHTML(list, s, k)}
       ${goalsPreviewHTML()}${tubesHTML(list)}${healthHTML(list, k)}${evoHTML(keys)}${subsPreviewHTML()}${achPreviewHTML()}${levelHTML("s6")}${tipsHTML(list, s, k)}${wrappedBanner(k)}
       <article class="card s12 rise"><div class="ct"><div><h3>${t("last.t")}</h3></div><button class="xs" data-tab="movs">${t("seeAll")}</button></div>${txRows(list, 6, false)}</article></div>`;
   }

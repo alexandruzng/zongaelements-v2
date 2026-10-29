@@ -13,19 +13,22 @@
         "Suscripciones rediseñadas: total al mes, reparto del gasto, línea de tiempo de los próximos 30 días y tarjetas con colores bien marcados y cuenta atrás.",
         "Gastos por categoría arriba del todo: pasa el ratón (o toca) una categoría y verás su nombre, importe y porcentaje.",
         "Ingresos en verde y gastos en rojo, también en Movimientos, donde el balance sale en rojo si es negativo. Arreglado el texto «undefined».",
-        "Presupuestos, salud financiera y la tarjeta del Wrapped con un diseño nuevo y más visual."
+        "Presupuestos, salud financiera y la tarjeta del Wrapped con un diseño nuevo y más visual.",
+        "La tarjeta del balance muestra ahora una gráfica de cómo ha ido tu balance día a día (o mes a mes en «Todos los meses»)."
       ],
       "en": [
         "Redesigned subscriptions: monthly total, spending split, a 30-day timeline and cards with strong colours and a countdown.",
         "Spending by category now at the top: hover (or tap) a category to see its name, amount and percentage.",
         "Income in green and expenses in red, also in Transactions, where the balance turns red when negative. The “undefined” text is fixed.",
-        "Budgets, financial health and the Wrapped card get a new, more visual design."
+        "Budgets, financial health and the Wrapped card get a new, more visual design.",
+        "The balance card now shows a chart of your running balance day by day (or month by month in “All months”)."
       ],
       "ro": [
         "Abonamente reproiectate: total lunar, împărțirea cheltuielilor, o cronologie pe 30 de zile și carduri cu culori puternice și numărătoare inversă.",
         "Cheltuielile pe categorii sunt acum sus: treci cu mouse-ul (sau atinge) o categorie ca să vezi numele, suma și procentul.",
         "Veniturile în verde și cheltuielile în roșu, și în Tranzacții, unde soldul apare cu roșu dacă e negativ. Textul „undefined” a fost reparat.",
-        "Bugetele, sănătatea financiară și cardul Wrapped au un design nou, mai vizual."
+        "Bugetele, sănătatea financiară și cardul Wrapped au un design nou, mai vizual.",
+        "Cardul de sold arată acum un grafic cu evoluția soldului zi de zi (sau lună de lună în „Toate lunile”)."
       ]
     }
   },
