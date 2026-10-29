@@ -719,6 +719,22 @@ button.cline:hover{border-color:var(--line-2)}
 .spark .spl{fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:spDraw 1.4s .3s cubic-bezier(.2,.9,.2,1) forwards}
 @keyframes spDraw{to{stroke-dashoffset:0}}
 .spx{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:6px}
+/* mes rápido: gastos e ingresos en el mismo calendario */
+.qtype{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.qtype button{height:50px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);display:flex;align-items:center;gap:8px;padding:0 14px;font-size:14.5px;font-weight:500;color:var(--fg);transition:background .2s,border-color .2s,transform .12s}
+.qtype button:active{transform:scale(.97)}
+.qtype button i{width:9px;height:9px;border-radius:50%}
+.qtype button.exp i{background:var(--clp)} .qtype button.inc i{background:var(--okp)}
+.qtype button b{margin-left:auto;font-family:var(--mono);font-size:12px;min-width:24px;height:24px;padding:0 6px;border-radius:12px;display:grid;place-items:center;background:var(--bg-2)}
+.qtype button.exp.on{background:var(--clb);border-color:var(--clp)} .qtype button.inc.on{background:var(--okb);border-color:var(--okp)}
+.qtype button.exp.on b{background:var(--clp);color:#fff} .qtype button.inc.on b{background:var(--okp);color:#0B0C0E}
+.qcal.exp .cday:hover{border-color:var(--clp)} .qcal.inc .cday:hover{border-color:var(--okp)}
+.qcal .cday.he{background:var(--clb);border-color:var(--cll)}
+.qcal .cday.hi{background:var(--okb);border-color:var(--okl)}
+.qcal .cday.he.hi{background:linear-gradient(135deg,var(--clb) 50%,var(--okb) 50%);border-color:var(--line-2)}
+.qcal .cday em{background:none;color:#fff}
+.qcal .cday em.e{background:var(--clp);color:#fff;right:-6px}
+.qcal .cday em.i{background:var(--okp);color:#0B0C0E;right:auto;left:-6px}
 /* 2) gastos por categoría, con resaltado */
 .donut-wrap.stack{flex-direction:column;align-items:stretch;gap:18px}
 .donut-wrap.stack .donut{margin:0 auto;width:170px;height:170px}
@@ -1045,7 +1061,7 @@ es:{ tool:"Finanzas", tagline:"Mejores decisiones, grandes sueños.", settings:"
   "tx.new":"Nuevo movimiento","tx.edit":"Editar movimiento","tx.exp":"Gasto","tx.inc":"Ingreso","tx.amount":"Cantidad","tx.concept":"Concepto","tx.conceptPh":"Ej: Mercadona","tx.cat":"Categoría","tx.date":"Fecha",
   "tx.save":"Guardar movimiento","tx.del":"Eliminar movimiento","tx.short":"El concepto necesita al menos 2 caracteres.","tx.amt0":"Escribe una cantidad mayor que 0.","tx.saved":"Movimiento guardado","tx.savedInc":"¡Ingreso guardado! +{a}","tx.deleted":"Movimiento eliminado",
   "tx.delT":"¿Eliminar este movimiento?","tx.delP":"«{c}» · {a}. No se puede deshacer.","tx.conv":"≈ {a} · 1 € = {r} RON del {d}", newBtn:"Nueva", quick:"Rápido",
-  "q.t":"Mes rápido","q.s1":"Gastos","q.s2":"Ingresos","q.s3":"Detalles","q.p1":"Toca cada día tantas veces como gastos tuviste en {m}.","q.p2":"Ahora lo mismo con los ingresos de {m}.","q.p3":"Rellena cada movimiento y guárdalo todo de una vez. Las filas sin cantidad se ignoran.",
+  "q.t":"Mes rápido","q.sDays":"Días","q.pBoth":"Elige Gastos o Ingresos y toca cada día tantas veces como movimientos tuviste en {m}. Puedes cambiar entre los dos cuando quieras.","q.s1":"Gastos","q.s2":"Ingresos","q.s3":"Detalles","q.p1":"Toca cada día tantas veces como gastos tuviste en {m}.","q.p2":"Ahora lo mismo con los ingresos de {m}.","q.p3":"Rellena cada movimiento y guárdalo todo de una vez. Las filas sin cantidad se ignoran.",
   "q.add":"Sumar","q.sub":"Restar","q.next":"Siguiente","q.back":"Atrás","q.saveAll":"Guardar {n}","q.none":"No has marcado ningún día. Vuelve atrás y toca los días con movimientos.","q.ok":"{n} movimientos guardados","q.count":"{n} marcados","q.bad":"Revisa las filas en rojo: el concepto necesita al menos 2 caracteres.","q.empty":"Escribe la cantidad de al menos un movimiento.",
   wd:["L","M","X","J","V","S","D"],
   "set.title":"Ajustes","set.name":"Tu nombre","set.sound":"Efectos de sonido","set.soundS":"Monedas, logros y confeti con sonido.","set.whims":"Tus caprichos","set.whimsP":"Las categorías que rompen tu racha si gastas en ellas.","set.cats":"Categorías","set.catsS":"Crea las tuyas o cambia nombre, color e icono.","set.bud":"Presupuestos","set.budS":"Límite mensual por categoría de gasto.","set.csvS":"Fecha, tipo, categoría, concepto, EUR, RON y tasa.",
@@ -1109,7 +1125,7 @@ en:{ tool:"Finances", tagline:"Better decisions, big dreams.", settings:"Setting
   "tx.new":"New transaction","tx.edit":"Edit transaction","tx.exp":"Expense","tx.inc":"Income","tx.amount":"Amount","tx.concept":"Description","tx.conceptPh":"E.g. Groceries","tx.cat":"Category","tx.date":"Date",
   "tx.save":"Save transaction","tx.del":"Delete transaction","tx.short":"The description needs at least 2 characters.","tx.amt0":"Enter an amount above 0.","tx.saved":"Transaction saved","tx.savedInc":"Income saved! +{a}","tx.deleted":"Transaction deleted",
   "tx.delT":"Delete this transaction?","tx.delP":"“{c}” · {a}. This can't be undone.","tx.conv":"≈ {a} · 1 € = {r} RON on {d}", newBtn:"New", quick:"Quick",
-  "q.t":"Quick month","q.s1":"Expenses","q.s2":"Income","q.s3":"Details","q.p1":"Tap each day as many times as expenses you had in {m}.","q.p2":"Now the same with your income in {m}.","q.p3":"Fill in each transaction and save them all at once. Rows without an amount are skipped.",
+  "q.t":"Quick month","q.sDays":"Days","q.pBoth":"Pick Expenses or Income and tap each day as many times as transactions you had in {m}. Switch between them whenever you like.","q.s1":"Expenses","q.s2":"Income","q.s3":"Details","q.p1":"Tap each day as many times as expenses you had in {m}.","q.p2":"Now the same with your income in {m}.","q.p3":"Fill in each transaction and save them all at once. Rows without an amount are skipped.",
   "q.add":"Add","q.sub":"Remove","q.next":"Next","q.back":"Back","q.saveAll":"Save {n}","q.none":"You haven't marked any day. Go back and tap the days with transactions.","q.ok":"{n} transactions saved","q.count":"{n} marked","q.bad":"Check the rows in red: the description needs at least 2 characters.","q.empty":"Enter the amount of at least one transaction.",
   wd:["M","T","W","T","F","S","S"],
   "set.title":"Settings","set.name":"Your name","set.sound":"Sound effects","set.soundS":"Coins, achievements and confetti with sound.","set.whims":"Your treats","set.whimsP":"Categories that break your streak when you spend on them.","set.cats":"Categories","set.catsS":"Create your own or change name, color and icon.","set.bud":"Budgets","set.budS":"Monthly limit per spending category.","set.csvS":"Date, type, category, description, EUR, RON and rate.",
@@ -1173,7 +1189,7 @@ ro:{ tool:"Finanțe", tagline:"Decizii mai bune, vise mari.", settings:"Setări"
   "tx.new":"Tranzacție nouă","tx.edit":"Editează tranzacția","tx.exp":"Cheltuială","tx.inc":"Venit","tx.amount":"Sumă","tx.concept":"Descriere","tx.conceptPh":"Ex: Kaufland","tx.cat":"Categorie","tx.date":"Data",
   "tx.save":"Salvează tranzacția","tx.del":"Șterge tranzacția","tx.short":"Descrierea are nevoie de cel puțin 2 caractere.","tx.amt0":"Scrie o sumă mai mare ca 0.","tx.saved":"Tranzacție salvată","tx.savedInc":"Venit salvat! +{a}","tx.deleted":"Tranzacție ștearsă",
   "tx.delT":"Ștergi această tranzacție?","tx.delP":"„{c}” · {a}. Nu se poate anula.","tx.conv":"≈ {a} · 1 € = {r} RON din {d}", newBtn:"Nouă", quick:"Rapid",
-  "q.t":"Lună rapidă","q.s1":"Cheltuieli","q.s2":"Venituri","q.s3":"Detalii","q.p1":"Atinge fiecare zi de câte ori ai avut cheltuieli în {m}.","q.p2":"Acum la fel cu veniturile din {m}.","q.p3":"Completează fiecare tranzacție și salvează-le pe toate odată. Rândurile fără sumă sunt ignorate.",
+  "q.t":"Lună rapidă","q.sDays":"Zile","q.pBoth":"Alege Cheltuieli sau Venituri și atinge fiecare zi de câte ori ai avut tranzacții în {m}. Poți schimba între ele oricând.","q.s1":"Cheltuieli","q.s2":"Venituri","q.s3":"Detalii","q.p1":"Atinge fiecare zi de câte ori ai avut cheltuieli în {m}.","q.p2":"Acum la fel cu veniturile din {m}.","q.p3":"Completează fiecare tranzacție și salvează-le pe toate odată. Rândurile fără sumă sunt ignorate.",
   "q.add":"Adaugă","q.sub":"Scade","q.next":"Înainte","q.back":"Înapoi","q.saveAll":"Salvează {n}","q.none":"N-ai marcat nicio zi. Întoarce-te și atinge zilele cu tranzacții.","q.ok":"{n} tranzacții salvate","q.count":"{n} marcate","q.bad":"Verifică rândurile roșii: descrierea are nevoie de cel puțin 2 caractere.","q.empty":"Scrie suma pentru cel puțin o tranzacție.",
   wd:["L","M","M","J","V","S","D"],
   "set.title":"Setări","set.name":"Numele tău","set.sound":"Efecte sonore","set.soundS":"Monede, realizări și confetti cu sunet.","set.whims":"Capriciile tale","set.whimsP":"Categoriile care îți rup seria dacă cheltuiești pe ele.","set.cats":"Categorii","set.catsS":"Creează-le pe ale tale sau schimbă numele, culoarea și iconița.","set.bud":"Bugete","set.budS":"Limită lunară pe categorie de cheltuieli.","set.csvS":"Data, tip, categorie, descriere, EUR, RON și curs.",
@@ -2299,22 +2315,26 @@ $("#newBtn").addEventListener("click", () => view.tab === "subs" ? openSub(null)
 /* =========================================================
    MES RÁPIDO (3 pasos)
    ========================================================= */
-const Q = { step:1, key:null, mode:1, n:{ exp:{}, inc:{} }, vals:{} };
-function openQuick(){ Q.step = 1; Q.key = view.key; Q.mode = 1; Q.n = { exp:{}, inc:{} }; Q.vals = {}; drawQuick(); openDrawer("drQuick"); }
+const Q = { step:1, key:null, mode:1, type:"exp", n:{ exp:{}, inc:{} }, vals:{} };
+function openQuick(){ Q.step = 1; Q.key = view.key; Q.mode = 1; Q.type = "exp"; Q.n = { exp:{}, inc:{} }; Q.vals = {}; drawQuick(); openDrawer("drQuick"); }
+const qCount = ty => Object.values(Q.n[ty]).reduce((a, b) => a + b, 0);
+const qCls = d => (Q.n.exp[d] ? "he " : "") + (Q.n.inc[d] ? "hi" : "");
+const qCell = d => `${d}${Q.n.exp[d] ? `<em class="e">${Q.n.exp[d]}</em>` : ""}${Q.n.inc[d] ? `<em class="i">${Q.n.inc[d]}</em>` : ""}`;
 function drawQuick(){
-  const steps = [t("q.s1"), t("q.s2"), t("q.s3")].map((s, i) => `<div class="qs ${i + 1 === Q.step ? "on" : i + 1 < Q.step ? "done" : ""}"><i></i>${s}</div>`).join("");
+  const steps = [t("q.sDays"), t("q.s3")].map((s, i) => `<div class="qs ${i + 1 === Q.step ? "on" : i + 1 < Q.step ? "done" : ""}"><i></i>${s}</div>`).join("");
   let body = "";
-  if (Q.step < 3){
-    const type = Q.step === 1 ? "exp" : "inc", n = daysIn(Q.key), { y, m } = parseKey(Q.key), lead = (new Date(y, m-1, 1).getDay() + 6) % 7;
-    const cnt = Object.values(Q.n[type]).reduce((a, b) => a + b, 0), isNow = Q.key === keyOf(new Date());
+  if (Q.step < 2){
+    const n = daysIn(Q.key), { y, m } = parseKey(Q.key), lead = (new Date(y, m-1, 1).getDay() + 6) % 7, isNow = Q.key === keyOf(new Date());
     body = `<div class="mbar" style="margin-bottom:12px"><button class="nav-btn" data-q="mprev">${ICON.prev}</button><div class="mtitle"><h2 style="font-size:26px">${esc(monthName(Q.key))}</h2></div><button class="nav-btn" data-q="mnext">${ICON.next}</button></div>
-      <p class="muted" style="margin-bottom:14px">${esc(t(Q.step === 1 ? "q.p1" : "q.p2", { m:monthName(Q.key, { month:"long" }) }))}</p>
-      <div class="qmode"><div class="seg-ctl"><button data-q="mode" data-v="1" class="${Q.mode === 1 ? "on" : ""}">+ ${t("q.add")}</button><button data-q="mode" data-v="-1" class="${Q.mode === -1 ? "on" : ""}">− ${t("q.sub")}</button></div><span class="qcount">${t("q.count", { n:cnt })}</span></div>
-      <div class="cal" style="--tc:${type === "inc" ? "var(--green)" : "var(--red)"}">${ta("wd").map(w => `<span class="wd">${w}</span>`).join("")}${"<span></span>".repeat(lead)}
-      ${[...Array(n)].map((_, i) => { const c = Q.n[type][i+1] || 0; return `<button class="cday ${c ? "has" : ""} ${isNow && i + 1 === new Date().getDate() ? "today" : ""}" data-q="day" data-d="${i+1}">${i+1}${c ? `<em>${c}</em>` : ""}</button>`; }).join("")}</div>`;
+      <p class="muted" style="margin-bottom:14px">${esc(t("q.pBoth", { m:monthName(Q.key, { month:"long" }) }))}</p>
+      <div class="qtype">${["exp","inc"].map(ty => `<button data-q="type" data-v="${ty}" class="${ty} ${Q.type === ty ? "on" : ""}"><i></i>${t(ty === "exp" ? "q.s1" : "q.s2")}<b data-qc="${ty}">${qCount(ty)}</b></button>`).join("")}</div>
+      <div class="qmode"><div class="seg-ctl"><button data-q="mode" data-v="1" class="${Q.mode === 1 ? "on" : ""}">+ ${t("q.add")}</button><button data-q="mode" data-v="-1" class="${Q.mode === -1 ? "on" : ""}">− ${t("q.sub")}</button></div></div>
+      <div class="cal qcal ${Q.type}">${ta("wd").map(w => `<span class="wd">${w}</span>`).join("")}${"<span></span>".repeat(lead)}
+      ${[...Array(n)].map((_, i) => `<button class="cday ${qCls(i+1)} ${isNow && i + 1 === new Date().getDate() ? "today" : ""}" data-q="day" data-d="${i+1}">${qCell(i+1)}</button>`).join("")}</div>`;
   } else {
     const rows = [];
-    ["exp","inc"].forEach(type => Object.keys(Q.n[type]).map(Number).sort((a, b) => a - b).forEach(d => { for (let i = 0; i < Q.n[type][d]; i++) rows.push({ type, d, key:`${type}-${d}-${i}` }); }));
+    ["exp","inc"].forEach(type => Object.keys(Q.n[type]).map(Number).forEach(d => { for (let i = 0; i < Q.n[type][d]; i++) rows.push({ type, d, key:`${type}-${d}-${i}` }); }));
+    rows.sort((a, b) => a.d - b.d || (a.type === "inc") - (b.type === "inc"));
     if (!rows.length) body = `<div class="empty"><span class="em"></span>${t("q.none")}</div>`;
     else {
       let html = "", last = "";
@@ -2331,18 +2351,24 @@ function drawQuick(){
   }
   const total = Object.values(Q.n.exp).concat(Object.values(Q.n.inc)).reduce((a, b) => a + b, 0);
   const foot = `<div class="dr-foot" style="flex-direction:row">${Q.step > 1 ? `<button class="btn" data-q="back" style="flex:1">${t("q.back")}</button>` : ""}
-    ${Q.step < 3 ? `<button class="btn primary" data-q="next" style="flex:2">${t("q.next")}${ICON.go}</button>` : `<button class="btn accent" data-q="save" style="flex:2" ${total ? "" : "disabled"}>${t("q.saveAll", { n:total })}</button>`}</div>`;
+    ${Q.step < 2 ? `<button class="btn primary" data-q="next" style="flex:2">${t("q.next")}${ICON.go}</button>` : `<button class="btn accent" data-q="save" style="flex:2" ${total ? "" : "disabled"}>${t("q.saveAll", { n:total })}</button>`}</div>`;
   $("#qBody").innerHTML = `<div class="qsteps">${steps}</div>${body}${foot}`;
 }
 $("#qBody").addEventListener("click", e => {
   const b = e.target.closest("[data-q]"); if (!b) return;
   const q = b.dataset.q;
   if (q === "day"){
-    const type = Q.step === 1 ? "exp" : "inc", d = +b.dataset.d, c = Math.max(0, Math.min(20, (Q.n[type][d] || 0) + Q.mode));
+    const type = Q.type, d = +b.dataset.d, c = Math.max(0, Math.min(20, (Q.n[type][d] || 0) + Q.mode));
     if (c) Q.n[type][d] = c; else delete Q.n[type][d];
     SFX.play(Q.mode > 0 ? "tick" : "remove");
-    b.classList.toggle("has", !!c); b.innerHTML = `${d}${c ? `<em>${c}</em>` : ""}`;
-    $(".qcount", $("#qBody")).textContent = t("q.count", { n:Object.values(Q.n[type]).reduce((a, x) => a + x, 0) });
+    b.classList.toggle("he", !!Q.n.exp[d]); b.classList.toggle("hi", !!Q.n.inc[d]); b.innerHTML = qCell(d);
+    $(`[data-qc="${type}"]`, $("#qBody")).textContent = qCount(type);
+    return;
+  }
+  if (q === "type"){
+    Q.type = b.dataset.v; SFX.play("tick");
+    $$('[data-q="type"]', $("#qBody")).forEach(x => x.classList.toggle("on", x === b));
+    const cal = $(".qcal", $("#qBody")); cal.classList.toggle("exp", Q.type === "exp"); cal.classList.toggle("inc", Q.type === "inc");
     return;
   }
   if (q === "mode"){ Q.mode = +b.dataset.v; SFX.play("tick"); }

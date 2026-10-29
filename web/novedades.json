@@ -1,5 +1,29 @@
 [
   {
+    "id": "2026-10-29-mes-rapido",
+    "date": "2026-10-29",
+    "type": "mejora",
+    "title": {
+      "es": "Mes rápido: gastos e ingresos a la vez",
+      "en": "Quick month: expenses and income together",
+      "ro": "Lună rapidă: cheltuieli și venituri împreună"
+    },
+    "items": {
+      "es": [
+        "Ahora marcas gastos e ingresos en el mismo calendario: eliges uno u otro con un botón y cambias cuando quieras, sin volver atrás.",
+        "Cada día muestra los dos contadores (rojo gastos, verde ingresos) y en el paso de detalles salen ordenados por día."
+      ],
+      "en": [
+        "You now mark expenses and income on the same calendar: pick one with a button and switch whenever you like, no going back.",
+        "Each day shows both counters (red expenses, green income), and the details step lists them by day."
+      ],
+      "ro": [
+        "Acum marchezi cheltuielile și veniturile în același calendar: alegi unul cu un buton și schimbi oricând, fără să te întorci.",
+        "Fiecare zi arată ambele contoare (roșu cheltuieli, verde venituri), iar la pasul de detalii apar ordonate pe zile."
+      ]
+    }
+  },
+  {
     "id": "2026-10-29-finanzas-visual",
     "date": "2026-10-29",
     "type": "mejora",
