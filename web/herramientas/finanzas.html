@@ -735,6 +735,24 @@ button.cline:hover{border-color:var(--line-2)}
 .qcal .cday em{background:none;color:#fff}
 .qcal .cday em.e{background:var(--clp);color:#fff;right:-6px}
 .qcal .cday em.i{background:var(--okp);color:#0B0C0E;right:auto;left:-6px}
+.flow{margin-top:auto;padding-top:22px;position:relative;z-index:2;display:flex;flex-direction:column;gap:10px}
+.fl{display:grid;grid-template-columns:62px minmax(0,1fr) auto;align-items:center;gap:12px}
+.fl span{font-size:13px;color:var(--muted)}
+.fl b{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.02em;text-align:right;min-width:90px}
+.ft{height:14px;border-radius:8px;background:var(--bg-2);overflow:hidden}
+:root[data-theme="dark"] .ft{background:rgba(255,255,255,.07)}
+.ft i{display:block;height:100%;border-radius:8px;transform-origin:left;animation:grow 1.1s cubic-bezier(.2,.9,.2,1) both}
+.fin i{background:var(--okp)} .fout i{background:var(--clp);animation-delay:.12s}
+.fin b{color:var(--okt)} .fout b{color:var(--clt)}
+.fmsg{display:flex;align-items:center;gap:10px;margin-top:6px;padding:12px 14px;border-radius:12px;background:var(--okb);border:1px solid var(--okl);font-size:14px;font-weight:500;color:var(--fg)}
+.fmsg i{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;background:var(--okp);color:#0B0C0E}
+.fmsg.neg{background:var(--clb);border-color:var(--cll)} .fmsg.neg i{background:var(--clp);color:#fff}
+.fst{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fst>div{padding:10px 12px;border-radius:12px;border:1px solid var(--line);min-width:0}
+.fst span{display:block;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fst b{display:block;font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.02em;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fst b small{font-family:var(--body);font-weight:400;font-size:11px;color:var(--muted);letter-spacing:0}
+@media (max-width:420px){ .fst b small{display:block} .fl{grid-template-columns:52px minmax(0,1fr) auto} .fl b{min-width:0;font-size:15px} }
 /* 2) gastos por categoría, con resaltado */
 .donut-wrap.stack{flex-direction:column;align-items:stretch;gap:18px}
 .donut-wrap.stack .donut{margin:0 auto;width:170px;height:170px}
@@ -1025,7 +1043,7 @@ es:{ tool:"Finanzas", tagline:"Mejores decisiones, grandes sueños.", settings:"
   prevM:"Mes anterior", nextM:"Mes siguiente", toToday:"Volver a hoy", allMonths:"Todos los meses", seeAll:"Ver todo →",
   "fx.today":"hoy","fx.yday":"ayer","fx.off":"sin conexión","fx.def":"aproximado","fx.title":"Tipo de cambio oficial del BCE. Pulsa para actualizar.",
   inc:"Ingresos", exp:"Gastos", bal:"Balance", vs:"vs {m}", noPrev:"sin datos de {m}",
-  "hero.lab":"Tu balance de {m}","hero.labAll":"Tu balance total","hero.good":"¡Vas por buen camino!","hero.bad":"¡Ojo! Gastas más de lo que entra","hero.zero":"Tu hucha te espera…","hero.sp":"Balance acumulado día a día","hero.spAll":"Balance acumulado mes a mes",
+  "hero.lab":"Tu balance de {m}","hero.labAll":"Tu balance total","hero.good":"¡Vas por buen camino!","hero.bad":"¡Ojo! Gastas más de lo que entra","hero.zero":"Tu hucha te espera…","hero.in":"Entró","hero.out":"Salió","hero.left":"Este mes te sobran {a}","hero.short":"Este mes te faltan {a}: gastas más de lo que entra","hero.leftAll":"En total te sobran {a}","hero.shortAll":"En total te faltan {a}","hero.perDay":"Gasto al día","hero.perMonth":"Gasto al mes","hero.top":"Día que más gastaste","hero.topM":"Mes que más gastaste","hero.n":"Movimientos",
   "lvl.t":"Nivel {n} · {name}","lvl.next":"Te faltan {x} XP para el nivel {n}", lvn:["Novato","Aprendiz","Ahorrador","Ahorrador constante","Estratega","Ahorrador pro","Ahorrador experto","Maestro del ahorro","Leyenda financiera"],
   "st.t":"Racha de {n} días","st.t1":"Racha de 1 día","st.t0":"Sin racha todavía","st.s":"sin caprichos · récord {b}","st.s0":"Empieza hoy: un día sin caprichos","st.whims":"Rompen tu racha: {c}. Cámbialo en Ajustes.",
   "kpi.rate":"Tasa de ahorro","kpi.n":"Movimientos",
@@ -1089,7 +1107,7 @@ en:{ tool:"Finances", tagline:"Better decisions, big dreams.", settings:"Setting
   prevM:"Previous month", nextM:"Next month", toToday:"Back to today", allMonths:"All months", seeAll:"See all →",
   "fx.today":"today","fx.yday":"yesterday","fx.off":"offline","fx.def":"approximate","fx.title":"Official ECB exchange rate. Tap to refresh.",
   inc:"Income", exp:"Expenses", bal:"Balance", vs:"vs {m}", noPrev:"no data for {m}",
-  "hero.lab":"Your {m} balance","hero.sp":"Running balance, day by day","hero.spAll":"Running balance, month by month","hero.labAll":"Your total balance","hero.good":"You're on the right track!","hero.bad":"Careful! You're spending more than you earn","hero.zero":"Your piggy bank is waiting…",
+  "hero.lab":"Your {m} balance","hero.in":"Came in","hero.out":"Went out","hero.left":"You have {a} left this month","hero.short":"You're {a} short this month: spending more than you earn","hero.leftAll":"You have {a} left in total","hero.shortAll":"You're {a} short in total","hero.perDay":"Spent per day","hero.perMonth":"Spent per month","hero.top":"Biggest spending day","hero.topM":"Biggest spending month","hero.n":"Transactions","hero.labAll":"Your total balance","hero.good":"You're on the right track!","hero.bad":"Careful! You're spending more than you earn","hero.zero":"Your piggy bank is waiting…",
   "lvl.t":"Level {n} · {name}","lvl.next":"{x} XP to level {n}", lvn:["Rookie","Apprentice","Saver","Steady saver","Strategist","Pro saver","Expert saver","Saving master","Money legend"],
   "st.t":"{n}-day streak","st.t1":"1-day streak","st.t0":"No streak yet","st.s":"without treats · record {b}","st.s0":"Start today: one day without treats","st.whims":"These break your streak: {c}. Change them in Settings.",
   "kpi.rate":"Savings rate","kpi.n":"Transactions",
@@ -1153,7 +1171,7 @@ ro:{ tool:"Finanțe", tagline:"Decizii mai bune, vise mari.", settings:"Setări"
   prevM:"Luna trecută", nextM:"Luna următoare", toToday:"Înapoi la azi", allMonths:"Toate lunile", seeAll:"Vezi tot →",
   "fx.today":"azi","fx.yday":"ieri","fx.off":"fără conexiune","fx.def":"aproximativ","fx.title":"Cursul oficial BCE. Apasă ca să-l actualizezi.",
   inc:"Venituri", exp:"Cheltuieli", bal:"Balanță", vs:"vs {m}", noPrev:"fără date în {m}",
-  "hero.lab":"Balanța ta din {m}","hero.sp":"Sold cumulat, zi de zi","hero.spAll":"Sold cumulat, lună de lună","hero.labAll":"Balanța ta totală","hero.good":"Ești pe drumul cel bun!","hero.bad":"Atenție! Cheltuiești mai mult decât câștigi","hero.zero":"Pușculița te așteaptă…",
+  "hero.lab":"Balanța ta din {m}","hero.in":"A intrat","hero.out":"A ieșit","hero.left":"Luna asta îți rămân {a}","hero.short":"Luna asta îți lipsesc {a}: cheltuiești mai mult decât intră","hero.leftAll":"În total îți rămân {a}","hero.shortAll":"În total îți lipsesc {a}","hero.perDay":"Cheltuieli pe zi","hero.perMonth":"Cheltuieli pe lună","hero.top":"Ziua cu cele mai mari cheltuieli","hero.topM":"Luna cu cele mai mari cheltuieli","hero.n":"Tranzacții","hero.labAll":"Balanța ta totală","hero.good":"Ești pe drumul cel bun!","hero.bad":"Atenție! Cheltuiești mai mult decât câștigi","hero.zero":"Pușculița te așteaptă…",
   "lvl.t":"Nivelul {n} · {name}","lvl.next":"Mai ai {x} XP până la nivelul {n}", lvn:["Începător","Ucenic","Econom","Econom constant","Strateg","Econom pro","Econom expert","Maestrul economiilor","Legendă financiară"],
   "st.t":"Serie de {n} zile","st.t1":"Serie de 1 zi","st.t0":"Încă nicio serie","st.s":"fără capricii · record {b}","st.s0":"Începe azi: o zi fără capricii","st.whims":"Îți rup seria: {c}. Schimbă-le în Setări.",
   "kpi.rate":"Rata de economisire","kpi.n":"Tranzacții",
@@ -1718,28 +1736,25 @@ function cmpTxt(v, pv, kind, pk){
   const p = (v - pv) / Math.abs(pv), up = p >= 0, good = kind === "exp" ? !up : up;
   return { txt:`${up ? "↑ +" : "↓ −"}${fmtPct(Math.abs(p))} ${t("vs", { m:monthShort(pk) })}`, cls:Math.abs(p) < .005 ? "" : good ? "good" : "bad" };
 }
-function sparkHTML(key){
-  let pts = [], lbs = [];
+function sparkHTML(key, s){
+  const mx = Math.max(s.inc, s.exp, 1), neg = s.bal < -.004;
+  const bar = (cls, lab, v) => `<div class="fl ${cls}"><span>${lab}</span><div class="ft"><i style="width:${Math.max(2, v / mx * 100)}%"></i></div><b class="num">${fmtE(v)}</b></div>`;
+  let per, top, perLab, topLab;
   if (key){
-    const [y, m] = key.split("-").map(Number), dim = new Date(y, m, 0).getDate(), now = iso(new Date());
-    const last = now.startsWith(key) ? Number(now.slice(8)) : dim, per = {};
-    inMonth(key).forEach(x => { const d = Number(x.d.slice(8)); per[d] = (per[d] || 0) + (x.t === "inc" ? eur(x) : -eur(x)); });
-    let acc = 0; for (let d = 1; d <= last; d++){ acc += per[d] || 0; pts.push(acc); }
-    lbs = ["1", String(Math.ceil(last/2)), String(last)];
+    const [y, m] = key.split("-").map(Number), now = iso(new Date()), days = now.startsWith(key) ? Number(now.slice(8)) : new Date(y, m, 0).getDate(), byDay = {};
+    inMonth(key).forEach(x => { if (x.t === "exp") byDay[x.d] = (byDay[x.d] || 0) + eur(x); });
+    const td = Object.entries(byDay).sort((p, q) => q[1] - p[1])[0];
+    per = s.exp / days; perLab = t("hero.perDay"); topLab = t("hero.top");
+    top = td ? `${fmtE(td[1], 0)} <small>${esc(dayLabel(td[0]))}</small>` : "—";
   } else {
-    const ms = dataMonths(); let acc = 0;
-    ms.forEach(k => { acc += sum(inMonth(k)).bal; pts.push(acc); });
-    lbs = ms.length ? [monthShort(ms[0]), "", monthShort(ms[ms.length-1])] : [];
+    const ms = dataMonths(), byM = ms.map(k => [k, sum(inMonth(k)).exp]).sort((p, q) => q[1] - p[1])[0];
+    per = s.exp / Math.max(1, ms.length); perLab = t("hero.perMonth"); topLab = t("hero.topM");
+    top = byM ? `${fmtE(byM[1], 0)} <small>${esc(monthName(byM[0]))}</small>` : "—";
   }
-  if (pts.length < 2) return "";
-  const W = 600, H = 120, mn = Math.min(0, ...pts), mx = Math.max(0, ...pts), rg = (mx - mn) || 1;
-  const X = i => (i / (pts.length - 1)) * W, Y = v => 8 + (1 - (v - mn) / rg) * (H - 16), z = Y(0);
-  const line = pts.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(" ");
-  const end = pts[pts.length - 1], col = end < -.004 ? "var(--coral)" : "var(--lime)";
-  return `<div class="spark"><div class="sph"><span>${t(key ? "hero.sp" : "hero.spAll")}</span><b class="num" style="color:${end < -.004 ? "var(--coral-t)" : "var(--lime-t)"}">${fmtSigned(end)}</b></div>
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="spg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-    <line x1="0" x2="${W}" y1="${z}" y2="${z}" class="sz"/><path d="${line} L${W} ${z} L0 ${z}Z" fill="url(#spg)"/><path class="spl" d="${line}" stroke="${end < -.004 ? "var(--coral-t)" : "var(--lime-t)"}" pathLength="1" vector-effect="non-scaling-stroke"/></svg>
-    <div class="spx">${lbs.map(l => `<span>${esc(l)}</span>`).join("")}</div></div>`;
+  const msg = t(key ? (neg ? "hero.short" : "hero.left") : (neg ? "hero.shortAll" : "hero.leftAll"), { a:fmtE(Math.abs(s.bal)) });
+  return `<div class="flow">${bar("fin", t("hero.in"), s.inc)}${bar("fout", t("hero.out"), s.exp)}
+    <p class="fmsg ${neg ? "neg" : ""}"><i>${neg ? "!" : "✓"}</i>${esc(msg)}</p>
+    <div class="fst"><div><span>${perLab}</span><b class="num">${fmtE(per)}</b></div><div><span>${topLab}</span><b class="num">${top}</b></div><div><span>${t("hero.n")}</span><b class="num">${s.n}</b></div></div></div>`;
 }
 function heroHTML(s, pk, label, key){
   const cls = !s.n ? "zero" : s.bal < -.004 ? "neg" : "";
@@ -1751,7 +1766,7 @@ function heroHTML(s, pk, label, key){
     <b class="big num" data-count="${s.bal}">${moneyH(0)}</b>
     <div class="ron">${fmtR(s.balR)}</div>
     <div class="row">${c ? `<span class="pillx">${esc(c.txt)}</span>` : ""}<span class="pillx w"><i class="d" style="background:var(--green)"></i>${t("inc")} ${fmtE(s.inc, 0)}</span><span class="pillx w"><i class="d" style="background:var(--red)"></i>${t("exp")} ${fmtE(s.exp, 0)}</span></div>
-    <div class="hand">${!s.n ? t("hero.zero") : s.bal < -.004 ? t("hero.bad") : t("hero.good")}</div>${s.n ? sparkHTML(key) : ""}</article>`;
+    <div class="hand">${!s.n ? t("hero.zero") : s.bal < -.004 ? t("hero.bad") : t("hero.good")}</div>${s.n ? sparkHTML(key, s) : ""}</article>`;
 }
 function levelHTML(cls="s4"){
   const x = xpInfo(), st = x.st;

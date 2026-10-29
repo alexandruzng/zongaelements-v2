@@ -38,21 +38,21 @@
         "Gastos por categoría arriba del todo: pasa el ratón (o toca) una categoría y verás su nombre, importe y porcentaje.",
         "Ingresos en verde y gastos en rojo, también en Movimientos, donde el balance sale en rojo si es negativo. Arreglado el texto «undefined».",
         "Presupuestos, salud financiera y la tarjeta del Wrapped con un diseño nuevo y más visual.",
-        "La tarjeta del balance muestra ahora una gráfica de cómo ha ido tu balance día a día (o mes a mes en «Todos los meses»)."
+        "La tarjeta del balance muestra ahora lo que entró y lo que salió en dos barras, si te sobra o te falta dinero, tu gasto al día y el día que más gastaste."
       ],
       "en": [
         "Redesigned subscriptions: monthly total, spending split, a 30-day timeline and cards with strong colours and a countdown.",
         "Spending by category now at the top: hover (or tap) a category to see its name, amount and percentage.",
         "Income in green and expenses in red, also in Transactions, where the balance turns red when negative. The “undefined” text is fixed.",
         "Budgets, financial health and the Wrapped card get a new, more visual design.",
-        "The balance card now shows a chart of your running balance day by day (or month by month in “All months”)."
+        "The balance card now shows what came in and went out as two bars, whether you have money left or are short, your daily spending and your biggest spending day."
       ],
       "ro": [
         "Abonamente reproiectate: total lunar, împărțirea cheltuielilor, o cronologie pe 30 de zile și carduri cu culori puternice și numărătoare inversă.",
         "Cheltuielile pe categorii sunt acum sus: treci cu mouse-ul (sau atinge) o categorie ca să vezi numele, suma și procentul.",
         "Veniturile în verde și cheltuielile în roșu, și în Tranzacții, unde soldul apare cu roșu dacă e negativ. Textul „undefined” a fost reparat.",
         "Bugetele, sănătatea financiară și cardul Wrapped au un design nou, mai vizual.",
-        "Cardul de sold arată acum un grafic cu evoluția soldului zi de zi (sau lună de lună în „Toate lunile”)."
+        "Cardul de sold arată acum ce a intrat și ce a ieșit în două bare, dacă îți rămân sau îți lipsesc bani, cheltuielile pe zi și ziua cu cele mai mari cheltuieli."
       ]
     }
   },
