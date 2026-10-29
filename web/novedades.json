@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-10-29-finanzas-fintech",
+    "date": "2026-10-29",
+    "type": "mejora",
+    "title": {
+      "es": "Finanzas estrena un diseño más serio",
+      "en": "Finances gets a more serious design",
+      "ro": "Finanțe are un design mai serios"
+    },
+    "items": {
+      "es": [
+        "Nuevo estilo fintech: fondo oscuro, verde lima para ingresos y coral para gastos, con una tarjeta holográfica que se mueve con el ratón.",
+        "Metas con anillos de progreso, presupuestos en barras finas y logros con iconos, sin dibujos ni emojis.",
+        "Todo sigue igual por dentro: suscripciones con sus avisos, rachas, logros, Wrapped e importación. También funciona en modo claro."
+      ],
+      "en": [
+        "A new fintech style: dark background, lime for income and coral for expenses, with a holographic card that follows your mouse.",
+        "Goals as progress rings, budgets as slim bars and achievements with icons, no drawings or emojis.",
+        "Everything inside stays the same: subscriptions and reminders, streaks, achievements, Wrapped and import. Light mode works too."
+      ],
+      "ro": [
+        "Un stil fintech nou: fundal întunecat, verde lime pentru venituri și coral pentru cheltuieli, cu un card holografic care urmărește mouse-ul.",
+        "Obiective cu inele de progres, bugete în bare subțiri și realizări cu iconițe, fără desene sau emoji.",
+        "În rest totul rămâne la fel: abonamente cu notificări, serii, realizări, Wrapped și import. Merge și în modul luminos."
+      ]
+    }
+  },
+  {
     "id": "2026-10-29-web-mas-rapida",
     "date": "2026-10-29",
     "type": "mejora",
