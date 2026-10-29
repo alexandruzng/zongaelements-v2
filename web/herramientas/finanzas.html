@@ -690,6 +690,146 @@ button.cline:hover{border-color:var(--line-2)}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
+
+/* ===================== v2: bloques más visuales ===================== */
+/* colores fuertes de estado (claro / oscuro) */
+:root{ --okb:#E5F7CC; --okl:#B5DE6C; --okp:#7FB800; --okt:#3E6400; --sob:#FFEDC2; --sol:#FFCF6E; --sop:#F5A000; --sot:#7A4A00; --clb:#FFD9D4; --cll:#FF9A90; --clp:#FF4A3D; --clt:#B3261B; }
+:root[data-theme="dark"]{ --okb:rgba(198,255,61,.13); --okl:rgba(198,255,61,.45); --okp:#C6FF3D; --okt:#D8FF7A; --sob:rgba(255,181,71,.15); --sol:rgba(255,181,71,.5); --sop:#FFB547; --sot:#FFCB7A; --clb:rgba(255,90,78,.17); --cll:rgba(255,90,78,.55); --clp:#FF5A4E; --clt:#FF8C83; }
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){ --okb:rgba(198,255,61,.13); --okl:rgba(198,255,61,.45); --okp:#C6FF3D; --okt:#D8FF7A; --sob:rgba(255,181,71,.15); --sol:rgba(255,181,71,.5); --sop:#FFB547; --sot:#FFCB7A; --clb:rgba(255,90,78,.17); --cll:rgba(255,90,78,.55); --clp:#FF5A4E; --clt:#FF8C83; } }
+
+/* 4 y 7) ingresos en verde, gastos en rojo, balance según signo */
+.kpi.inc,.cmpc.inc,.cmpc.pos{background:var(--okb)!important;border-color:var(--okl)!important}
+.kpi.exp,.cmpc.exp,.cmpc.neg{background:var(--clb)!important;border-color:var(--cll)!important}
+.kpi.inc b,.cmpc.inc .txt b,.cmpc.pos .txt b{color:var(--okt)} .kpi.exp b,.cmpc.exp .txt b,.cmpc.neg .txt b{color:var(--clt)}
+.kpi.inc .k i,.cmpc.inc .em,.cmpc.pos .em{background:var(--okp)!important;color:#0B0C0E!important}
+.kpi.exp .k i,.cmpc.exp .em,.cmpc.neg .em{background:var(--clp)!important;color:#fff!important}
+.kpi.inc .k,.kpi.exp .k{color:var(--fg);opacity:.75}
+.cmpc .txt span{color:var(--fg);opacity:.7}
+
+.cmpc{flex-wrap:wrap}
+.cmpc .d{flex:1 0 100%;display:flex;align-items:baseline;justify-content:space-between;gap:8px;text-align:left;padding-top:10px;border-top:1px dashed color-mix(in srgb,var(--fg) 15%,transparent)}
+.cmpc .d small{margin:0}
+/* 2) gastos por categoría, con resaltado */
+.donut-wrap.stack{flex-direction:column;align-items:stretch;gap:18px}
+.donut-wrap.stack .donut{margin:0 auto;width:170px;height:170px}
+.donut circle.seg{cursor:pointer;transition:stroke-width .25s,opacity .25s}
+.dcard.hov circle.seg{opacity:.28} .dcard.hov circle.seg.hl{opacity:1;stroke-width:20}
+.crow{cursor:default;padding:4px 6px;margin:0 -6px;border-radius:10px;transition:background .2s,opacity .2s}
+.dcard.hov .crow{opacity:.45} .dcard.hov .crow.hl{opacity:1;background:var(--bg-2)}
+:root[data-theme="dark"] .dcard.hov .crow.hl{background:rgba(255,255,255,.05)}
+.donut .ctr span,.donut .ctr b,.donut .ctr em{max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.donut .ctr em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--sc,var(--muted));margin-top:2px}
+.donut .ctr .pop{animation:popIn .35s cubic-bezier(.2,1.4,.4,1) both}
+.donut .ctr span.pop{color:var(--sc,var(--muted));font-weight:600}
+@keyframes popIn{from{opacity:0;transform:translateY(6px) scale(.92)}}
+.ftip{position:fixed;z-index:800;pointer-events:none;padding:8px 12px;border-radius:10px;background:#0B0C0E;color:#fff;font-size:12.5px;font-weight:500;white-space:nowrap;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12);opacity:0;transform:translateY(6px) scale(.95);transition:opacity .15s,transform .2s cubic-bezier(.2,1.4,.4,1)}
+.ftip.on{opacity:1;transform:none}
+.ftip::after{content:"";position:absolute;left:50%;bottom:-5px;width:9px;height:9px;background:#0B0C0E;transform:translateX(-50%) rotate(45deg);border-right:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
+
+/* 3) presupuestos */
+.budgets{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.bud2{padding:14px;border-radius:14px;border:1px solid var(--line);display:flex;flex-direction:column;gap:10px;animation:rise .6s cubic-bezier(.2,.9,.2,1) both;transition:transform .2s,border-color .2s}
+.bud2:hover{transform:translateY(-2px);border-color:var(--line-2)}
+.bud2.ok{--bc:var(--okp)} .bud2.warn{--bc:var(--sop);background:var(--sob);border-color:var(--sol)} .bud2.over{--bc:var(--clp);background:var(--clb);border-color:var(--cll)}
+.bud2 .bh{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.bud2 .bh b{flex:1;font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bud2 .bp{font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:100px;background:color-mix(in srgb,var(--bc) 18%,transparent);color:var(--fg)}
+.bud2.over .bp{background:var(--clp);color:#fff} .bud2.warn .bp{background:var(--sop);color:#0B0C0E}
+.bud2 .ba{display:flex;align-items:baseline;gap:6px}
+.bud2 .ba b{font-family:var(--display);font-weight:600;font-size:24px;letter-spacing:-.03em}
+.bud2.over .ba b{color:var(--clt)} .bud2.warn .ba b{color:var(--sot)}
+.bud2 .ba span{font-size:12.5px;color:var(--muted)}
+.btrack{position:relative;height:10px;border-radius:10px;background:var(--bg-2);overflow:visible}
+:root[data-theme="dark"] .btrack{background:rgba(255,255,255,.07)}
+.bfill{position:absolute;inset:0 auto 0 0;border-radius:10px;background:var(--bc);transform-origin:left;animation:grow 1.1s cubic-bezier(.2,.9,.2,1) both;box-shadow:0 0 12px color-mix(in srgb,var(--bc) 50%,transparent)}
+.bover{position:absolute;top:0;bottom:0;right:0;border-radius:0 10px 10px 0;background:repeating-linear-gradient(-45deg,rgba(0,0,0,.25) 0 4px,transparent 4px 8px);animation:grow 1.1s .3s cubic-bezier(.2,.9,.2,1) both}
+.bpace{position:absolute;top:-4px;bottom:-4px;width:2px;border-radius:2px;background:var(--fg);transform:translateX(-1px)}
+.bpace::after{content:"";position:absolute;top:-4px;left:50%;width:6px;height:6px;border-radius:50%;background:var(--fg);transform:translateX(-50%)}
+.bud2 .bf{font-size:12px;color:var(--muted)}
+.bud2.over .bf{color:var(--clt);font-weight:500}
+
+/* 6) salud financiera */
+.hcard{background:radial-gradient(100% 70% at 50% 0%,color-mix(in srgb,var(--hc) 14%,transparent),transparent 70%),var(--card)}
+:root[data-theme="dark"] .hcard{background:radial-gradient(100% 70% at 50% 0%,color-mix(in srgb,var(--hc) 12%,transparent),transparent 70%),linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018))}
+.hcard .gauge{max-width:250px;position:relative}
+.hfill{transition:stroke-dashoffset 1.4s cubic-bezier(.2,.9,.2,1);filter:drop-shadow(0 0 8px color-mix(in srgb,var(--hc) 55%,transparent))}
+.gval{position:absolute;left:0;right:0;bottom:2px;text-align:center}
+.gval b{font-family:var(--display);font-weight:600;font-size:40px;letter-spacing:-.04em;color:var(--fg)}
+.hcard .knob{filter:drop-shadow(0 3px 8px rgba(0,0,0,.25))}
+:root[data-theme="light"] .hcard .knob circle:first-child{fill:#fff}
+.gval small{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:-4px}
+.hverdict{text-align:center;font-size:13.5px;color:var(--muted);margin:12px auto 0;max-width:260px;line-height:1.45}
+.hrings{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:8px;margin-top:18px}
+.hring{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:10px 4px;border-radius:12px;border:1px solid var(--line)}
+.hring svg{width:52px;height:52px}
+.hring .pr{transition:stroke-dashoffset 1.2s cubic-bezier(.2,.9,.2,1)}
+.hring text{font-family:var(--display);font-weight:600;font-size:13px;fill:var(--fg)}
+.hring b{font-size:12px;font-weight:500}
+.hring small{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+
+/* 1) suscripciones */
+.subhero{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;background:radial-gradient(80% 140% at 0% 0%,rgba(198,255,61,.12),transparent 55%),var(--card)}
+.shbig{display:block;font-family:var(--display);font-weight:600;font-size:clamp(40px,10vw,60px);letter-spacing:-.045em;line-height:1;margin-top:12px}
+.shper{display:block;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:8px}
+.shmeta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.shmeta>span{height:30px;padding:0 12px;border-radius:100px;border:1px solid var(--line-2);display:inline-flex;align-items:center;gap:6px;font-size:12.5px}
+.shnext.ok{background:var(--okb);border-color:var(--okl)} .shnext.soon{background:var(--sob);border-color:var(--sol)} .shnext.close{background:var(--clb);border-color:var(--cll)} .shnext.now{background:#000;color:#fff;border-color:var(--clp)!important}
+.sharebar{display:flex;height:16px;border-radius:8px;overflow:hidden;gap:2px;background:var(--bg-2)}
+.sharebar i{display:block;height:100%;cursor:pointer;transform-origin:left;animation:grow .9s cubic-bezier(.2,.9,.2,1) both;transition:filter .2s,transform .2s}
+.sharebar i:hover{filter:brightness(1.15);transform:scaleY(1.25)}
+.sharelg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px}
+.sharelg span{display:inline-flex;align-items:center;gap:6px;font-size:12.5px}
+.sharelg i{width:8px;height:8px;border-radius:50%}
+.sharelg em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tline{position:relative;height:96px;margin:12px 6px 4px}
+.tzones{position:absolute;left:0;right:0;top:56px;height:8px;border-radius:8px;display:flex;overflow:hidden}
+.tzones i{display:block;height:100%} .tzones .z0{background:#0B0C0E} .tzones .z1{background:var(--clp)} .tzones .z2{background:var(--sop)} .tzones .z3{flex:1;background:var(--okp);opacity:.8}
+:root[data-theme="dark"] .tzones .z0{background:#fff}
+.tdot{position:absolute;top:calc(22px - var(--off,0px));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;cursor:pointer;z-index:2;animation:popIn .5s cubic-bezier(.2,1.4,.4,1) both}
+.tdot i{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-style:normal;font-family:var(--display);font-weight:600;font-size:12px;color:#fff;background:var(--lc);border:2px solid var(--card-2);box-shadow:0 4px 12px -4px rgba(0,0,0,.4);transition:transform .2s}
+:root[data-theme="light"] .tdot i{border-color:#fff}
+.tdot::after{content:"";width:2px;height:calc(10px + var(--off,0px));background:var(--line-2)}
+.tdot:hover i{transform:scale(1.2)}
+.tdot.now i{box-shadow:0 0 0 3px var(--clp),0 0 16px var(--clp)}
+.ttk{position:absolute;top:76px;transform:translateX(-50%);font-family:var(--mono);font-size:10.5px;color:var(--muted);white-space:nowrap}
+.ttk:first-of-type{transform:none} .ttk:last-child{transform:translateX(-100%)}
+.keyrow i{border:0} .keyrow i.kok{background:var(--okp)} .keyrow i.ksoon{background:var(--sop)} .keyrow i.kclose{background:var(--clp)} .keyrow i.know{background:#0B0C0E;box-shadow:0 0 0 2px var(--clp)}
+/* tarjetas de suscripción con color fuerte y cuenta atrás */
+.sub{padding:14px 14px 14px 16px;gap:12px}
+.sub::before{width:4px;top:0;bottom:0;left:0;border-radius:0}
+.sub.ok{--pc:var(--okp);background:var(--okb);border-color:var(--okl)}
+.sub.soon{--pc:var(--sop);background:var(--sob);border-color:var(--sol)}
+.sub.close{--pc:var(--clp);background:var(--clb);border-color:var(--cll)}
+.sub.now{--pc:var(--clp)}
+.sub:hover{transform:translateY(-2px);box-shadow:0 14px 30px -18px var(--pc)}
+.sub .txt small{opacity:.75}
+.sub .price{text-align:right;flex:none}
+.sub .price b{display:block;font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.02em;white-space:nowrap}
+.sub .price small{display:block;font-family:var(--mono);font-size:10.5px;opacity:.6}
+.sub .cd{position:relative;width:46px;height:46px;flex:none}
+.sub .cd svg{width:100%;height:100%}
+.sub .cd .cdt{stroke:color-mix(in srgb,var(--pc) 22%,transparent)} .sub .cd .cdp{stroke:var(--pc);filter:drop-shadow(0 0 4px color-mix(in srgb,var(--pc) 60%,transparent))}
+.sub.now .cd .cdt{stroke:rgba(255,255,255,.15)}
+.sub .cd b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:15px}
+.sub .cd b.w{font-family:var(--mono);font-size:9px;letter-spacing:.04em}
+.sub.ok .txt b,.sub.ok .price b{color:var(--okt)} .sub.soon .txt b,.sub.soon .price b{color:var(--sot)} .sub.close .txt b,.sub.close .price b{color:var(--clt)}
+:root[data-theme="light"] .sub.ok .txt b,:root[data-theme="light"] .sub.soon .txt b,:root[data-theme="light"] .sub.close .txt b{color:var(--fg)}
+.sub .when{display:none}
+
+/* 5) tarjeta visual del Wrapped */
+.wbanner .phone{display:block;position:relative;z-index:2;width:118px;height:150px;border-radius:22px;padding:7px;background:#0B0C0E;border:1px solid rgba(255,255,255,.18);transform:rotate(-7deg);box-shadow:0 24px 40px -18px rgba(0,0,0,.6),0 0 40px -8px rgba(198,255,61,.45);flex:none;animation:phoneF 6s ease-in-out infinite}
+@keyframes phoneF{50%{transform:rotate(-4deg) translateY(-6px)}}
+.wbanner .scr{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;padding:11px 10px;display:flex;flex-direction:column;justify-content:space-between;
+  background:radial-gradient(90% 70% at 100% 0%,rgba(198,255,61,.35),transparent 60%),radial-gradient(80% 60% at 0% 100%,rgba(91,140,255,.35),transparent 60%),#111317}
+.wbanner .scr>b{font-family:var(--display);font-weight:600;font-size:13px;line-height:1.05;color:#fff;letter-spacing:-.02em}
+.wbanner .scr>b em{font-style:normal;color:var(--lime)}
+.pbars{display:flex;align-items:flex-end;gap:4px;height:46px}
+.pbars i{flex:1;border-radius:3px 3px 1px 1px;background:var(--lime);animation:eq 1.4s ease-in-out infinite}
+.pbars i:nth-child(2){animation-delay:.2s;background:#5B8CFF} .pbars i:nth-child(3){animation-delay:.4s;background:var(--coral)} .pbars i:nth-child(4){animation-delay:.6s;background:#FF7AB8} .pbars i:nth-child(5){animation-delay:.8s}
+@keyframes eq{0%,100%{height:25%}50%{height:90%}}
+.pnum{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.75)}
+@media (min-width:600px){ .subhero{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);align-items:center} }
+@media (max-width:420px){ .sub{gap:10px;padding:12px 12px 12px 14px} .sub .logo{width:36px;height:36px} .sub .price b{font-size:14px} .sub .cd{width:40px;height:40px} .sub .cd b{font-size:13px} .tdot i{width:24px;height:24px;font-size:11px} }
 </style>
 </head>
 <body>
@@ -862,6 +1002,10 @@ es:{ tool:"Finanzas", tagline:"Mejores decisiones, grandes sueños.", settings:"
   "lvl.t":"Nivel {n} · {name}","lvl.next":"Te faltan {x} XP para el nivel {n}", lvn:["Novato","Aprendiz","Ahorrador","Ahorrador constante","Estratega","Ahorrador pro","Ahorrador experto","Maestro del ahorro","Leyenda financiera"],
   "st.t":"Racha de {n} días","st.t1":"Racha de 1 día","st.t0":"Sin racha todavía","st.s":"sin caprichos · récord {b}","st.s0":"Empieza hoy: un día sin caprichos","st.whims":"Rompen tu racha: {c}. Cámbialo en Ajustes.",
   "kpi.rate":"Tasa de ahorro","kpi.n":"Movimientos",
+  "hv":["Tus gastos superan a tus ingresos: toca recortar.","Vas muy justo: intenta ahorrar algo cada mes.","Estable, aunque hay margen para ahorrar más.","Buen ritmo: ahorras y controlas tus gastos.","Excelente: ahorras mucho y tienes colchón."],
+  "b.left":"Te quedan {a}","b.over":"Te has pasado {a}","b.perDay":"{a} al día hasta fin de mes","b.today":"Hoy","b.of":"de {a}","b.used":"{p} usado",
+  "s.share":"Reparto del gasto","s.shareS":"Cuánto se lleva cada una al mes","s.tl":"Próximos 30 días","s.tlS":"Pasa el ratón por cada cobro","s.next30":"{n} cobros · {a}","s.count":"Activas","s.cyc":"del ciclo","s.days":"días","s.hoy":"HOY","s.man":"MAÑ.","s.spot":"Próximo cobro",
+  "cat.tip":"{c} · {a} · {p}",
   "health.t":"Salud financiera","health.none":"Sin datos","health.noneP":"Añade movimientos de este periodo para calcularla.", lv:["Crítica","En alerta","Estable","Saludable","Excelente"], "h.save":"Ahorro","h.bud":"Presupuestos","h.cush":"Colchón","h.months":"{n} meses",
   "evo.t":"Evolución mensual","evo.s":"Ingresos vs. gastos · toca un mes",
   "cat.t":"Gastos por categoría","cat.none":"Todavía no hay gastos aquí.", total:"Total",
@@ -922,6 +1066,10 @@ en:{ tool:"Finances", tagline:"Better decisions, big dreams.", settings:"Setting
   "lvl.t":"Level {n} · {name}","lvl.next":"{x} XP to level {n}", lvn:["Rookie","Apprentice","Saver","Steady saver","Strategist","Pro saver","Expert saver","Saving master","Money legend"],
   "st.t":"{n}-day streak","st.t1":"1-day streak","st.t0":"No streak yet","st.s":"without treats · record {b}","st.s0":"Start today: one day without treats","st.whims":"These break your streak: {c}. Change them in Settings.",
   "kpi.rate":"Savings rate","kpi.n":"Transactions",
+  "hv":["Your spending is above your income: time to cut back.","Very tight: try to save something every month.","Stable, but there's room to save more.","Good pace: you save and keep spending in check.","Excellent: you save a lot and have a cushion."],
+  "b.left":"{a} left","b.over":"{a} over","b.perDay":"{a} a day until month-end","b.today":"Today","b.of":"of {a}","b.used":"{p} used",
+  "s.share":"Spending split","s.shareS":"How much each one takes per month","s.tl":"Next 30 days","s.tlS":"Hover over each charge","s.next30":"{n} charges · {a}","s.count":"Active","s.cyc":"of the cycle","s.days":"days","s.hoy":"TODAY","s.man":"TMRW","s.spot":"Next charge",
+  "cat.tip":"{c} · {a} · {p}",
   "health.t":"Financial health","health.none":"No data","health.noneP":"Add transactions for this period to work it out.", lv:["Critical","Warning","Stable","Healthy","Excellent"], "h.save":"Savings","h.bud":"Budgets","h.cush":"Cushion","h.months":"{n} months",
   "evo.t":"Monthly trend","evo.s":"Income vs. expenses · tap a month",
   "cat.t":"Spending by category","cat.none":"No expenses here yet.", total:"Total",
@@ -982,6 +1130,10 @@ ro:{ tool:"Finanțe", tagline:"Decizii mai bune, vise mari.", settings:"Setări"
   "lvl.t":"Nivelul {n} · {name}","lvl.next":"Mai ai {x} XP până la nivelul {n}", lvn:["Începător","Ucenic","Econom","Econom constant","Strateg","Econom pro","Econom expert","Maestrul economiilor","Legendă financiară"],
   "st.t":"Serie de {n} zile","st.t1":"Serie de 1 zi","st.t0":"Încă nicio serie","st.s":"fără capricii · record {b}","st.s0":"Începe azi: o zi fără capricii","st.whims":"Îți rup seria: {c}. Schimbă-le în Setări.",
   "kpi.rate":"Rata de economisire","kpi.n":"Tranzacții",
+  "hv":["Cheltuielile depășesc veniturile: e timpul să tai din ele.","Foarte la limită: încearcă să economisești ceva lunar.","Stabil, dar poți economisi mai mult.","Ritm bun: economisești și ții cheltuielile sub control.","Excelent: economisești mult și ai rezervă."],
+  "b.left":"Mai ai {a}","b.over":"Ai depășit cu {a}","b.perDay":"{a} pe zi până la final de lună","b.today":"Azi","b.of":"din {a}","b.used":"{p} folosit",
+  "s.share":"Împărțirea cheltuielii","s.shareS":"Cât ia fiecare pe lună","s.tl":"Următoarele 30 de zile","s.tlS":"Treci cu mouse-ul peste fiecare plată","s.next30":"{n} plăți · {a}","s.count":"Active","s.cyc":"din ciclu","s.days":"zile","s.hoy":"AZI","s.man":"MÂINE","s.spot":"Următoarea plată",
+  "cat.tip":"{c} · {a} · {p}",
   "health.t":"Sănătate financiară","health.none":"Fără date","health.noneP":"Adaugă tranzacții în perioada asta ca s-o calculăm.", lv:["Critică","În alertă","Stabilă","Sănătoasă","Excelentă"], "h.save":"Economii","h.bud":"Bugete","h.cush":"Rezervă","h.months":"{n} luni",
   "evo.t":"Evoluție lunară","evo.s":"Venituri vs. cheltuieli · atinge o lună",
   "cat.t":"Cheltuieli pe categorii","cat.none":"Încă nu există cheltuieli aici.", total:"Total",
@@ -1153,6 +1305,7 @@ const ICON = {
   go:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
   home:SV('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>'), list:SV('<path d="M7 7h14M7 12h14M7 17h14M3 7h.01M3 12h.01M3 17h.01"/>'),
   target:SV('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>'), bell:SV('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>'),
+  up:SV('<path d="M7 17 17 7M8 7h9v9"/>'), down:SV('<path d="M7 7l10 10M17 8v9H8"/>'),
   trophy:SV('<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>')
 };
 const cic = (c, cls="") => `<span class="cic ${cls}" style="--cc:${c.color}">${SV(CI[c.icon] || CI.dots)}</span>`;
@@ -1511,6 +1664,7 @@ document.addEventListener("click", e => {
 });
 
 function render(){
+  if (typeof hideTip === "function") hideTip();
   const lb = FX.label(); $("#fxTxt").textContent = lb.txt; $("#fxPill").className = "fx " + lb.cls;
   const meta = (ZE.user && ZE.user.user_metadata) || {};
   const name = (S.settings.name || (meta.full_name || meta.name || "").split(" ")[0] || "").trim();
@@ -1560,22 +1714,26 @@ function kpisHTML(list, s, key){
   const pk = key ? shiftKey(key, -1) : null, ps = pk ? sum(inMonth(pk)) : null;
   const ci = (v, pv, kind) => { if (!pk) return ""; const c = cmpTxt(v, pv, kind, pk); return `<small class="${c.cls}">${esc(c.txt)}</small>`; };
   return `<div class="kpis s12 rise">
-    <div class="kpi" style="background:var(--mint);color:#17161C"><span class="k"><i style="background:var(--green)">↑</i>${t("inc")}</span><b class="num">${fmtE(s.inc)}</b>${ci(s.inc, ps && ps.inc, "inc")}</div>
-    <div class="kpi" style="background:var(--salmon);color:#17161C"><span class="k"><i style="background:var(--red);color:#fff">↓</i>${t("exp")}</span><b class="num">${fmtE(s.exp)}</b>${ci(s.exp, ps && ps.exp, "exp")}</div>
-    <div class="kpi" style="background:var(--butter);color:#17161C"><span class="k"><i style="background:var(--yellow)">%</i>${t("kpi.rate")}</span><b class="num">${s.inc ? fmtPct(s.rate) : "—"}</b><small>${fmtE(s.exp / days)} / ${t("s.day")}</small></div>
-    <div class="kpi" style="background:var(--sky);color:#17161C"><span class="k"><i style="background:var(--blue);color:#fff">#</i>${t("kpi.n")}</span><b class="num">${s.n}</b><small>${fmtR(s.balR, 0)}</small></div></div>`;
+    <div class="kpi inc"><span class="k"><i style="background:var(--green)">↑</i>${t("inc")}</span><b class="num">${fmtE(s.inc)}</b>${ci(s.inc, ps && ps.inc, "inc")}</div>
+    <div class="kpi exp"><span class="k"><i style="background:var(--red);color:#fff">↓</i>${t("exp")}</span><b class="num">${fmtE(s.exp)}</b>${ci(s.exp, ps && ps.exp, "exp")}</div>
+    <div class="kpi"><span class="k"><i style="background:var(--yellow)">%</i>${t("kpi.rate")}</span><b class="num">${s.inc ? fmtPct(s.rate) : "—"}</b><small>${fmtE(s.exp / days)} / ${t("s.day")}</small></div>
+    <div class="kpi"><span class="k"><i style="background:var(--blue);color:#fff">#</i>${t("kpi.n")}</span><b class="num">${s.n}</b><small>${fmtR(s.balR, 0)}</small></div></div>`;
 }
 function arc(cx, cy, r, a0, a1){ const p = a => [cx + r*Math.cos(a*Math.PI/180), cy - r*Math.sin(a*Math.PI/180)]; const [x0,y0] = p(a0), [x1,y1] = p(a1); return `M${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`; }
 function healthHTML(list, key, cls="s4"){
-  const h = health(list, key);
-  const segs = LV_COL.map((c, i) => `<path d="${arc(100,100,78,180 - i*36 - 1, 180 - (i+1)*36 + 1)}" stroke="${c}" stroke-width="10" stroke-linecap="round" fill="none"/>`).join("");
-  const outline = "";
-  const sc = h ? h.score : 0, lv = lvOf(sc);
-  return `<article class="card c-yellow ${cls} rise"><div class="ct"><div><h3>${t("health.t")}</h3><span class="subt">0–100</span></div></div>
-    <div class="gauge"><svg viewBox="0 0 200 118">${segs}${outline}<g class="needle" data-rot="${h ? -90 + sc*1.8 : -90}"><path d="M100 100 L97.5 40 L100 30 L102.5 40Z" fill="var(--fg)"/></g><circle cx="100" cy="100" r="7" fill="var(--bg)" stroke="var(--fg)" stroke-width="2.5"/></svg></div>
-    <div style="text-align:center;margin-top:6px"><b style="font-family:var(--display);font-size:42px;letter-spacing:-.04em;line-height:1;display:block" class="num">${h ? `<span data-count="${sc}" data-int>0</span>` : "—"}</b>
-      <span class="lvlpill" style="--hc:${h ? LV_COL[lv] : "#fff"}">${h ? ta("lv")[lv] : t("health.none")}</span></div>
-    ${h ? `<div class="hparts">${h.parts.map(p => `<div class="hp"><span>${t(p.k)}</span><span>${esc(p.txt)}</span><div class="bar" style="--bc:${LV_COL[lvOf(p.v*100)]}"><i style="width:${Math.max(4, p.v*100)}%"></i></div></div>`).join("")}</div>` : `<p class="muted" style="text-align:center;margin-top:12px">${t("health.noneP")}</p>`}</article>`;
+  const h = health(list, key), sc = h ? h.score : 0, lv = lvOf(sc), col = h ? LV_COL[lv] : "var(--muted)";
+  const ticks = [...Array(11)].map((_, i) => { const a = 180 - i*18, r1 = 92, r2 = i % 5 ? 96 : 99, c = Math.cos(a*Math.PI/180), sn = Math.sin(a*Math.PI/180);
+    return `<line x1="${(100 + r1*c).toFixed(1)}" y1="${(100 - r1*sn).toFixed(1)}" x2="${(100 + r2*c).toFixed(1)}" y2="${(100 - r2*sn).toFixed(1)}" stroke="var(--line-2)" stroke-width="1.5"/>`; }).join("");
+  const L = Math.PI * 78, fill = h ? sc / 100 : 0;
+  const ring = p => { const r = 24, C = 2*Math.PI*r, c2 = LV_COL[lvOf(p.v*100)];
+    return `<div class="hring"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="${r}" fill="none" stroke="var(--line)" stroke-width="5"/><circle class="pr" cx="30" cy="30" r="${r}" fill="none" stroke="${c2}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${C*(1 - p.v)}" transform="rotate(-90 30 30)"/><text x="30" y="34" text-anchor="middle">${Math.round(p.v*100)}</text></svg><b>${t(p.k)}</b><small>${esc(p.txt)}</small></div>`; };
+  return `<article class="card hcard ${cls} rise" style="--hc:${col}"><div class="ct"><div><h3>${t("health.t")}</h3><span class="subt">0–100</span></div>${h ? `<span class="lvlpill" style="--hc:${col}">${ta("lv")[lv]}</span>` : ""}</div>
+    <div class="gauge"><svg viewBox="0 0 200 116"><defs><linearGradient id="hg" x1="0" x2="1"><stop offset="0" stop-color="#FF5A4E"/><stop offset=".5" stop-color="#FFB547"/><stop offset="1" stop-color="#C6FF3D"/></linearGradient></defs>
+      ${ticks}<path d="${arc(100,100,78,180,0)}" stroke="var(--line)" stroke-width="12" stroke-linecap="round" fill="none"/>
+      <path class="hfill" d="${arc(100,100,78,180,0)}" stroke="url(#hg)" stroke-width="12" stroke-linecap="round" fill="none" stroke-dasharray="${L}" stroke-dashoffset="${L}" data-off="${L*(1 - fill)}"/>
+      ${h ? `<g class="needle knob" data-rot="${-90 + sc*1.8}"><circle cx="100" cy="22" r="9" fill="var(--card-2)" stroke="${col}" stroke-width="4"/><circle cx="100" cy="22" r="3" fill="${col}"/></g>` : ""}</svg>
+      <div class="gval"><b class="num">${h ? `<span data-count="${sc}" data-int>0</span>` : "—"}</b><small>/ 100</small></div></div>
+    ${h ? `<p class="hverdict">${esc(ta("hv")[lv])}</p><div class="hrings">${h.parts.map(ring).join("")}</div>` : `<p class="muted" style="text-align:center;margin-top:12px">${t("health.noneP")}</p>`}</article>`;
 }
 function evoHTML(keys, cls="s8"){
   const data = keys.map(k => ({ k, ...sum(inMonth(k)) }));
@@ -1594,15 +1752,18 @@ function evoHTML(keys, cls="s8"){
     <div class="legend"><span><i style="background:var(--green)"></i>${t("inc")}</span><span><i style="background:var(--red)"></i>${t("exp")}</span></div></div>
     <svg class="chart" viewBox="0 0 ${W} ${H}">${grid}${bars}</svg></article>`;
 }
-function donutHTML(list, cls="s6", title=t("cat.t")){
+function donutHTML(list, cls="s6", title=t("cat.t"), stack=false){
   const cats = byCat(list), tot = cats.reduce((a, c) => a + c.v, 0);
-  if (!tot) return `<article class="card ${cls} rise"><div class="ct"><div><h3>${title}</h3></div></div><div class="empty"><span class="em"></span>${t("cat.none")}</div></article>`;
+  if (!tot) return `<article class="card ${cls} rise"><div class="ct"><div><h3>${title}</h3></div></div><div class="empty">${t("cat.none")}</div></article>`;
   const r = 60, C = 2*Math.PI*r; let off = 0;
+  const tip = c => esc(t("cat.tip", { c:catName(c.c), a:fmtE(c.v), p:fmtPct(c.v/tot) }));
   const segs = cats.map((c, i) => { const len = (c.v/tot)*C;
-    const el = `<circle class="seg" cx="80" cy="80" r="${r}" stroke="${c.c.color}" stroke-dasharray="${Math.max(0, len - (cats.length > 1 ? 2 : 0))} ${C}" stroke-dashoffset="${-off}" style="animation-delay:${i*.07}s"/>`; off += len; return el; }).join("");
-  return `<article class="card ${cls} rise"><div class="ct"><div><h3>${title}</h3><span class="subt">${t("nav.n", { n:list.filter(x => x.t === "exp").length })}</span></div></div>
-    <div class="donut-wrap"><div class="donut"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="60" fill="none" stroke="var(--line)" stroke-width="14"/>${segs}</svg><div class="ctr"><span>${t("total")}</span><b class="num">${fmtE(tot, 0)}</b></div></div>
-    <div class="clist">${cats.slice(0, 7).map(c => `<div class="crow">${cic(c.c, "sm")}<span class="nm">${esc(catName(c.c))}</span><span class="v">${fmtE(c.v, 0)} · ${fmtPct(c.v/tot)}</span><div class="bar" style="--bc:${c.c.color}"><i style="width:${(c.v/cats[0].v)*100}%"></i></div></div>`).join("")}</div></div></article>`;
+    const el = `<circle class="seg" data-ci="${i}" data-tip="${tip(c)}" cx="80" cy="80" r="${r}" stroke="${c.c.color}" stroke-dasharray="${Math.max(0, len - (cats.length > 1 ? 2 : 0))} ${C}" stroke-dashoffset="${-off}" style="animation-delay:${i*.07}s"/>`; off += len; return el; }).join("");
+  const rows = cats.slice(0, stack ? 5 : 7).map((c, i) => `<div class="crow" data-ci="${i}" data-tip="${tip(c)}">${cic(c.c, "sm")}<span class="nm">${esc(catName(c.c))}</span><span class="v">${fmtE(c.v, 0)} · ${fmtPct(c.v/tot)}</span><div class="bar" style="--bc:${c.c.color}"><i style="width:${(c.v/cats[0].v)*100}%"></i></div></div>`).join("");
+  return `<article class="card ${cls} rise dcard"><div class="ct"><div><h3>${title}</h3><span class="subt">${t("nav.n", { n:list.filter(x => x.t === "exp").length })}</span></div></div>
+    <div class="donut-wrap ${stack ? "stack" : ""}"><div class="donut"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="60" fill="none" stroke="var(--line)" stroke-width="14"/>${segs}</svg>
+      <div class="ctr" data-tot="${esc(fmtE(tot, 0))}"><span>${t("total")}</span><b class="num">${fmtE(tot, 0)}</b></div></div>
+    <div class="clist">${rows}</div></div></article>`;
 }
 function tipsHTML(list, s, key, cls="s6"){
   const tips = [];
@@ -1634,20 +1795,28 @@ function goalsPreviewHTML(cls="s6"){
       : `<div class="empty"><span class="em"></span>${t("g.none")}<button class="btn sm yellow" data-act="gnew">${ICON.plus}${t("g.new")}</button></div>`}</article>`;
 }
 function tubesHTML(list, cls="s6"){
-  const bl = budgetList(), cats = byCat(list);
-  const body = bl.length ? `<div class="tubes">${bl.map((b, i) => {
-    const sp = (cats.find(x => x.c.id === b.c.id) || {}).v || 0, p = sp / b.lim, over = sp > b.lim;
-    const col = over ? "var(--red)" : p >= .8 ? "var(--yellow)" : b.c.color;
-    return `<div class="tb ${over ? "over" : ""}"><span class="ti">${cic(b.c, "sm")}<span>${esc(catName(b.c))}</span><small>${fmtE(b.lim, 0)}</small></span>
-      <div class="tube"><div class="liq" style="--lc:${col}" data-h="${Math.min(100, p*100)}"><b style="left:8px;animation-delay:-${i*.5}s"></b><b style="left:20px;animation-delay:-${i*.5 + 1.2}s"></b></div></div>
-      <span class="v num">${fmtE(sp, 0)}<small>/ ${fmtE(b.lim, 0)}</small></span></div>`; }).join("")}</div>`
-    : `<div class="empty"><span class="em"></span>${t("bud.none")}<button class="btn sm yellow" data-act="budgets">${t("bud.add")}</button></div>`;
-  return `<article class="card ${cls} rise"><div class="ct"><div><h3>${t("bud.t")}</h3></div>${bl.length ? `<button class="xs" data-act="budgets">${ICON.edit}${t("bud.edit")}</button>` : ""}</div>${body}</article>`;
+  const bl = budgetList(), cats = byCat(list), k = view.key, now = keyOf(new Date());
+  const pace = k === now ? new Date().getDate() / daysIn(k) : k < now ? 1 : 0, daysLeft = k === now ? daysIn(k) - new Date().getDate() + 1 : 0;
+  const body = bl.length ? `<div class="budgets">${bl.map((b, i) => {
+    const sp = (cats.find(x => x.c.id === b.c.id) || {}).v || 0, p = sp / b.lim, over = sp > b.lim, st = over ? "over" : p >= .8 ? "warn" : "ok";
+    const foot = over ? t("b.over", { a:fmtE(sp - b.lim) }) : t("b.left", { a:fmtE(b.lim - sp) }) + (daysLeft ? ` · ${t("b.perDay", { a:fmtE((b.lim - sp) / daysLeft) })}` : "");
+    return `<div class="bud2 ${st}" style="--cc:${b.c.color};animation-delay:${i*.06}s">
+      <div class="bh">${cic(b.c, "sm")}<b>${esc(catName(b.c))}</b><span class="bp">${fmtPct(p)}</span></div>
+      <div class="ba"><b class="num">${fmtE(sp, 0)}</b><span>${esc(t("b.of", { a:fmtE(b.lim, 0) }))}</span></div>
+      <div class="btrack"><i class="bfill" style="width:${Math.min(100, p*100)}%"></i>${over ? `<i class="bover" style="width:${Math.min(100, (p - 1) / p * 100)}%"></i>` : ""}${pace > 0 && pace < 1 ? `<span class="bpace" style="left:${pace*100}%" title="${esc(t("b.today"))}"></span>` : ""}</div>
+      <small class="bf">${esc(foot)}</small></div>`; }).join("")}</div>`
+    : `<div class="empty">${t("bud.none")}<button class="btn sm yellow" data-act="budgets">${t("bud.add")}</button></div>`;
+  return `<article class="card ${cls} rise"><div class="ct"><div><h3>${t("bud.t")}</h3>${bl.length ? `<span class="subt">${esc(t("b.used", { p:fmtPct(bl.reduce((a, b) => a + ((cats.find(x => x.c.id === b.c.id) || {}).v || 0), 0) / bl.reduce((a, b) => a + b.lim, 0)) }))}</span>` : ""}</div>${bl.length ? `<button class="xs" data-act="budgets">${ICON.edit}${t("bud.edit")}</button>` : ""}</div>${body}</article>`;
 }
 function subCard(x){
-  const s = x.s, per = s.f === "y" ? t("s.perY") : s.f === "w" ? t("s.perW") : t("s.perM");
-  return `<button class="sub ${subState(x.n)}" data-act="sedit" data-id="${s.id}"><span class="logo" style="--lc:${s.color}">${esc((s.name.trim()[0] || "?").toUpperCase())}</span>
-    <span class="txt"><b>${esc(s.name)}</b><small>${fmt(s.a, s.cu)}${per} · ${esc(dayShort(nextCharge(s)))}</small></span><span class="when">${subWhen(x.n)}</span></button>`;
+  const s = x.s, per = s.f === "y" ? t("s.perY") : s.f === "w" ? t("s.perW") : t("s.perM"), st = subState(x.n);
+  const pc = prevCharge(s), nc = nextCharge(s), cyc = pc ? Math.max(1, diffDays(pc, nc)) : (s.f === "y" ? 365 : s.f === "w" ? 7 : 30);
+  const p = clamp(1 - x.n / cyc), r = 19, C = 2*Math.PI*r;
+  const lab = x.n <= 0 ? t("s.hoy") : x.n === 1 ? t("s.man") : x.n;
+  return `<button class="sub ${st}" data-act="sedit" data-id="${s.id}"><span class="logo" style="--lc:${s.color}">${esc((s.name.trim()[0] || "?").toUpperCase())}</span>
+    <span class="txt"><b>${esc(s.name)}</b><small>${esc(dayShort(nc))} · ${subWhen(x.n)}</small></span>
+    <span class="price"><b class="num">${fmt(s.a, s.cu)}</b><small>${per}</small></span>
+    <span class="cd" title="${Math.round(p*100)} % ${esc(t("s.cyc"))}"><svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="${r}" fill="none" class="cdt" stroke-width="4"/><circle cx="23" cy="23" r="${r}" fill="none" class="cdp" stroke-width="4" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1 - p)}" transform="rotate(-90 23 23)"/></svg><b class="${typeof lab === "number" ? "" : "w"}">${lab}</b></span></button>`;
 }
 function subsPreviewHTML(cls="s6"){
   const list = subsSorted().slice(0, 4);
@@ -1664,7 +1833,7 @@ function achPreviewHTML(cls="s6"){
 function wrappedBanner(key, cls="s12"){
   return `<article class="card wbanner ${cls} rise"><span class="sh s1"></span><span class="sh s2"></span><span class="sh s3"></span>
     <div class="tx"><h3>${t("wr.t")}</h3><p>${t("wr.p")} · ${esc(monthName(key))}</p></div>
-    <div class="phone"><div class="scr"><b>${esc(cap(monthName(key, { month:"short" })))}<br>Wrapped</b><i></i><i></i><i></i><i></i></div></div>
+    <div class="phone"><div class="scr"><b>${esc(cap(monthName(key, { month:"short" })))}<br><em>Wrapped</em></b><span class="pbars"><i></i><i></i><i></i><i></i><i></i></span><span class="pnum num">${fmtSigned(sum(inMonth(key)).bal)}</span></div></div>
     <button class="btn" data-act="wrapped" data-k="${key}">${t("wr.btn")} ${ICON.go}</button></article>`;
 }
 function allHTML(){
@@ -1687,7 +1856,7 @@ function animateIn(root){
     $$("[data-count]", root).forEach(el => { const v = +el.dataset.count; countUp(el, v, el.hasAttribute("data-int") ? x => Math.round(x) : moneyH); });
     $$(".needle[data-rot]", root).forEach(el => el.style.transform = `rotate(${el.dataset.rot}deg)`);
     $$(".xp i[data-w]", root).forEach(el => el.style.width = Math.max(4, el.dataset.w) + "%");
-    $$(".gring .pr[data-off]", root).forEach(el => el.style.strokeDashoffset = el.dataset.off);
+    $$(".gring .pr[data-off], .hring .pr[data-off], .hfill[data-off]", root).forEach(el => el.style.strokeDashoffset = el.dataset.off);
     $$(".liq[data-h]", root).forEach(el => el.style.height = el.dataset.h + "%");
   });
 }
@@ -1735,13 +1904,13 @@ function renderHome(){
   if (view.all){
     const s = sum(S.tx), ms = dataMonths();
     const keys = ms.length ? (() => { const out = []; for (let k = ms[0]; k <= ms[ms.length - 1]; k = shiftKey(k, 1)) out.push(k); return out.slice(-12); })() : [view.key];
-    el.innerHTML = `<div class="grid">${heroHTML(s, null, t("hero.labAll"))}${levelHTML()}${kpisHTML(S.tx, s, null)}${healthHTML(S.tx, null)}${evoHTML(keys)}${allHTML()}${donutHTML(S.tx)}${tipsHTML(S.tx, s, null)}</div>`;
+    el.innerHTML = `<div class="grid">${heroHTML(s, null, t("hero.labAll"))}${donutHTML(S.tx, "s4", t("cat.t"), true)}${kpisHTML(S.tx, s, null)}${healthHTML(S.tx, null)}${evoHTML(keys)}${allHTML()}${levelHTML("s6")}${tipsHTML(S.tx, s, null)}</div>`;
   } else {
     const k = view.key, list = inMonth(k), s = sum(list);
     const keys = [...Array(7)].map((_, i) => shiftKey(k, i - 6));
     const cta = S.tx.length ? "" : `<article class="card c-yellow s12 rise" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><span style="font-size:44px"></span><div style="flex:1 1 220px"><h3 style="font-family:var(--display);font-size:22px;letter-spacing:-.03em">${t("imp.cta")}</h3><p class="muted" style="margin-top:4px">${t("imp.ctaP")}</p></div><button class="btn primary sm" data-act="import">${t("imp.ctaB")}</button></article>`;
-    el.innerHTML = `<div class="grid">${cta}${heroHTML(s, shiftKey(k, -1), t("hero.lab", { m:monthName(k, { month:"long" }) }))}${levelHTML()}${kpisHTML(list, s, k)}
-      ${goalsPreviewHTML()}${tubesHTML(list)}${healthHTML(list, k)}${evoHTML(keys)}${subsPreviewHTML()}${achPreviewHTML()}${donutHTML(list)}${tipsHTML(list, s, k)}${wrappedBanner(k)}
+    el.innerHTML = `<div class="grid">${cta}${heroHTML(s, shiftKey(k, -1), t("hero.lab", { m:monthName(k, { month:"long" }) }))}${donutHTML(list, "s4", t("cat.t"), true)}${kpisHTML(list, s, k)}
+      ${goalsPreviewHTML()}${tubesHTML(list)}${healthHTML(list, k)}${evoHTML(keys)}${subsPreviewHTML()}${achPreviewHTML()}${levelHTML("s6")}${tipsHTML(list, s, k)}${wrappedBanner(k)}
       <article class="card s12 rise"><div class="ct"><div><h3>${t("last.t")}</h3></div><button class="xs" data-tab="movs">${t("seeAll")}</button></div>${txRows(list, 6, false)}</article></div>`;
   }
   animateIn(el);
@@ -1765,10 +1934,10 @@ function renderMovs(){
     const d = v - pv, good = kind === "exp" ? d <= 0 : d >= 0;
     return `<span class="d ${Math.abs(d) < .005 ? "" : good ? "good" : "bad"}">${fmtSigned(d)}<small>${fmtE(pv)}</small></span>`;
   };
-  el.innerHTML = `<div class="grid"><article class="card c-mint s12 rise"><div class="ct" style="margin-bottom:14px"><div><h3>${esc(t("m.cmp", { m:monthName(pk, { month:"long" }) }))}</h3></div></div>
-      <div class="cmps"><div class="cmpc"><span class="em">${ICON.up}</span><span class="txt"><span>${t("inc")}</span><b class="num">${fmtE(s.inc)}</b></span>${dl("inc", s.inc, ps.inc)}</div>
-        <div class="cmpc"><span class="em">${ICON.down}</span><span class="txt"><span>${t("exp")}</span><b class="num">${fmtE(s.exp)}</b></span>${dl("exp", s.exp, ps.exp)}</div>
-        <div class="cmpc"><span class="em">${SV(CI.wallet)}</span><span class="txt"><span>${t("bal")}</span><b class="num">${fmtSigned(s.bal)}</b></span>${dl("bal", s.bal, ps.bal)}</div></div></article>
+  el.innerHTML = `<div class="grid"><article class="card s12 rise"><div class="ct" style="margin-bottom:14px"><div><h3>${esc(t("m.cmp", { m:monthName(pk, { month:"long" }) }))}</h3></div></div>
+      <div class="cmps"><div class="cmpc inc"><span class="em">${ICON.up}</span><span class="txt"><span>${t("inc")}</span><b class="num">${fmtE(s.inc)}</b></span>${dl("inc", s.inc, ps.inc)}</div>
+        <div class="cmpc exp"><span class="em">${ICON.down}</span><span class="txt"><span>${t("exp")}</span><b class="num">${fmtE(s.exp)}</b></span>${dl("exp", s.exp, ps.exp)}</div>
+        <div class="cmpc ${s.bal < -.004 ? "neg" : "pos"}"><span class="em">${SV(CI.wallet)}</span><span class="txt"><span>${t("bal")}</span><b class="num">${fmtSigned(s.bal)}</b></span>${dl("bal", s.bal, ps.bal)}</div></div></article>
     ${flowHTML(k)}${donutHTML(list, "s5", t("m.dist"))}${navHTML()}</div>`;
   updateList(); animateIn(el);
 }
@@ -1793,16 +1962,31 @@ function renderGoals(){
   animateIn(el);
 }
 function renderSubs(){
-  const el = $("#v-subs"), list = subsSorted();
+  const el = $("#v-subs"), list = subsSorted(), today = todayIso();
   const m = S.subs.reduce((a, s) => a + subMonthly(s), 0), nx = list[0];
-  el.innerHTML = `<div class="grid"><article class="card c-rose s12 rise"><div class="ct"><div><h3>${t("subs.t")}</h3></div></div>
-      <div class="subsum"><div><span>${t("s.month")}</span><b class="num">${fmtE(m)}</b></div><div><span>${t("s.year")}</span><b class="num">${fmtE(m*12, 0)}</b></div><div><span>${t("s.nextT")}</span><b>${nx ? esc(subWhen(nx.n)) : "—"}</b></div></div>
-      <div class="keyrow"><span><i style="background:var(--mint)"></i>${t("s.k.ok")}</span><span><i style="background:var(--butter)"></i>${t("s.k.soon")}</span><span><i style="background:var(--salmon)"></i>${t("s.k.close")}</span><span><i style="background:#17161C"></i>${t("s.k.now")}</span></div></article>
+  /* reparto: cuánto se lleva cada suscripción al mes */
+  const share = S.subs.map(s => ({ s, v:subMonthly(s) })).sort((a, b) => b.v - a.v);
+  const shareBar = share.map((x, i) => `<i data-tip="${esc(`${x.s.name} · ${fmtE(x.v)}${t("s.perM")} · ${fmtPct(x.v / (m || 1))}`)}" style="width:${(x.v / (m || 1)) * 100}%;background:${x.s.color};animation-delay:${i*.05}s"></i>`).join("");
+  /* cobros de los próximos 30 días */
+  const ev = []; S.subs.forEach(s => { let d = nextCharge(s); for (let g = 0; g < 8 && diffDays(today, d) <= 30; g++){ ev.push({ s, d, n:diffDays(today, d) }); d = chargeAt(s, chargeIndex(s, addDays(d, 1))); } });
+  const ev30 = ev.reduce((a, e) => a + toEur(e.s.a, e.s.cu), 0);
+  const dots = ev.sort((a, b) => a.n - b.n).map((e, i) => { const same = ev.filter((o, j) => j < i && o.n === e.n).length;
+    return `<span class="tdot ${subState(e.n)}" style="left:${(e.n / 30) * 100}%;--off:${same * 22}px;--lc:${e.s.color}" data-tip="${esc(`${e.s.name} · ${fmt(e.s.a, e.s.cu)} · ${cap(dayLabel(e.d))}`)}"><i>${esc((e.s.name.trim()[0] || "?").toUpperCase())}</i></span>`; }).join("");
+  const wk = [0, 7, 14, 21, 30].map(n => `<span class="ttk" style="left:${(n/30)*100}%">${n === 0 ? t("b.today") : esc(dayShort(addDays(today, n)))}</span>`).join("");
+  el.innerHTML = `<div class="grid">
+    <article class="card subhero s12 rise"><div class="shl">
+        <span class="subt" style="margin-top:0">${t("subs.t")}</span>
+        <b class="shbig num" data-count="${m}">${fmtE(0)}</b><span class="shper">${t("s.perM")} · ${fmtE(m*12, 0)}${t("s.perY")}</span>
+        <div class="shmeta"><span><b>${S.subs.length}</b> ${t("s.count").toLowerCase()}</span>${nx ? `<span class="shnext ${subState(nx.n)}">${t("s.spot")}: <b>${esc(nx.s.name)}</b> · ${esc(subWhen(nx.n))}</span>` : ""}</div></div>
+      <div class="shr"><div class="ct" style="margin-bottom:10px"><div><h3>${t("s.share")}</h3><span class="subt">${t("s.shareS")}</span></div></div>
+        ${share.length ? `<div class="sharebar">${shareBar}</div><div class="sharelg">${share.slice(0, 5).map(x => `<span><i style="background:${x.s.color}"></i>${esc(x.s.name)} <em>${fmtPct(x.v / (m || 1))}</em></span>`).join("")}</div>` : `<p class="muted">${t("subs.none")}</p>`}</div></article>
+    ${ev.length ? `<article class="card s12 rise"><div class="ct"><div><h3>${t("s.tl")}</h3><span class="subt">${esc(t("s.next30", { n:ev.length, a:fmtE(ev30) }))} · ${t("s.tlS")}</span></div>
+      <div class="keyrow" style="margin-top:0"><span><i class="kok"></i>${t("s.k.ok")}</span><span><i class="ksoon"></i>${t("s.k.soon")}</span><span><i class="kclose"></i>${t("s.k.close")}</span><span><i class="know"></i>${t("s.k.now")}</span></div></div>
+      <div class="tline"><div class="tzones"><i style="width:${(1/30)*100}%" class="z0"></i><i style="width:${(1/30)*100}%" class="z1"></i><i style="width:${(5/30)*100}%" class="z2"></i><i class="z3"></i></div>${dots}${wk}</div></article>` : ""}
     <div class="s12"><div class="subs big">${list.map(subCard).join("")}<button class="addcard" data-act="snew"><span>${ICON.plus}</span>${t("subs.add")}</button></div></div>
     <div class="s12" id="pushCard"></div></div>`;
-  drawPush();
+  animateIn(el); drawPush();
 }
-
 /* =========================================================
    AVISOS (notificaciones push)
    El navegador se apunta en push_subs y la función «avisos-suscripciones»
@@ -2479,6 +2663,29 @@ if (matchMedia("(hover:hover)").matches){
     cc.style.setProperty("--ang", `${200 + nx * 120}deg`); cc.style.setProperty("--sx", `${nx * 120}%`);
   }); }, { passive:true });
 }
+/* etiqueta flotante: cualquier elemento con data-tip; en el donut además resalta el trozo y cambia el centro */
+const TIP = document.createElement("div"); TIP.className = "ftip"; document.body.appendChild(TIP);
+let tipEl = null;
+function showTip(el, x, y){
+  if (tipEl !== el){ tipEl = el; TIP.textContent = el.dataset.tip; TIP.classList.remove("on"); void TIP.offsetWidth; TIP.classList.add("on"); }
+  const w = TIP.offsetWidth; TIP.style.left = Math.min(innerWidth - w - 8, Math.max(8, x - w / 2)) + "px"; TIP.style.top = (y - 44) + "px";
+  const card = el.closest(".dcard");
+  if (card && el.dataset.ci != null){
+    card.classList.add("hov"); $$("[data-ci]", card).forEach(e => e.classList.toggle("hl", e.dataset.ci === el.dataset.ci));
+    const seg = $(`circle[data-ci="${el.dataset.ci}"]`, card), [nm, am, pc] = el.dataset.tip.split(" · ");
+    $(".ctr", card).innerHTML = `<span class="pop">${esc(nm)}</span><b class="num pop">${esc(am)}</b><em class="pop">${esc(pc || "")}</em>`;
+    if (seg) $(".ctr", card).style.setProperty("--sc", seg.getAttribute("stroke"));
+  }
+}
+function hideTip(){
+  if (!tipEl) return;
+  const card = tipEl.closest(".dcard");
+  if (card){ card.classList.remove("hov"); $$(".hl", card).forEach(e => e.classList.remove("hl")); const c = $(".ctr", card); c.innerHTML = `<span>${t("total")}</span><b class="num">${c.dataset.tot}</b>`; }
+  tipEl = null; TIP.classList.remove("on");
+}
+document.addEventListener("pointermove", e => { const el = e.target.closest && e.target.closest("[data-tip]"); if (el) showTip(el, e.clientX, e.clientY); else hideTip(); }, { passive:true });
+document.addEventListener("pointerdown", e => { if (e.pointerType === "mouse") return; const el = e.target.closest && e.target.closest("[data-tip]"); if (el) showTip(el, e.clientX, e.clientY); else hideTip(); }, { passive:true });
+addEventListener("scroll", hideTip, { passive:true });
 FX.onChange = () => { const lb = FX.label(); $("#fxTxt").textContent = lb.txt; $("#fxPill").className = "fx " + lb.cls; if ($("#drTx").classList.contains("on")) paintConv(); };
 checkAch(firstAch);   // con datos de antes de los logros, se desbloquean sin avisos
 if (firstAch && S.tx.length) DB.save(S);
