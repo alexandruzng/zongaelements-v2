@@ -1,5 +1,29 @@
 [
   {
+    "id": "2026-11-01-bloqueo-temporal",
+    "date": "2026-11-01",
+    "type": "nuevo",
+    "title": {
+      "es": "Nueva herramienta: Bloqueo temporal",
+      "en": "New tool: Time lock",
+      "ro": "Instrument nou: Blocare temporară"
+    },
+    "items": {
+      "es": [
+        "En Productividad personal: genera un código de 4 cifras para Tiempo de uso del iPhone y ciérralo hasta la fecha que elijas.",
+        "Se cifra en tu propio móvil y nadie puede verlo antes de tiempo, ni siquiera tú. Llegada la fecha, lo abres con un toque."
+      ],
+      "en": [
+        "In Personal productivity: generate a 4-digit iPhone Screen Time passcode and lock it until the date you choose.",
+        "It's encrypted on your own phone and nobody can see it early, not even you. When the date arrives, you open it with one tap."
+      ],
+      "ro": [
+        "În Productivitate personală: generează un cod de 4 cifre pentru Timp de utilizare pe iPhone și blochează-l până la data aleasă.",
+        "Se criptează pe telefonul tău și nimeni nu-l poate vedea mai devreme, nici măcar tu. Când vine data, îl deschizi cu o atingere."
+      ]
+    }
+  },
+  {
     "id": "2026-10-31-conversor-carpeta",
     "date": "2026-10-31",
     "type": "mejora",
