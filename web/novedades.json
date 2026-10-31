@@ -1,5 +1,29 @@
 [
   {
+    "id": "2026-10-31-conversor-carpeta",
+    "date": "2026-10-31",
+    "type": "mejora",
+    "title": {
+      "es": "Conversor WebP: carpetas enteras y descargar todo de una",
+      "en": "WebP converter: whole folders and download everything at once",
+      "ro": "Convertor WebP: foldere întregi și descarci totul odată"
+    },
+    "items": {
+      "es": [
+        "Nuevo botón «Elegir carpeta» (o arrastra la carpeta): convierte todas las fotos y vídeos que haya dentro, también los de las subcarpetas, e ignora lo que no sean imágenes.",
+        "En cuanto tienes 2 o más archivos aparece la barra para descargarlos todos de una: en un solo .zip o sueltos, sin ir uno por uno."
+      ],
+      "en": [
+        "New “Choose folder” button (or drag the folder in): converts every photo and video inside, subfolders included, and skips anything that isn't media.",
+        "As soon as you have 2 or more files, a bar appears to download them all at once: as a single .zip or as separate files, no more one by one."
+      ],
+      "ro": [
+        "Buton nou „Alege folder” (sau trage folderul): convertește toate pozele și clipurile din el, inclusiv din subfoldere, și ignoră restul.",
+        "De îndată ce ai 2 sau mai multe fișiere apare bara ca să le descarci pe toate odată: într-un singur .zip sau separat, fără să mergi unul câte unul."
+      ]
+    }
+  },
+  {
     "id": "2026-10-29-planificador-saltar",
     "date": "2026-10-29",
     "type": "mejora",

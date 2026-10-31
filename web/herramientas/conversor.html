@@ -145,7 +145,9 @@ svg{display:block}
 @keyframes pulse{50%{box-shadow:0 0 0 10px var(--accent-soft)}}
 .drop h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,7vw,38px);letter-spacing:-.04em;line-height:1}
 .drop p{color:var(--muted);font-size:15px}
-.drop .pick{margin-top:14px}
+.drop .picks{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:14px}
+.drop .pick-dir{color:var(--fg);background:var(--card)}
+.drop .pick-dir[hidden]{display:none}
 .drop .hint-paste{display:none}
 .marq{width:calc(100% + 36px);margin-top:28px;border-top:1px solid var(--line);overflow:hidden;padding:13px 0;color:var(--muted)}
 .marq div{display:flex;gap:28px;width:max-content;animation:mq 26s linear infinite}
@@ -230,6 +232,19 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15)}
 .sum .btn.accent{box-shadow:none}
 .sum .btn.ghost{border-color:color-mix(in srgb,var(--bg) 25%,transparent);color:var(--bg);margin-top:10px}
 .sum .btn.ghost:hover{border-color:var(--bg)}
+
+/* ============ DESCARGAR TODAS ============ */
+.dl-bar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px;padding:12px 12px 12px 18px;border-radius:22px;background:var(--fg);color:var(--bg);animation:popIn .55s cubic-bezier(.3,1.5,.5,1)}
+.dl-bar[hidden]{display:none}
+.dl-txt{flex:1 1 180px;min-width:0;line-height:1.2}
+.dl-txt b{font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.02em;display:block}
+.dl-txt span{font-size:12.5px;opacity:.7}
+.dl-acts{display:flex;gap:8px;flex:1 1 auto;justify-content:flex-end}
+.dl-acts .btn{flex:1 1 auto}
+.dl-bar .btn.ghost{border-color:color-mix(in srgb,var(--bg) 25%,transparent);color:var(--bg)}
+.dl-bar .btn.ghost:hover{border-color:var(--bg)}
+.dl-bar .btn.accent{box-shadow:none}
+.btn:disabled{opacity:.45;pointer-events:none}
 
 /* ============ LISTA ============ */
 .list-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 4px 0}
@@ -377,14 +392,25 @@ button.thumb{cursor:zoom-in}
         </div>
         <h2 data-i18n="dropT">Suelta aquí tus archivos</h2>
         <p><span data-i18n="dropP">Fotos y vídeos, todos a la vez.</span> <span class="hint-paste" data-i18n="paste">También puedes pegar con Ctrl+V.</span></p>
-        <span class="btn accent pick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="pick">Elegir archivos</span></span>
+        <div class="picks">
+          <span class="btn accent pick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="pick">Elegir archivos</span></span>
+          <button type="button" class="btn ghost pick-dir" id="dirBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span data-i18n="pickDir">Elegir carpeta</span></button>
+        </div>
         <div class="marq mono" aria-hidden="true"><div id="marq"></div></div>
       </label>
+      <input type="file" id="dirIn" webkitdirectory multiple hidden>
 
       <div id="listWrap" hidden>
         <div class="list-head">
           <h3><span data-i18n="files">Archivos</span> <small id="count"></small></h3>
           <button class="btn ghost sm" id="clearAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg><span data-i18n="clear">Vaciar</span></button>
+        </div>
+        <div class="dl-bar" id="dlBar" hidden>
+          <div class="dl-txt"><b id="dlT"></b><span id="dlS"></span></div>
+          <div class="dl-acts">
+            <button class="btn accent sm" id="zipBtn2" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="zipShort">Todo en .zip</span></button>
+            <button class="btn ghost sm" id="looseBtn" disabled><span data-i18n="loose">Sueltas</span></button>
+          </div>
         </div>
         <div class="list" id="list" style="margin-top:14px"></div>
       </div>
@@ -447,6 +473,7 @@ button.thumb{cursor:zoom-in}
           <div class="bar-row after"><span class="mono" data-i18n="after">Después</span><span class="tr"><i id="barA" style="width:0"></i></span><b id="szA">—</b></div>
         </div>
         <button class="btn accent full" id="zipBtn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="zip">Descargar todo (.zip)</span></button>
+        <button class="btn ghost full" id="looseBtn2" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="looseAll">Descargar todas sueltas</span></button>
         <button class="btn ghost full" id="moreBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="more">Añadir más</span></button>
       </div>
     </aside>
@@ -494,7 +521,10 @@ es:{ tool:"Conversor WebP", kick:"Conversor · Orgánico × Ads", h1a:"Pesa meno
   usedMp4:"Este navegador no crea WebM: se ha usado MP4",
   eOpen:"No se puede abrir en este navegador. Si es HEIC, prueba desde Safari.", eVideo:"Este navegador no puede comprimir vídeo. Usa Chrome, Edge o Safari actualizados.",
   eVideoRead:"No se ha podido leer este vídeo.", eType:"No es una imagen ni un vídeo.", eGeneric:"Algo ha fallado al convertirlo.",
-  added:"{n} archivo(s) añadido(s)", zipping:"Preparando el ZIP…", zipDone:"ZIP descargado", remove:"Quitar", compare:"Comparar" },
+  added:"{n} archivo(s) añadido(s)", zipping:"Preparando el ZIP…", zipDone:"ZIP descargado", remove:"Quitar", compare:"Comparar",
+  pickDir:"Elegir carpeta", zipShort:"Todo en .zip", loose:"Sueltas", looseAll:"Descargar todas sueltas", looseDone:"{n} archivos descargados",
+  dlReady:"{n} listos para descargar", dlWork:"Convirtiendo {d} de {n}…", dlSub:"Descárgalos todos de una", dlWait:"Espera a que terminen para descargarlos",
+  folderAdded:"{n} archivo(s) de «{d}»", skipped:"{k} ignorado(s): no son fotos ni vídeos", noMedia:"No hay fotos ni vídeos en esa carpeta" },
 en:{ tool:"WebP converter", kick:"Converter · Organic × Ads", h1a:"Weigh less.", h1b:"Load faster.",
   lead:"Drop in photos and videos in any format. Images come out as <b>WebP</b> and videos compressed to <b>WebM</b>, with no visible quality loss.",
   private:"Everything runs on your device: nothing is uploaded", veil:"Drop them here", langA:"Change language", close:"Close",
@@ -513,7 +543,10 @@ en:{ tool:"WebP converter", kick:"Converter · Organic × Ads", h1a:"Weigh less.
   usedMp4:"This browser can't create WebM: MP4 was used",
   eOpen:"Can't open this in this browser. If it's HEIC, try Safari.", eVideo:"This browser can't compress video. Use an up-to-date Chrome, Edge or Safari.",
   eVideoRead:"This video couldn't be read.", eType:"It's not an image or a video.", eGeneric:"Something went wrong converting it.",
-  added:"{n} file(s) added", zipping:"Preparing the ZIP…", zipDone:"ZIP downloaded", remove:"Remove", compare:"Compare" },
+  added:"{n} file(s) added", zipping:"Preparing the ZIP…", zipDone:"ZIP downloaded", remove:"Remove", compare:"Compare",
+  pickDir:"Choose folder", zipShort:"All as .zip", loose:"Separate", looseAll:"Download all separately", looseDone:"{n} files downloaded",
+  dlReady:"{n} ready to download", dlWork:"Converting {d} of {n}…", dlSub:"Download them all at once", dlWait:"Wait until they finish to download them",
+  folderAdded:"{n} file(s) from “{d}”", skipped:"{k} skipped: not photos or videos", noMedia:"No photos or videos in that folder" },
 ro:{ tool:"Convertor WebP", kick:"Convertor · Organic × Ads", h1a:"Cântărește puțin.", h1b:"Se încarcă rapid.",
   lead:"Trage poze și clipuri în orice format. Imaginile ies în <b>WebP</b>, iar clipurile comprimate în <b>WebM</b>, fără pierdere vizibilă de calitate.",
   private:"Totul se face pe dispozitivul tău: nu se încarcă nimic", veil:"Lasă-le aici", langA:"Schimbă limba", close:"Închide",
@@ -532,7 +565,10 @@ ro:{ tool:"Convertor WebP", kick:"Convertor · Organic × Ads", h1a:"Cântăreș
   usedMp4:"Browserul nu poate crea WebM: s-a folosit MP4",
   eOpen:"Nu se poate deschide în acest browser. Dacă e HEIC, încearcă în Safari.", eVideo:"Browserul nu poate comprima video. Folosește Chrome, Edge sau Safari actualizat.",
   eVideoRead:"Clipul nu a putut fi citit.", eType:"Nu e nici imagine, nici clip.", eGeneric:"Ceva n-a mers la conversie.",
-  added:"{n} fișier(e) adăugat(e)", zipping:"Se pregătește ZIP-ul…", zipDone:"ZIP descărcat", remove:"Elimină", compare:"Compară" }
+  added:"{n} fișier(e) adăugat(e)", zipping:"Se pregătește ZIP-ul…", zipDone:"ZIP descărcat", remove:"Elimină", compare:"Compară",
+  pickDir:"Alege folder", zipShort:"Tot în .zip", loose:"Separat", looseAll:"Descarcă toate separat", looseDone:"{n} fișiere descărcate",
+  dlReady:"{n} gata de descărcat", dlWork:"Se convertește {d} din {n}…", dlSub:"Descarcă-le pe toate odată", dlWait:"Așteaptă să termine ca să le descarci",
+  folderAdded:"{n} fișier(e) din „{d}”", skipped:"{k} ignorat(e): nu sunt poze sau clipuri", noMedia:"Nu sunt poze sau clipuri în acel folder" }
 };
 const pref = { get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}} };
 let lang = pref.get("ze-lang") || "es"; if (!T[lang]) lang = "es";
@@ -699,7 +735,17 @@ async function convertVideo(it){
    COLA DE CONVERSIÓN (de uno en uno, para no saturar el móvil)
    ========================================================= */
 let items = [], uid = 0, busy = false;
-function addFiles(list){
+let folder = "";   // nombre de la última carpeta añadida (para el ZIP)
+function addFolder(list, dir){
+  const all = [...list].filter(f => !f.name.startsWith("."));
+  const media = all.filter(kindOf).sort((a, b) => (a.webkitRelativePath || a.name).localeCompare(b.webkitRelativePath || b.name, undefined, { numeric:true }));
+  if (!media.length) { toast(t("noMedia")); return; }
+  folder = dir || folder;
+  addFiles(media, true);
+  const k = all.length - media.length;
+  toast((dir ? t("folderAdded", { n:media.length, d:dir }) : t("added", { n:media.length })) +(k ? ` · ${t("skipped", { k })}` : ""));
+}
+function addFiles(list, quiet){
   const fresh = [...list].map(file => ({ id:++uid, file, kind:kindOf(file), state:"queued", progress:0 }));
   if (!fresh.length) return;
   for (const it of fresh) {
@@ -707,7 +753,7 @@ function addFiles(list){
     else if (it.kind === "image") it.thumbUrl = URL.createObjectURL(it.file);
     items.push(it); mountItem(it);
   }
-  toast(t("added", { n:fresh.length }));
+  if (!quiet) toast(t("added", { n:fresh.length }));
   renderAll(); pump();
 }
 async function pump(){
@@ -819,7 +865,13 @@ function renderAll(){
   $("#sumSub").innerHTML = t("sumSub", { s:fmtSize(saved), n:done.length });
   $("#dSub").textContent = t("dSub", { s:fmtSize(saved), n:done.length });
   const canZip = done.length > 0 && !busy && !items.some(i => i.state === "queued");
-  $("#zipBtn").disabled = $("#dZip").disabled = !canZip;
+  $("#zipBtn").disabled = $("#dZip").disabled = $("#zipBtn2").disabled = !canZip;
+  $("#looseBtn").disabled = $("#looseBtn2").disabled = !canZip || done.length < 2;
+  // barra «descargar todas»: aparece en cuanto hay 2 o más archivos
+  const ok = items.filter(i => i.state !== "error").length;
+  $("#dlBar").hidden = ok < 2;
+  $("#dlT").textContent = canZip ? t("dlReady", { n:done.length }) : t("dlWork", { d:Math.min(done.length + 1, ok), n:ok });
+  $("#dlS").textContent = canZip ? t("dlSub") : t("dlWait");
   $("#dock").classList.toggle("on", has);
   // contador animado
   cancelAnimationFrame(pctAnim);
@@ -899,11 +951,21 @@ async function downloadZip(){
   if (files.length === 1) { const a = document.createElement("a"); a.href = items.find(i => i.state === "done").outUrl; a.download = files[0].name; a.click(); return; }
   toast(t("zipping"));
   const zip = await makeZip(files), url = URL.createObjectURL(zip), a = document.createElement("a");
-  a.href = url; a.download = `${slug(S.prefix || "") || "zongaelements"}-webp.zip`; a.click();
+  a.href = url; a.download = `${slug(S.prefix || "") || slug(folder) || "zongaelements"}-webp.zip`; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
   toast(t("zipDone"));
 }
-$("#zipBtn").onclick = downloadZip; $("#dZip").onclick = downloadZip;
+$("#zipBtn").onclick = $("#dZip").onclick = $("#zipBtn2").onclick = downloadZip;
+// todas sueltas: una tras otra (el navegador puede pedir permiso para descargas múltiples)
+async function downloadLoose(){
+  const names = outNames(), done = items.filter(i => i.state === "done");
+  for (const it of done) {
+    const a = document.createElement("a"); a.href = it.outUrl; a.download = names.get(it); a.click();
+    await new Promise(r => setTimeout(r, 220));
+  }
+  toast(t("looseDone", { n:done.length }));
+}
+$("#looseBtn").onclick = $("#looseBtn2").onclick = downloadLoose;
 
 /* =========================================================
    ENTRADA DE ARCHIVOS: elegir, arrastrar y pegar
@@ -912,12 +974,34 @@ const fileIn = $("#fileIn");
 fileIn.addEventListener("change", () => { addFiles(fileIn.files); fileIn.value = ""; });
 $("#drop").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileIn.click(); } });
 $("#moreBtn").onclick = () => fileIn.click();
+const dirIn = $("#dirIn");
+$("#dirBtn").hidden = !("webkitdirectory" in dirIn) || matchMedia("(hover:none)").matches;
+$("#dirBtn").onclick = e => { e.preventDefault(); e.stopPropagation(); dirIn.click(); };
+dirIn.addEventListener("change", () => {
+  const f = dirIn.files[0];
+  addFolder(dirIn.files, f ? (f.webkitRelativePath || "").split("/")[0] : "");
+  dirIn.value = "";
+});
+// carpetas arrastradas: se leen por dentro (también las subcarpetas)
+const readAll = r => new Promise(res => { const out = []; const next = () => r.readEntries(b => { if (!b.length) return res(out); out.push(...b); next(); }, () => res(out)); next(); });
+async function walk(entry, out){
+  if (entry.isFile) { await new Promise(res => entry.file(f => { out.push(f); res(); }, res)); return; }
+  if (entry.isDirectory) for (const e of await readAll(entry.createReader())) await walk(e, out);
+}
+async function dropped(dt){
+  const entries = [...(dt.items || [])].map(i => i.webkitGetAsEntry?.()).filter(Boolean);
+  const dir = entries.find(e => e.isDirectory);
+  if (!dir) return addFiles(dt.files);
+  const out = [];
+  for (const e of entries) await walk(e, out);
+  addFolder(out, dir.name);
+}
 let dragN = 0;
 const hasFiles = e => [...(e.dataTransfer?.types || [])].includes("Files");
 addEventListener("dragenter", e => { if (!hasFiles(e)) return; e.preventDefault(); dragN++; document.body.classList.add("dragging"); });
 addEventListener("dragover", e => { if (hasFiles(e)) e.preventDefault(); });
 addEventListener("dragleave", () => { if (--dragN <= 0) { dragN = 0; document.body.classList.remove("dragging"); } });
-addEventListener("drop", e => { if (!hasFiles(e)) return; e.preventDefault(); dragN = 0; document.body.classList.remove("dragging"); addFiles(e.dataTransfer.files); });
+addEventListener("drop", e => { if (!hasFiles(e)) return; e.preventDefault(); dragN = 0; document.body.classList.remove("dragging"); dropped(e.dataTransfer); });
 addEventListener("paste", e => { if (e.target.closest?.("input")) return; const f = [...(e.clipboardData?.files || [])]; if (f.length) addFiles(f); });
 $("#clearAll").onclick = () => [...items].forEach(removeItem);
 
