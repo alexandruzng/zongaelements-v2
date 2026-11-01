@@ -1,5 +1,26 @@
 [
   {
+    "id": "2026-11-01-planificador-icono",
+    "date": "2026-11-01",
+    "type": "mejora",
+    "title": {
+      "es": "Planificador del día con icono propio",
+      "en": "Day Planner gets its own icon",
+      "ro": "Planificatorul zilei are propria pictogramă"
+    },
+    "items": {
+      "es": [
+        "El Planificador del día tiene su propio icono en la pestaña del navegador: un reloj con un anillo verde de progreso."
+      ],
+      "en": [
+        "The Day Planner now has its own browser tab icon: a clock with a green progress ring."
+      ],
+      "ro": [
+        "Planificatorul zilei are acum propria pictogramă în fila browserului: un ceas cu un inel verde de progres."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-pedidos-en-ads",
     "date": "2026-11-01",
     "type": "mejora",
