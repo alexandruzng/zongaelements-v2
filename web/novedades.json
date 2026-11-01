@@ -1,5 +1,35 @@
 [
   {
+    "id": "2026-11-01-transcriptor",
+    "date": "2026-11-01",
+    "type": "nuevo",
+    "title": {
+      "es": "Nueva herramienta: Transcriptor de vídeos",
+      "en": "New tool: Video Transcriber",
+      "ro": "Instrument nou: Transcriptor de clipuri"
+    },
+    "items": {
+      "es": [
+        "Sube un vídeo o un audio, elige el idioma y la precisión, y en segundos tienes el texto con sus tiempos. Funciona con Whisper large-v3.",
+        "Descárgalo en PDF, Word, TXT, CSV o subtítulos SRT y VTT para CapCut o YouTube.",
+        "Es gratis: en la nube con tu clave gratuita de Groq, o en tu propio dispositivo sin ningún límite.",
+        "Puedes corregir cualquier frase y tocar un tiempo para ir a ese momento del vídeo."
+      ],
+      "en": [
+        "Upload a video or audio file, pick the language and accuracy, and get the text with timestamps in seconds. Powered by Whisper large-v3.",
+        "Download it as PDF, Word, TXT, CSV or SRT and VTT subtitles for CapCut or YouTube.",
+        "It's free: in the cloud with your free Groq key, or on your own device with no limits at all.",
+        "You can fix any sentence and tap a timestamp to jump to that moment in the video."
+      ],
+      "ro": [
+        "Încarcă un clip sau un audio, alege limba și precizia și în câteva secunde ai textul cu timpii. Funcționează cu Whisper large-v3.",
+        "Descarcă-l în PDF, Word, TXT, CSV sau subtitrări SRT și VTT pentru CapCut sau YouTube.",
+        "E gratuit: în cloud cu cheia ta gratuită Groq sau pe dispozitivul tău, fără nicio limită.",
+        "Poți corecta orice frază și atinge un timp ca să sari la acel moment din clip."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-planificador-icono",
     "date": "2026-11-01",
     "type": "mejora",

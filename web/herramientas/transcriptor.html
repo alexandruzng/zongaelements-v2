@@ -1,0 +1,1439 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Transcriptor · ZongaElements</title>
+<link rel="icon" href="../favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png?v=2" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#09090B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ZongaElements">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Syne:wght@800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS (mismos que la web · paleta Orgánico) ============ */
+:root{
+  --bg:#F3F1EC; --bg-2:#E9E6DF; --card:#FFFFFF; --fg:#0D0D10; --muted:#6C6B72;
+  --line:rgba(13,13,16,.10); --line-2:rgba(13,13,16,.18);
+  --blue:#2B63FF; --blue-2:#6E9BFF; --blue-soft:rgba(43,99,255,.12);
+  --red:#FF2D3F; --red-soft:rgba(255,45,63,.12);
+  --green:#12B76A; --green-soft:rgba(18,183,106,.12);
+  --accent:var(--blue); --accent-2:var(--blue-2); --accent-soft:var(--blue-soft);
+  --grid:rgba(13,13,16,.06); --noise-op:.05; --shadow:0 30px 60px -30px rgba(20,20,40,.25);
+  --glass:color-mix(in srgb,var(--card) 72%,transparent);
+  --display:"Bricolage Grotesque",sans-serif; --logo:"Syne",sans-serif; --body:"Manrope",sans-serif; --mono:"JetBrains Mono",monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#09090B; --bg-2:#16161B; --card:#131318; --fg:#F2F0EB; --muted:#8D8C95;
+    --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+    --blue-soft:rgba(43,99,255,.2); --red-soft:rgba(255,45,63,.18); --green-soft:rgba(18,183,106,.18);
+    --grid:rgba(255,255,255,.045); --noise-op:.07; --shadow:0 30px 60px -30px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#09090B; --bg-2:#16161B; --card:#131318; --fg:#F2F0EB; --muted:#8D8C95;
+  --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+  --blue-soft:rgba(43,99,255,.2); --red-soft:rgba(255,45,63,.18); --green-soft:rgba(18,183,106,.18);
+  --grid:rgba(255,255,255,.045); --noise-op:.07; --shadow:0 30px 60px -30px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow-x:hidden;min-height:100vh;transition:background .5s,color .5s;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,select{font:inherit;color:inherit}
+::selection{background:var(--accent);color:#fff}
+svg{display:block}
+a{color:inherit}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+[hidden]{display:none!important}
+
+.noise{position:fixed;inset:-50%;pointer-events:none;z-index:500;opacity:var(--noise-op);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bg .grid{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse at 50% 0%,#000 15%,transparent 65%)}
+.bg .g1{position:absolute;width:760px;height:760px;border-radius:50%;background:var(--accent);filter:blur(150px);opacity:.14;top:-420px;right:-220px;animation:drift 18s ease-in-out infinite}
+.bg .g2{position:absolute;width:520px;height:520px;border-radius:50%;background:var(--accent-2);filter:blur(140px);opacity:.1;bottom:-300px;left:-160px;animation:drift 22s ease-in-out infinite reverse}
+@keyframes drift{50%{transform:translate(-80px,60px)}}
+
+/* ============ HEADER ============ */
+.top{position:sticky;top:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;
+  background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid var(--line)}
+.back{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg);font-family:var(--logo);font-weight:800;font-size:17px;letter-spacing:-.02em}
+.back .arr{width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;transition:transform .4s cubic-bezier(.3,1.6,.5,1),background .3s,color .3s}
+.back:hover .arr{transform:translateX(-4px);background:var(--fg);color:var(--bg)}
+.back .arr svg{width:16px;height:16px}
+.brand-mark{width:30px;height:30px;position:relative;border-radius:9px;overflow:hidden;background:var(--fg);flex:none}
+.brand-mark span{position:absolute;width:60%;height:60%;border-radius:50%;filter:blur(2px)}
+.brand-mark span:nth-child(1){background:#2B63FF;top:-8%;left:-8%;animation:orbitA 6s linear infinite}
+.brand-mark span:nth-child(2){background:#FF2D3F;bottom:-8%;right:-8%;animation:orbitA 6s linear infinite reverse}
+@keyframes orbitA{50%{transform:translate(40%,40%) scale(.8)}}
+.back b{color:var(--muted);font-weight:500}
+.back .brand-txt{display:none}
+.tool-name{display:none;align-items:center;gap:10px;padding:9px 16px;border:1px solid var(--line);border-radius:100px;background:var(--glass)}
+.tool-name i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.controls{display:flex;gap:6px;align-items:center}
+.ctrl{height:40px;min-width:40px;border:1px solid var(--line-2);border-radius:100px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px;
+  background:var(--glass);font-weight:700;font-size:14px;transition:border-color .3s,transform .3s,background .3s,color .3s}
+.ctrl:hover{border-color:var(--fg)}
+.ctrl:active{transform:scale(.94)}
+.ctrl svg{width:18px;height:18px}
+.lang-btn{font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.theme-btn{width:66px;position:relative;justify-content:space-between;padding:0 7px}
+.theme-btn .knob{position:absolute;top:5px;left:5px;width:28px;height:28px;border-radius:50%;background:var(--fg);transition:transform .5s cubic-bezier(.7,-0.4,.3,1.4)}
+:root[data-theme="dark"] .theme-btn .knob{transform:translateX(26px)}
+.theme-btn svg{position:relative;z-index:1;width:15px;height:15px;transition:color .3s}
+.theme-btn .sun{color:var(--bg)} .theme-btn .moon{color:var(--muted)}
+:root[data-theme="dark"] .theme-btn .sun{color:var(--muted)} :root[data-theme="dark"] .theme-btn .moon{color:var(--bg)}
+
+/* ============ LAYOUT ============ */
+.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:22px 16px 140px}
+.rise{animation:rise .9s cubic-bezier(.2,.9,.2,1) both}
+.rise.d1{animation-delay:.07s}.rise.d2{animation-delay:.14s}.rise.d3{animation-delay:.21s}
+@keyframes rise{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+.kicker{display:flex;align-items:center;gap:12px;color:var(--muted);margin-bottom:18px}
+.kicker b{color:var(--accent);font-weight:500}
+.kicker i{width:40px;height:1px;background:var(--line-2)}
+.h1{font-family:var(--display);font-weight:800;font-size:clamp(46px,13vw,112px);line-height:.88;letter-spacing:-.055em}
+.h1 em{font-style:normal;color:var(--accent);white-space:nowrap}
+.h1 .ext{display:inline-block;font-family:var(--mono);font-weight:500;font-size:.34em;letter-spacing:0;vertical-align:.95em;margin-left:.15em;padding:.18em .5em;border-radius:100px;background:var(--fg);color:var(--bg);transform:rotate(-6deg)}
+.lead{color:var(--muted);font-size:16px;line-height:1.55;max-width:580px;margin-top:20px}
+.lead b{color:var(--fg)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 10px;border-radius:100px;font-weight:700;font-size:13px;background:var(--green-soft);color:var(--green)}
+.badge.b{background:var(--accent-soft);color:var(--accent)}
+.badge svg{width:16px;height:16px}
+.head{margin-bottom:28px}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.main-col,.side{display:flex;flex-direction:column;gap:18px;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:var(--shadow)}
+
+/* ============ DROPZONE ============ */
+.drop{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:34px 18px 0;border-radius:30px;cursor:pointer;overflow:hidden;
+  background:var(--card);border:2px dashed var(--line-2);transition:border-color .3s,transform .4s cubic-bezier(.3,1.5,.5,1),background .3s;outline:none}
+.drop:hover,.drop:focus-visible{border-color:var(--accent)}
+.drop:active{transform:scale(.985)}
+.drop input{display:none}
+.viz{position:relative;width:260px;height:132px;margin-bottom:14px}
+.viz .wave{position:absolute;left:0;top:26px;width:104px;height:84px;border-radius:18px;background:var(--fg);display:flex;align-items:center;justify-content:center;gap:4px;transform:rotate(-7deg);box-shadow:0 18px 30px -18px rgba(0,0,0,.45)}
+.viz .wave i{width:4px;border-radius:4px;background:var(--bg);height:20%;animation:eq 1.1s ease-in-out infinite}
+.viz .wave i:nth-child(2n){animation-delay:-.3s;background:var(--accent-2)}
+.viz .wave i:nth-child(3n){animation-delay:-.6s}
+.viz .wave i:nth-child(5n){animation-delay:-.85s}
+@keyframes eq{0%,100%{height:18%}50%{height:78%}}
+.viz .flow{position:absolute;left:112px;top:50px;width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;z-index:2;animation:pulse 2s ease-in-out infinite}
+.viz .flow svg{width:16px;height:16px}
+@keyframes pulse{50%{box-shadow:0 0 0 10px var(--accent-soft)}}
+.viz .doc{position:absolute;right:0;top:4px;width:106px;height:124px;border-radius:16px;border:1px solid var(--line-2);background:var(--bg);padding:14px 12px;display:flex;flex-direction:column;gap:7px;transform:rotate(6deg);box-shadow:0 18px 30px -18px rgba(0,0,0,.35);text-align:left}
+.viz .doc i{display:block;height:5px;border-radius:5px;background:var(--line-2);width:0;animation:type 3.6s ease-in-out infinite}
+.viz .doc i:nth-child(1){--w:86%} .viz .doc i:nth-child(2){--w:64%;animation-delay:.25s} .viz .doc i:nth-child(3){--w:78%;animation-delay:.5s} .viz .doc i:nth-child(4){--w:44%;animation-delay:.75s}
+.viz .doc i.t{background:var(--accent);height:5px}
+@keyframes type{0%{width:0}35%,85%{width:var(--w)}100%{width:0}}
+.viz .doc b{margin-top:auto;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em}
+.drop h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,7vw,38px);letter-spacing:-.04em;line-height:1}
+.drop p{color:var(--muted);font-size:15px}
+.drop .picks{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:14px}
+.marq{width:calc(100% + 36px);margin-top:28px;border-top:1px solid var(--line);overflow:hidden;padding:13px 0;color:var(--muted)}
+.marq div{display:flex;gap:28px;width:max-content;animation:mq 30s linear infinite}
+.marq span{white-space:nowrap}
+.marq span.v{color:var(--accent)}
+@keyframes mq{to{transform:translateX(-50%)}}
+.drag-veil{position:fixed;inset:0;z-index:400;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 88%,transparent);color:#fff;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s;pointer-events:none}
+.drag-veil b{font-family:var(--display);font-weight:800;font-size:clamp(40px,10vw,110px);letter-spacing:-.05em}
+body.dragging .drag-veil{opacity:1;visibility:visible;transition:opacity .3s}
+
+/* ============ BUTTONS / CHIPS ============ */
+.btn{height:54px;border-radius:100px;padding:0 24px;font-weight:800;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap;text-decoration:none;
+  transition:transform .35s cubic-bezier(.3,1.6,.5,1),background .3s,color .3s,box-shadow .3s,opacity .3s;position:relative;overflow:hidden}
+.btn svg{width:18px;height:18px;flex:none}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.96)}
+.btn.primary{background:var(--fg);color:var(--bg)}
+.btn.accent{background:var(--accent);color:#fff;box-shadow:0 14px 30px -12px color-mix(in srgb,var(--accent) 70%,transparent)}
+.btn.ghost{border:1px solid var(--line-2)}
+.btn.ghost:hover{border-color:var(--fg)}
+.btn.full{width:100%}
+.btn.sm{height:42px;padding:0 16px;font-size:14px}
+.btn:disabled{opacity:.35;pointer-events:none}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-100%);transition:transform .7s}
+.btn:hover::after{transform:translateX(100%)}
+
+.seg{display:flex;padding:4px;border-radius:100px;background:var(--bg);border:1px solid var(--line)}
+.seg button{flex:1;min-width:0;height:40px;border-radius:100px;font-weight:700;font-size:13.5px;padding:0 6px;transition:all .3s;white-space:nowrap}
+.seg button.on{background:var(--fg);color:var(--bg)}
+.seg button small{display:block;font-size:10.5px;font-weight:600;opacity:.6;margin-top:-2px}
+.seg.tall{border-radius:22px}
+.seg.tall button{height:56px;line-height:1.15;border-radius:18px}
+
+/* ============ AJUSTES ============ */
+.set-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.set-head h3{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.03em}
+.fld{padding:16px 0;border-top:1px solid var(--line)}
+.fld:first-of-type{border-top:0;padding-top:10px}
+.fld-l{display:flex;justify-content:space-between;align-items:baseline;gap:10px;color:var(--muted);margin-bottom:10px}
+.note{color:var(--muted);font-size:12.5px;line-height:1.45;margin-top:9px}
+.note b{color:var(--fg)}
+.sel{position:relative}
+.sel select{-webkit-appearance:none;appearance:none;width:100%;height:52px;border-radius:16px;border:1px solid var(--line-2);background:var(--bg);padding:0 44px 0 16px;font-size:16px;font-weight:700;outline:none;cursor:pointer;transition:border-color .3s,box-shadow .3s}
+.sel select:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.sel svg{position:absolute;right:16px;top:50%;width:18px;height:18px;transform:translateY(-50%);pointer-events:none;color:var(--muted)}
+.input{width:100%;height:50px;border-radius:15px;border:1px solid var(--line-2);background:var(--bg);padding:0 16px;font-size:16px;font-weight:600;outline:none;transition:border-color .3s,box-shadow .3s}
+.input::placeholder{color:var(--muted);font-weight:500;opacity:.8}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.tgl{display:flex;align-items:center;gap:12px;cursor:pointer;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:var(--bg)}
+.tgl input{position:absolute;opacity:0;pointer-events:none}
+.tgl span.txt{flex:1;font-weight:700;font-size:14px;line-height:1.3}
+.tgl small{display:block;color:var(--muted);font-weight:500;font-size:12.5px;margin-top:2px}
+.sw{width:46px;height:28px;border-radius:100px;background:var(--bg-2);border:1px solid var(--line-2);position:relative;flex:none;transition:background .3s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--card);box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.tgl input:checked+.sw{background:var(--accent);border-color:var(--accent)}
+.tgl input:checked+.sw::after{transform:translateX(18px)}
+
+/* clave de Groq */
+.key{margin-top:12px;padding:16px;border-radius:20px;background:var(--bg);border:1px solid var(--line)}
+.key.ok{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 14px}
+.key.ok .dot{width:30px;height:30px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center;flex:none}
+.key.ok .dot svg{width:15px;height:15px}
+.key.ok .k-txt{flex:1;min-width:0;font-size:13.5px;font-weight:700;line-height:1.3}
+.key.ok .k-txt small{display:block;color:var(--muted);font-weight:500;font-family:var(--mono);font-size:11px;letter-spacing:.04em}
+.key h4{font-weight:800;font-size:15px;margin-bottom:10px}
+.steps{list-style:none;counter-reset:s;display:grid;gap:8px;margin-bottom:14px}
+.steps li{counter-increment:s;display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.4;color:var(--muted)}
+.steps li::before{content:counter(s);flex:none;width:22px;height:22px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-size:11.5px;font-weight:800;margin-top:-1px}
+.steps a{color:var(--accent);font-weight:700}
+.key-row{display:flex;gap:8px}
+.key-row .input{flex:1;min-width:0;font-family:var(--mono);font-size:14px}
+.key-err{color:var(--red);font-size:12.5px;font-weight:700;margin-top:8px}
+.go-btn{margin-top:18px}
+
+/* ============ TRABAJO EN CURSO ============ */
+.job{position:relative;overflow:hidden}
+.file-row{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:14px;align-items:center}
+.thumb{width:64px;height:64px;border-radius:16px;background:var(--fg);color:var(--bg);overflow:hidden;display:grid;place-items:center;position:relative}
+.thumb video{width:100%;height:100%;object-fit:cover;display:block}
+.thumb svg{width:24px;height:24px}
+.f-info{min-width:0}
+.f-name{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:3px 8px;border-radius:7px;background:var(--bg-2);color:var(--fg)}
+.tag.a{background:var(--accent-soft);color:var(--accent)}
+.ibtn{height:40px;min-width:40px;border-radius:100px;border:1px solid var(--line-2);display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 13px;font-weight:700;font-size:13px;color:var(--fg);text-decoration:none;transition:all .3s cubic-bezier(.3,1.6,.5,1)}
+.ibtn svg{width:15px;height:15px}
+.ibtn:hover{border-color:var(--fg);transform:translateY(-2px)}
+.ibtn.x{padding:0;width:40px;color:var(--muted)}
+.ibtn.x:hover{background:var(--red-soft);color:var(--red);border-color:transparent;transform:rotate(90deg)}
+.ibtn.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.wave-box{position:relative;margin:20px 0 4px;height:92px;border-radius:18px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.wave-box canvas{position:absolute;inset:0;width:100%;height:100%}
+.wave-box .scan{position:absolute;top:0;bottom:0;width:2px;background:var(--accent);box-shadow:0 0 18px 4px var(--accent-soft);left:0;transition:left .5s cubic-bezier(.2,.9,.2,1)}
+.job-stat{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:14px}
+.pct{font-family:var(--display);font-weight:800;font-size:clamp(56px,14vw,84px);letter-spacing:-.06em;line-height:.85;display:flex;align-items:flex-start}
+.pct small{font-size:.42em;margin-top:.12em;margin-left:.04em}
+.job-txt{flex:1;min-width:0;text-align:right}
+.job-txt b{display:block;font-weight:800;font-size:15px;line-height:1.3}
+.job-txt span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
+.live{margin-top:16px;padding:14px 16px;border-radius:18px;background:var(--bg);border:1px solid var(--line);font-size:14.5px;line-height:1.55;color:var(--muted);max-height:120px;overflow:hidden;position:relative;mask-image:linear-gradient(transparent,#000 40%)}
+.live:empty{display:none}
+.live b{color:var(--fg);font-weight:600}
+.job-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.job-acts .btn{flex:1 1 auto}
+.err-box{margin-top:16px;padding:16px;border-radius:18px;background:var(--red-soft);color:var(--fg)}
+.err-box b{display:block;font-weight:800;font-size:15px;color:var(--red);margin-bottom:4px}
+.err-box p{font-size:13.5px;line-height:1.45}
+.err-box .job-acts{margin-top:12px}
+.spin{width:14px;height:14px;border-radius:50%;border:2px solid var(--line-2);border-top-color:var(--accent);animation:spin .8s linear infinite;flex:none;display:inline-block;vertical-align:-2px;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============ RESULTADO ============ */
+.res-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.res-head h3{font-family:var(--display);font-weight:800;font-size:clamp(24px,6vw,32px);letter-spacing:-.035em;line-height:1.05;min-width:0;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:100px;background:var(--bg);border:1px solid var(--line);font-size:12.5px;font-weight:700}
+.chip svg{width:13px;height:13px;color:var(--accent)}
+.player{margin-top:16px;border-radius:20px;overflow:hidden;background:#000;position:relative}
+.player video{display:block;width:100%;max-height:52vh;background:#000}
+.player.audio{background:var(--bg);border:1px solid var(--line);padding:10px}
+.player audio{display:block;width:100%}
+.tools-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+.find{position:relative;flex:1 1 200px}
+.find svg{position:absolute;left:14px;top:50%;width:16px;height:16px;transform:translateY(-50%);color:var(--muted)}
+.find .input{height:44px;padding-left:40px;font-size:15px}
+.hint{color:var(--muted);font-size:12.5px}
+.tx{margin-top:12px;max-height:68vh;overflow:auto;border-radius:20px;border:1px solid var(--line);background:var(--bg);padding:6px;overscroll-behavior:contain}
+.row{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;padding:10px 10px;border-radius:14px;transition:background .3s}
+.row:hover{background:color-mix(in srgb,var(--card) 70%,transparent)}
+.row.on{background:var(--accent-soft)}
+.row.on .ts{background:var(--accent);color:#fff;border-color:var(--accent)}
+.row.hide{display:none}
+.ts{height:28px;border-radius:9px;border:1px solid var(--line-2);font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;color:var(--muted);transition:all .25s;align-self:start}
+.ts:hover{border-color:var(--accent);color:var(--accent)}
+.row p{font-size:15.5px;line-height:1.6;outline:none;border-radius:8px;padding:2px 6px;margin:0 -6px;min-width:0;overflow-wrap:anywhere}
+.row p:focus{background:var(--card);box-shadow:0 0 0 2px var(--accent)}
+.row mark{background:color-mix(in srgb,var(--accent) 30%,transparent);color:inherit;border-radius:3px}
+
+/* ============ DESCARGAS ============ */
+.exp h3{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.03em;margin-bottom:14px}
+.fmts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fmt{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px 12px 12px;border-radius:18px;border:1px solid var(--line);background:var(--bg);text-align:left;transition:transform .35s cubic-bezier(.3,1.6,.5,1),border-color .3s,background .3s}
+.fmt:hover{transform:translateY(-3px);border-color:var(--accent)}
+.fmt:active{transform:scale(.96)}
+.fmt b{font-family:var(--display);font-weight:800;font-size:21px;letter-spacing:-.03em;line-height:1}
+.fmt span{font-size:11.5px;color:var(--muted);line-height:1.25}
+.fmt i{position:absolute;right:10px;top:12px;width:22px;height:22px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;opacity:0;transform:scale(.6);transition:all .3s}
+.fmt i svg{width:12px;height:12px}
+.fmt:hover i{opacity:1;transform:none}
+.fmt.busy{pointer-events:none;opacity:.6}
+.exp .tgl{margin-top:12px}
+.exp-acts{display:grid;gap:8px;margin-top:12px}
+
+/* ============ RECIENTES ============ */
+.rec h3{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.03em;display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.rec h3 small{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.06em}
+.rec-list{display:flex;flex-direction:column;gap:6px}
+.rec-it{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:10px 8px 10px 14px;border-radius:16px;background:var(--bg);border:1px solid var(--line);transition:border-color .3s}
+.rec-it:hover{border-color:var(--line-2)}
+.rec-it button.open{min-width:0;text-align:left}
+.rec-it b{display:block;font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec-it span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.rec-it .ibtn.x{width:34px;height:34px;min-width:34px}
+.rec-note{color:var(--muted);font-size:12px;margin-top:10px}
+
+/* ============ MÓVIL: barra inferior ============ */
+.dock{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:90;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 18px;border-radius:100px;
+  background:var(--fg);color:var(--bg);box-shadow:0 20px 40px -14px rgba(0,0,0,.5);transform:translateY(140%);transition:transform .6s cubic-bezier(.3,1.3,.5,1)}
+.dock.on{transform:none}
+.dock .d-txt{flex:1;min-width:0;line-height:1.15}
+.dock .d-txt b{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.03em;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock .d-txt span{font-size:12px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.dock .btn{height:48px;padding:0 20px}
+
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));z-index:450;transform:translate(-50%,20px);opacity:0;pointer-events:none;max-width:calc(100% - 32px);
+  display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:100px;background:var(--fg);color:var(--bg);font-weight:700;font-size:14px;transition:all .45s cubic-bezier(.3,1.5,.5,1)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:899px){
+  .main-col,.side{display:contents}
+  #drop{order:1} #job{order:2} #settings{order:3} #result{order:4} #exp{order:5} #rec{order:6}
+}
+@media (max-width:420px){
+  .fmts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .row{grid-template-columns:54px minmax(0,1fr);gap:8px;padding:9px 6px}
+  .job-stat{flex-direction:column;align-items:flex-start}
+  .job-txt{text-align:left}
+}
+@media (min-width:600px){
+  .top{padding:14px 28px}
+  .back .brand-txt{display:inline}
+  .wrap{padding:30px 28px 120px}
+  .card{padding:26px}
+  .thumb{width:72px;height:72px}
+  .file-row{grid-template-columns:72px minmax(0,1fr) auto}
+}
+@media (min-width:900px){
+  .tool-name{display:flex}
+  .top{padding:16px 40px}
+  .wrap{padding:36px 40px 100px}
+  .layout{grid-template-columns:minmax(0,1fr) 380px;align-items:start;gap:26px}
+  .side{position:sticky;top:96px;max-height:calc(100vh - 112px);overflow:auto;scrollbar-width:none;padding-bottom:4px}
+  .side::-webkit-scrollbar{display:none}
+  .dock{display:none}
+  .drop{padding-top:46px}
+  .viz{transform:scale(1.12);margin:8px 0 22px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="bg"><div class="grid"></div><div class="g1"></div><div class="g2"></div></div>
+<div class="drag-veil"><b data-i18n="veil">Suéltalo aquí</b></div>
+
+<header class="top">
+  <a class="back" href="../index.html#tools" aria-label="ZongaElements">
+    <span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+    <span class="brand-mark"><span></span><span></span></span><span class="brand-txt">Zonga<b>Elements</b></span>
+  </a>
+  <div class="tool-name mono"><i></i><span data-i18n="tool">Transcriptor</span></div>
+  <div class="controls">
+    <button class="ctrl lang-btn" id="langBtn" data-i18n-aria="langA">ES</button>
+    <button class="ctrl theme-btn" id="themeBtn" aria-label="Tema">
+      <span class="knob"></span>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <div class="kicker mono rise"><b>AI</b><i></i><span data-i18n="kick">Transcriptor · Orgánico × Ads</span></div>
+    <h1 class="h1 rise d1"><span data-i18n="h1a">Del vídeo</span><br><em data-i18n="h1b">al texto.</em><span class="ext" id="h1ext">.srt</span></h1>
+    <p class="lead rise d2" data-i18n-html="lead">Sube un vídeo o un audio, dile en qué idioma hablan y elige la precisión. En segundos tienes el texto con sus tiempos, listo para descargar en <b>PDF, Word, TXT o subtítulos</b>.</p>
+    <div class="badges rise d3">
+      <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="bFree">100 % gratis</span></span>
+      <span class="badge b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2M6 8v8M10 4v16M14 7v10M18 10v4M22 12h0"/></svg><span data-i18n="bModel">Whisper large-v3</span></span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="main-col">
+      <label class="drop rise d2" id="drop" tabindex="0">
+        <input type="file" id="fileIn" accept="video/*,audio/*,.mp4,.mov,.m4v,.mkv,.webm,.avi,.mp3,.m4a,.wav,.aac,.ogg,.opus,.flac">
+        <div class="viz" aria-hidden="true">
+          <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="flow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          <div class="doc"><i class="t"></i><i></i><i></i><i></i><b id="docExt">.txt</b></div>
+        </div>
+        <h2 data-i18n="dropT">Suelta aquí tu vídeo</h2>
+        <p data-i18n="dropP">O un audio. MP4, MOV, MP3, M4A, WAV…</p>
+        <div class="picks">
+          <span class="btn accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="pick">Elegir archivo</span></span>
+        </div>
+        <div class="marq mono" aria-hidden="true"><div id="marq"></div></div>
+      </label>
+
+      <div class="card job" id="job" hidden>
+        <div class="file-row">
+          <div class="thumb" id="thumb"></div>
+          <div class="f-info">
+            <div class="f-name" id="fName"></div>
+            <div class="f-meta" id="fMeta"></div>
+          </div>
+          <button class="ibtn x" id="fRemove" data-i18n-aria="remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        </div>
+        <div class="wave-box"><canvas id="waveCv"></canvas><div class="scan" id="scan" hidden></div></div>
+        <div class="job-stat" id="jobStat" hidden>
+          <div class="pct"><span id="pctN">0</span><small>%</small></div>
+          <div class="job-txt"><b id="jobT"></b><span id="jobS"></span></div>
+        </div>
+        <div class="live" id="live"></div>
+        <div class="err-box" id="errBox" hidden>
+          <b id="errT"></b><p id="errP"></p>
+          <div class="job-acts" id="errActs"></div>
+        </div>
+        <div class="job-acts" id="jobActs">
+          <button class="btn accent" id="goBtn2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2M6 8v8M10 4v16M14 7v10M18 10v4M22 12h0"/></svg><span data-i18n="go">Transcribir</span></button>
+        </div>
+        <div class="job-acts" id="cancelActs" hidden>
+          <button class="btn ghost" id="cancelBtn"><span data-i18n="cancel">Cancelar</span></button>
+        </div>
+      </div>
+
+      <div class="card" id="result" hidden>
+        <div class="res-head">
+          <div style="min-width:0;flex:1 1 260px">
+            <span class="mono" style="color:var(--muted)" data-i18n="resK">Transcripción</span>
+            <h3 id="resName"></h3>
+          </div>
+          <button class="btn ghost sm" id="copyBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span data-i18n="copy">Copiar texto</span></button>
+        </div>
+        <div class="chips" id="chips"></div>
+        <div class="player" id="player" hidden></div>
+        <div class="tools-row">
+          <div class="find"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input class="input" id="findIn" type="search" autocomplete="off" data-i18n-ph="find" placeholder="Buscar en el texto"></div>
+          <span class="hint" data-i18n="editHint">Toca una frase para corregirla · el tiempo, para ir a ese momento</span>
+        </div>
+        <div class="tx" id="tx"></div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="card settings rise d3" id="settings">
+        <div class="set-head"><h3 data-i18n="settings">Ajustes</h3></div>
+        <div class="fld">
+          <div class="fld-l"><span class="mono" data-i18n="spoken">Idioma del audio</span></div>
+          <div class="sel"><select id="langSel"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
+          <p class="note" data-i18n="langNote">Si lo eliges en vez de detectarlo, la transcripción sale más precisa.</p>
+        </div>
+        <div class="fld">
+          <div class="fld-l"><span class="mono" data-i18n="precision">Precisión</span></div>
+          <div class="seg tall" id="precSeg">
+            <button data-v="fast"><span data-i18n="pFast">Rápida</span><small data-i18n="pFastS">segundos</small></button>
+            <button data-v="bal"><span data-i18n="pBal">Equilibrada</span><small data-i18n="pBalS">recomendada</small></button>
+            <button data-v="max"><span data-i18n="pMax">Máxima</span><small data-i18n="pMaxS">audio difícil</small></button>
+          </div>
+          <p class="note" id="precNote"></p>
+        </div>
+        <div class="fld">
+          <div class="fld-l"><span class="mono" data-i18n="engine">Dónde se transcribe</span></div>
+          <div class="seg tall" id="engSeg">
+            <button data-v="cloud"><span data-i18n="eCloud">Nube Groq</span><small data-i18n="eCloudS">ultrarrápido</small></button>
+            <button data-v="local"><span data-i18n="eDev">Tu dispositivo</span><small data-i18n="eDevS">sin límites</small></button>
+          </div>
+          <p class="note" id="engNote"></p>
+          <div id="keyBox"></div>
+        </div>
+        <button class="btn accent full go-btn" id="goBtn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2M6 8v8M10 4v16M14 7v10M18 10v4M22 12h0"/></svg><span id="goTxt" data-i18n="go">Transcribir</span></button>
+      </div>
+
+      <div class="card exp" id="exp" hidden>
+        <h3 data-i18n="download">Descargar</h3>
+        <div class="fmts" id="fmts"></div>
+        <label class="tgl"><span class="txt"><span data-i18n="withTs">Incluir los tiempos</span><small data-i18n="withTsS">En PDF, Word, TXT y CSV.</small></span><input type="checkbox" id="tsTgl"><span class="sw"></span></label>
+        <div class="exp-acts">
+          <button class="btn ghost full" id="newBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="newOne">Transcribir otro archivo</span></button>
+        </div>
+      </div>
+
+      <div class="card rec" id="rec" hidden>
+        <h3><span data-i18n="recent">Recientes</span><small id="recN"></small></h3>
+        <div class="rec-list" id="recList"></div>
+        <p class="rec-note" data-i18n="recNote">Se guardan solo en este dispositivo.</p>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="dock" id="dock">
+  <div class="d-txt"><b id="dT"></b><span id="dS"></span></div>
+  <button class="btn accent" id="dBtn"></button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/cuenta.js"></script>
+<script src="../js/novedades.js?v=2"></script>
+<script>
+(async () => {
+/* =========================================================
+   TEXTOS (ES / EN / RO) — mismo idioma que la web (ze-lang)
+   ========================================================= */
+const T = {
+es:{ tool:"Transcriptor", kick:"Transcriptor · Orgánico × Ads", h1a:"Del vídeo", h1b:"al texto.",
+  lead:"Sube un vídeo o un audio, dile en qué idioma hablan y elige la precisión. En segundos tienes el texto con sus tiempos, listo para descargar en <b>PDF, Word, TXT o subtítulos</b>.",
+  bFree:"100 % gratis", bModel:"Whisper large-v3", veil:"Suéltalo aquí", langA:"Cambiar idioma", remove:"Quitar",
+  dropT:"Suelta aquí tu vídeo", dropP:"O un audio. MP4, MOV, MP3, M4A, WAV…", pick:"Elegir archivo",
+  settings:"Ajustes", spoken:"Idioma del audio", auto:"Detectar automáticamente", popular:"Más usados", others:"Todos los idiomas",
+  langNote:"Si lo eliges en vez de detectarlo, la transcripción sale más precisa.",
+  precision:"Precisión", pFast:"Rápida", pFastS:"segundos", pBal:"Equilibrada", pBalS:"recomendada", pMax:"Máxima", pMaxS:"audio difícil",
+  nFastC:"Whisper large-v3 turbo. La más rápida y casi igual de precisa: perfecta para vídeos de TikTok y anuncios.",
+  nBalC:"Whisper large-v3 completo. La más fiel con nombres, marcas y acentos.",
+  nMaxC:"Whisper large-v3 y además limpia el audio (quita ruidos graves y sube las voces flojas) antes de transcribir.",
+  nFastL:"Modelo Whisper base (unos 150 MB). Va rápido, pero se equivoca más.",
+  nBalL:"Modelo Whisper small (unos 500 MB). Buen equilibrio en la mayoría de ordenadores.",
+  nMaxL:"Whisper large-v3 turbo (de 0,8 a 1,6 GB). Lo más preciso, pero necesita un ordenador potente.",
+  engine:"Dónde se transcribe", eCloud:"Nube Groq", eCloudS:"ultrarrápido", eDev:"Tu dispositivo", eDevS:"sin límites",
+  engCloud:"El audio se envía a Groq, que lo pasa por Whisper en segundos. Gratis con tu clave, con un cupo de unas <b>8 horas de audio al día</b>.",
+  engLocal:"Whisper funciona dentro de tu navegador: no se sube nada y no tiene límites. La primera vez descarga el modelo y luego se queda guardado.",
+  engLocalSlow:"Este navegador no tiene aceleración gráfica (WebGPU): funcionará, pero lento. Mejor en Chrome o Edge en un ordenador.",
+  keyT:"Conecta Groq gratis (1 minuto)", key1:"Entra en <a href=\"https://console.groq.com/keys\" target=\"_blank\" rel=\"noopener\">console.groq.com/keys</a> y regístrate gratis.",
+  key2:"Pulsa <b>Create API Key</b> y copia la clave.", key3:"Pégala aquí. Se guarda solo en este dispositivo.",
+  keyPh:"gsk_…", keySave:"Guardar", keyOk:"Groq conectado", keyChange:"Cambiar", keyBad:"Esa clave no funciona. Cópiala otra vez desde Groq.", keyNet:"No se pudo comprobar la clave. Revisa tu conexión.",
+  keyChecking:"Comprobando…", needKey:"Conecta Groq para transcribir en la nube", needFile:"Elige un archivo",
+  go:"Transcribir", goAgain:"Transcribir de nuevo", cancel:"Cancelar", cancelled:"Transcripción cancelada",
+  sDecode:"Sacando el audio del vídeo…", sClean:"Limpiando el audio…", sModel:"Descargando el modelo · solo la primera vez", sModelLoad:"Preparando el modelo…",
+  sPart:"Transcribiendo · parte {i} de {n}", sWait:"Groq pide esperar un poco · sigo en {s} s", sDone:"Listo",
+  sLeft:"Faltan unos {t}", sSoon:"Calculando el tiempo…", sKeep:"No cierres esta pestaña",
+  resK:"Transcripción", copy:"Copiar texto", copied:"Texto copiado", find:"Buscar en el texto",
+  editHint:"Toca una frase para corregirla · el tiempo, para ir a ese momento", noSpeech:"No se ha encontrado voz en este archivo.",
+  cDur:"{d}", cWords:"{n} palabras", cTook:"en {d}", cCloud:"Groq", cLocal:"Tu dispositivo",
+  download:"Descargar", withTs:"Incluir los tiempos", withTsS:"En PDF, Word, TXT y CSV.", newOne:"Transcribir otro archivo",
+  fPdf:"Para leer o imprimir", fDocx:"Word, editable", fTxt:"Texto plano", fSrt:"Subtítulos CapCut, YouTube…", fVtt:"Subtítulos web", fCsv:"Excel / Sheets",
+  pdfWork:"Preparando el PDF…", pdfPrint:"En el diálogo, elige «Guardar como PDF»", saved:"{f} descargado",
+  recent:"Recientes", recNote:"Se guardan solo en este dispositivo.", delRec:"Borrar",
+  eDecode:"No se puede leer el audio de este archivo", eDecodeP:"Prueba con otro formato (MP4 o MP3) o desde Chrome. Si es muy largo, puede que el navegador se quede sin memoria.",
+  eKey:"Groq no acepta tu clave", eKeyP:"Puede que la hayas borrado. Crea otra en console.groq.com/keys y pégala en Ajustes.",
+  eQuota:"Se ha acabado el cupo gratis de Groq por ahora", eQuotaP:"Se recupera solo en {t}. Mientras, puedes seguir en tu dispositivo (sin límites) desde donde se ha quedado.",
+  eNet:"Se ha cortado la conexión", eNetP:"Revisa tu conexión y vuelve a intentarlo: se sigue desde donde se quedó.",
+  eLocal:"Tu dispositivo no ha podido transcribir", eLocalP:"Prueba con la precisión Rápida, cierra otras pestañas o usa la nube de Groq.",
+  eGeneric:"Algo ha fallado", retry:"Reintentar", goLocal:"Seguir en mi dispositivo", useCloud:"Usar la nube",
+  dReady:"Listo para transcribir", dDone:"{n} palabras", dlBtn:"Descargar", minutes:"{n} min", seconds:"{n} s", hours:"{h} h {m} min" },
+en:{ tool:"Transcriber", kick:"Transcriber · Organic × Ads", h1a:"From video", h1b:"to text.",
+  lead:"Upload a video or audio file, tell it which language is spoken and pick the accuracy. In seconds you get the text with timestamps, ready to download as <b>PDF, Word, TXT or subtitles</b>.",
+  bFree:"100% free", bModel:"Whisper large-v3", veil:"Drop it here", langA:"Change language", remove:"Remove",
+  dropT:"Drop your video here", dropP:"Or an audio file. MP4, MOV, MP3, M4A, WAV…", pick:"Choose file",
+  settings:"Settings", spoken:"Spoken language", auto:"Detect automatically", popular:"Most used", others:"All languages",
+  langNote:"Choosing it instead of auto-detecting makes the transcript more accurate.",
+  precision:"Accuracy", pFast:"Fast", pFastS:"seconds", pBal:"Balanced", pBalS:"recommended", pMax:"Maximum", pMaxS:"tough audio",
+  nFastC:"Whisper large-v3 turbo. The fastest and almost as accurate: perfect for TikToks and ads.",
+  nBalC:"Full Whisper large-v3. The most faithful with names, brands and accents.",
+  nMaxC:"Whisper large-v3, plus it cleans the audio first (removes low rumble and boosts quiet voices).",
+  nFastL:"Whisper base model (about 150 MB). Fast, but makes more mistakes.",
+  nBalL:"Whisper small model (about 500 MB). A good balance on most computers.",
+  nMaxL:"Whisper large-v3 turbo (0.8 to 1.6 GB). The most accurate, but needs a powerful computer.",
+  engine:"Where it runs", eCloud:"Groq cloud", eCloudS:"ultra fast", eDev:"Your device", eDevS:"no limits",
+  engCloud:"The audio is sent to Groq, which runs it through Whisper in seconds. Free with your key, with an allowance of about <b>8 hours of audio a day</b>.",
+  engLocal:"Whisper runs inside your browser: nothing is uploaded and there are no limits. The first time it downloads the model, then it stays saved.",
+  engLocalSlow:"This browser has no graphics acceleration (WebGPU): it will work, but slowly. Better on Chrome or Edge on a computer.",
+  keyT:"Connect Groq for free (1 minute)", key1:"Go to <a href=\"https://console.groq.com/keys\" target=\"_blank\" rel=\"noopener\">console.groq.com/keys</a> and sign up for free.",
+  key2:"Click <b>Create API Key</b> and copy the key.", key3:"Paste it here. It's only saved on this device.",
+  keyPh:"gsk_…", keySave:"Save", keyOk:"Groq connected", keyChange:"Change", keyBad:"That key doesn't work. Copy it again from Groq.", keyNet:"Couldn't check the key. Check your connection.",
+  keyChecking:"Checking…", needKey:"Connect Groq to transcribe in the cloud", needFile:"Choose a file",
+  go:"Transcribe", goAgain:"Transcribe again", cancel:"Cancel", cancelled:"Transcription cancelled",
+  sDecode:"Extracting the audio…", sClean:"Cleaning the audio…", sModel:"Downloading the model · first time only", sModelLoad:"Preparing the model…",
+  sPart:"Transcribing · part {i} of {n}", sWait:"Groq asks to wait a moment · resuming in {s} s", sDone:"Done",
+  sLeft:"About {t} left", sSoon:"Estimating time…", sKeep:"Keep this tab open",
+  resK:"Transcript", copy:"Copy text", copied:"Text copied", find:"Search the text",
+  editHint:"Tap a sentence to fix it · the time to jump there", noSpeech:"No speech was found in this file.",
+  cDur:"{d}", cWords:"{n} words", cTook:"in {d}", cCloud:"Groq", cLocal:"Your device",
+  download:"Download", withTs:"Include timestamps", withTsS:"In PDF, Word, TXT and CSV.", newOne:"Transcribe another file",
+  fPdf:"To read or print", fDocx:"Word, editable", fTxt:"Plain text", fSrt:"CapCut, YouTube subtitles…", fVtt:"Web subtitles", fCsv:"Excel / Sheets",
+  pdfWork:"Preparing the PDF…", pdfPrint:"In the dialog, choose “Save as PDF”", saved:"{f} downloaded",
+  recent:"Recent", recNote:"Only saved on this device.", delRec:"Delete",
+  eDecode:"Can't read the audio of this file", eDecodeP:"Try another format (MP4 or MP3) or Chrome. If it's very long, the browser may run out of memory.",
+  eKey:"Groq doesn't accept your key", eKeyP:"You may have deleted it. Create a new one at console.groq.com/keys and paste it in Settings.",
+  eQuota:"Groq's free allowance has run out for now", eQuotaP:"It comes back by itself in {t}. Meanwhile you can continue on your device (no limits) from where it stopped.",
+  eNet:"The connection dropped", eNetP:"Check your connection and try again: it continues from where it stopped.",
+  eLocal:"Your device couldn't transcribe it", eLocalP:"Try Fast accuracy, close other tabs or use the Groq cloud.",
+  eGeneric:"Something went wrong", retry:"Retry", goLocal:"Continue on my device", useCloud:"Use the cloud",
+  dReady:"Ready to transcribe", dDone:"{n} words", dlBtn:"Download", minutes:"{n} min", seconds:"{n} s", hours:"{h} h {m} min" },
+ro:{ tool:"Transcriptor", kick:"Transcriptor · Organic × Ads", h1a:"Din clip", h1b:"în text.",
+  lead:"Încarcă un clip sau un audio, spune-i ce limbă se vorbește și alege precizia. În câteva secunde ai textul cu timpii, gata de descărcat în <b>PDF, Word, TXT sau subtitrări</b>.",
+  bFree:"100% gratuit", bModel:"Whisper large-v3", veil:"Lasă-l aici", langA:"Schimbă limba", remove:"Elimină",
+  dropT:"Lasă clipul aici", dropP:"Sau un audio. MP4, MOV, MP3, M4A, WAV…", pick:"Alege fișierul",
+  settings:"Setări", spoken:"Limba audio", auto:"Detectează automat", popular:"Cele mai folosite", others:"Toate limbile",
+  langNote:"Dacă o alegi în loc s-o detecteze, transcrierea iese mai precisă.",
+  precision:"Precizie", pFast:"Rapidă", pFastS:"secunde", pBal:"Echilibrată", pBalS:"recomandată", pMax:"Maximă", pMaxS:"audio dificil",
+  nFastC:"Whisper large-v3 turbo. Cea mai rapidă și aproape la fel de precisă: perfectă pentru TikTok și reclame.",
+  nBalC:"Whisper large-v3 complet. Cea mai fidelă la nume, mărci și accente.",
+  nMaxC:"Whisper large-v3 și în plus curăță audio înainte (scoate zgomotul grav și ridică vocile slabe).",
+  nFastL:"Modelul Whisper base (cam 150 MB). Merge repede, dar greșește mai mult.",
+  nBalL:"Modelul Whisper small (cam 500 MB). Echilibru bun pe majoritatea calculatoarelor.",
+  nMaxL:"Whisper large-v3 turbo (0,8–1,6 GB). Cel mai precis, dar cere un calculator puternic.",
+  engine:"Unde se transcrie", eCloud:"Cloud Groq", eCloudS:"ultrarapid", eDev:"Dispozitivul tău", eDevS:"fără limite",
+  engCloud:"Audio se trimite la Groq, care îl trece prin Whisper în câteva secunde. Gratuit cu cheia ta, cu o cotă de cam <b>8 ore de audio pe zi</b>.",
+  engLocal:"Whisper rulează în browser: nu se încarcă nimic și nu are limite. Prima dată descarcă modelul, apoi rămâne salvat.",
+  engLocalSlow:"Browserul nu are accelerare grafică (WebGPU): va merge, dar încet. Mai bine în Chrome sau Edge pe calculator.",
+  keyT:"Conectează Groq gratuit (1 minut)", key1:"Intră pe <a href=\"https://console.groq.com/keys\" target=\"_blank\" rel=\"noopener\">console.groq.com/keys</a> și înregistrează-te gratuit.",
+  key2:"Apasă <b>Create API Key</b> și copiază cheia.", key3:"Lipește-o aici. Se salvează doar pe acest dispozitiv.",
+  keyPh:"gsk_…", keySave:"Salvează", keyOk:"Groq conectat", keyChange:"Schimbă", keyBad:"Cheia nu merge. Copiaz-o din nou din Groq.", keyNet:"Nu s-a putut verifica cheia. Verifică conexiunea.",
+  keyChecking:"Se verifică…", needKey:"Conectează Groq ca să transcrii în cloud", needFile:"Alege un fișier",
+  go:"Transcrie", goAgain:"Transcrie din nou", cancel:"Anulează", cancelled:"Transcriere anulată",
+  sDecode:"Se extrage sunetul…", sClean:"Se curăță sunetul…", sModel:"Se descarcă modelul · doar prima dată", sModelLoad:"Se pregătește modelul…",
+  sPart:"Se transcrie · partea {i} din {n}", sWait:"Groq cere puțină răbdare · continui în {s} s", sDone:"Gata",
+  sLeft:"Mai sunt cam {t}", sSoon:"Se calculează timpul…", sKeep:"Nu închide fila",
+  resK:"Transcriere", copy:"Copiază textul", copied:"Text copiat", find:"Caută în text",
+  editHint:"Atinge o frază ca s-o corectezi · timpul, ca să sari acolo", noSpeech:"Nu s-a găsit voce în acest fișier.",
+  cDur:"{d}", cWords:"{n} cuvinte", cTook:"în {d}", cCloud:"Groq", cLocal:"Dispozitivul tău",
+  download:"Descarcă", withTs:"Include timpii", withTsS:"În PDF, Word, TXT și CSV.", newOne:"Transcrie alt fișier",
+  fPdf:"De citit sau tipărit", fDocx:"Word, editabil", fTxt:"Text simplu", fSrt:"Subtitrări CapCut, YouTube…", fVtt:"Subtitrări web", fCsv:"Excel / Sheets",
+  pdfWork:"Se pregătește PDF-ul…", pdfPrint:"În fereastră, alege „Salvează ca PDF”", saved:"{f} descărcat",
+  recent:"Recente", recNote:"Se salvează doar pe acest dispozitiv.", delRec:"Șterge",
+  eDecode:"Nu se poate citi sunetul acestui fișier", eDecodeP:"Încearcă alt format (MP4 sau MP3) sau Chrome. Dacă e foarte lung, browserul poate rămâne fără memorie.",
+  eKey:"Groq nu acceptă cheia ta", eKeyP:"Poate ai șters-o. Creează alta pe console.groq.com/keys și lipește-o în Setări.",
+  eQuota:"Cota gratuită Groq s-a terminat deocamdată", eQuotaP:"Revine singură în {t}. Între timp poți continua pe dispozitivul tău (fără limite) de unde a rămas.",
+  eNet:"S-a întrerupt conexiunea", eNetP:"Verifică conexiunea și încearcă din nou: continuă de unde a rămas.",
+  eLocal:"Dispozitivul tău n-a putut transcrie", eLocalP:"Încearcă precizia Rapidă, închide alte file sau folosește cloud-ul Groq.",
+  eGeneric:"Ceva n-a mers", retry:"Reîncearcă", goLocal:"Continuă pe dispozitivul meu", useCloud:"Folosește cloud-ul",
+  dReady:"Gata de transcris", dDone:"{n} cuvinte", dlBtn:"Descarcă", minutes:"{n} min", seconds:"{n} s", hours:"{h} h {m} min" }
+};
+const pref = { get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}}, del(k){try{localStorage.removeItem(k)}catch(e){}} };
+let lang = pref.get("ze-lang") || "es"; if (!T[lang]) lang = "es";
+const t = (k, v={}) => String(T[lang][k] ?? T.es[k] ?? k).replace(/\{(\w+)\}/g, (_,x) => v[x] ?? "");
+const $ = (s, el=document) => el.querySelector(s), $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+await ZE.requireUser();
+
+/* =========================================================
+   AJUSTES (se recuerdan en este dispositivo)
+   ========================================================= */
+const DEF = { lang:"es", prec:"bal", engine:"cloud", ts:false };
+let S = { ...DEF };
+try { Object.assign(S, JSON.parse(pref.get("ze-transcriptor") || "{}")); } catch (e) {}
+const saveS = () => pref.set("ze-transcriptor", JSON.stringify(S));
+let groqKey = pref.get("ze-groq-key") || "";
+
+/* =========================================================
+   UTILIDADES
+   ========================================================= */
+const SR = 16000;   // Whisper trabaja a 16 kHz en mono
+const fmtSize = b => { const u = ["B","KB","MB","GB"]; let i = 0; while (b >= 1000 && i < 3) { b /= 1000; i++; } return `${b.toLocaleString(lang, { maximumFractionDigits: b < 10 && i ? 1 : 0 })} ${u[i]}`; };
+const slug = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "transcripcion";
+const baseName = n => n.replace(/\.[^.]+$/, "");
+const extOf = n => (n.match(/\.([^.]+)$/) || [, ""])[1].toUpperCase();
+const pad = (n, l=2) => String(n).padStart(l, "0");
+// 83.4 → "1:23" · 3723 → "1:02:03"
+const clock = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return h ? `${h}:${pad(m)}:${pad(x)}` : `${m}:${pad(x)}`; };
+// tiempos de subtítulos: 00:01:23,450
+const stamp = (s, sep) => { const ms = Math.max(0, Math.round(s * 1000)); return `${pad(Math.floor(ms / 3600000))}:${pad(Math.floor(ms % 3600000 / 60000))}:${pad(Math.floor(ms % 60000 / 1000))}${sep}${pad(ms % 1000, 3)}`; };
+const human = s => { s = Math.round(s); if (s < 60) return t("seconds", { n:Math.max(1, s) }); if (s < 3600) return t("minutes", { n:Math.round(s / 60) }); return t("hours", { h:Math.floor(s / 3600), m:Math.round(s % 3600 / 60) }); };
+const words = segs => segs.reduce((n, s) => n + (s.text.trim() ? s.text.trim().split(/\s+/).length : 0), 0);
+let toastT;
+function toast(msg){ const el = $("#toast"); el.textContent = msg; el.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("on"), 2600); }
+const ICON = {
+  vid:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+  aud:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+  dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  txt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
+  globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>'
+};
+
+/* =========================================================
+   IDIOMAS (los nombres los pone el navegador en el idioma de la web)
+   ========================================================= */
+const POPULAR = ["es","en","ro","pt","fr","it","de"];
+const ALL_LANGS = ["af","am","ar","as","az","ba","be","bg","bn","bo","br","bs","ca","cs","cy","da","de","el","en","es","et","eu","fa","fi","fo","fr","gl","gu","ha","he","hi","hr","ht","hu","hy","id","is","it","ja","ka","kk","km","kn","ko","la","lb","ln","lo","lt","lv","mi","mk","ml","mn","mr","ms","mt","my","ne","nl","nn","no","oc","pa","pl","ps","pt","ro","ru","sa","sd","si","sk","sl","sn","so","sq","sr","su","sv","sw","ta","te","tg","th","tk","tl","tr","tt","uk","ur","uz","vi","yi","yo","zh"];
+const langName = code => { try { const n = new Intl.DisplayNames([lang], { type:"language" }).of(code); return n ? n[0].toLocaleUpperCase(lang) + n.slice(1) : code; } catch (e) { return code; } };
+function buildLangs(){
+  const sel = $("#langSel"), coll = new Intl.Collator(lang);
+  const rest = ALL_LANGS.filter(c => !POPULAR.includes(c)).map(c => [c, langName(c)]).sort((a, b) => coll.compare(a[1], b[1]));
+  sel.innerHTML = `<option value="auto">${esc(t("auto"))}</option>
+    <optgroup label="${esc(t("popular"))}">${POPULAR.map(c => `<option value="${c}">${esc(langName(c))}</option>`).join("")}</optgroup>
+    <optgroup label="${esc(t("others"))}">${rest.map(([c, n]) => `<option value="${c}">${esc(n)}</option>`).join("")}</optgroup>`;
+  sel.value = S.lang;
+  if (sel.value !== S.lang) sel.value = S.lang = "es";
+}
+$("#langSel").addEventListener("change", e => { S.lang = e.target.value; saveS(); });
+
+/* =========================================================
+   AUDIO: extraer, limpiar, trocear y pasar a WAV
+   ========================================================= */
+// Un OfflineAudioContext a 16 kHz decodifica cualquier formato que entienda el navegador
+// (también la pista de audio de MP4/MOV) y lo remuestrea solo.
+async function decodeAudio(file){
+  const buf = await file.arrayBuffer();
+  const ctx = new OfflineAudioContext(1, 1, SR);
+  const ab = await ctx.decodeAudioData(buf);
+  const n = ab.length, pcm = new Float32Array(n);
+  for (let c = 0; c < ab.numberOfChannels; c++) { const ch = ab.getChannelData(c); for (let i = 0; i < n; i++) pcm[i] += ch[i] / ab.numberOfChannels; }
+  return pcm;
+}
+// Precisión máxima: quita retumbe (<80 Hz), comprime y sube el volumen
+async function cleanAudio(pcm){
+  const ctx = new OfflineAudioContext(1, pcm.length, SR);
+  const b = ctx.createBuffer(1, pcm.length, SR); b.copyToChannel(pcm, 0);
+  const src = ctx.createBufferSource(); src.buffer = b;
+  const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 80;
+  const cp = ctx.createDynamicsCompressor(); cp.threshold.value = -28; cp.ratio.value = 3.5; cp.knee.value = 12; cp.attack.value = .005; cp.release.value = .2;
+  src.connect(hp).connect(cp).connect(ctx.destination); src.start();
+  const out = (await ctx.startRendering()).getChannelData(0);
+  let peak = 0; for (let i = 0; i < out.length; i++) { const a = Math.abs(out[i]); if (a > peak) peak = a; }
+  if (peak > 0) { const g = .95 / peak; for (let i = 0; i < out.length; i++) out[i] *= g; }
+  return out;
+}
+// Corta en trozos de como mucho maxSec, buscando un silencio en los últimos searchSec
+// para no partir una palabra por la mitad.
+function cutPoints(pcm, from, to, maxSec, searchSec){
+  const cuts = [from], max = maxSec * SR, win = Math.round(SR * .1);
+  let pos = from;
+  while (to - pos > max) {
+    const hi = pos + max, lo = hi - searchSec * SR;
+    let best = hi, bestE = Infinity;
+    for (let s = lo; s + win <= hi; s += win >> 1) {
+      let e = 0; for (let i = s; i < s + win; i += 4) e += pcm[i] * pcm[i];
+      if (e < bestE) { bestE = e; best = s + (win >> 1); }
+    }
+    cuts.push(best); pos = best;
+  }
+  cuts.push(to);
+  return cuts;
+}
+const rms = (pcm, a, b) => { let e = 0, n = 0; for (let i = a; i < b; i += 8) { e += pcm[i] * pcm[i]; n++; } return Math.sqrt(e / Math.max(1, n)); };
+function toWav(pcm, a, b){
+  const n = b - a, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); w(8, "WAVE"); w(12, "fmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, SR, true); v.setUint32(28, SR * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, "data"); v.setUint32(40, n * 2, true);
+  for (let i = 0; i < n; i++) { const s = Math.max(-1, Math.min(1, pcm[a + i])); v.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true); }
+  return new Blob([buf], { type:"audio/wav" });
+}
+function peaksOf(pcm, bars){
+  const step = Math.max(1, Math.floor(pcm.length / bars)), out = [];
+  let mx = 0;
+  for (let k = 0; k < bars; k++) { const v = rms(pcm, k * step, Math.min(pcm.length, (k + 1) * step)); out.push(v); if (v > mx) mx = v; }
+  return out.map(v => mx ? Math.pow(v / mx, .7) : 0);
+}
+const sleep = (ms, sig) => new Promise((res, rej) => { const id = setTimeout(res, ms); sig?.addEventListener("abort", () => { clearTimeout(id); rej(new DOMException("abort", "AbortError")); }, { once:true }); });
+const fail = (code, extra={}) => Object.assign(new Error(code), { code, ...extra });
+
+/* =========================================================
+   MOTOR 1 · GROQ (Whisper en la nube)
+   Trozos de hasta 10 min en WAV de 16 kHz (≈19 MB, por debajo del
+   límite de 25 MB del plan gratis).
+   ========================================================= */
+const GROQ = "https://api.groq.com/openai/v1";
+const CLOUD_MODEL = { fast:"whisper-large-v3-turbo", bal:"whisper-large-v3", max:"whisper-large-v3" };
+async function checkKey(k){
+  const r = await fetch(`${GROQ}/models`, { headers:{ authorization:`Bearer ${k}` } });
+  return r.ok;
+}
+async function groqPiece(pcm, a, b, prompt, sig){
+  const fd = new FormData();
+  fd.append("file", toWav(pcm, a, b), "audio.wav");
+  fd.append("model", CLOUD_MODEL[job.prec]);
+  if (job.lang !== "auto") fd.append("language", job.lang);
+  fd.append("response_format", "verbose_json");
+  fd.append("timestamp_granularities[]", "segment");
+  fd.append("temperature", "0");
+  if (prompt) fd.append("prompt", prompt);
+  for (let tries = 0; ; tries++) {
+    let r;
+    try { r = await fetch(`${GROQ}/audio/transcriptions`, { method:"POST", headers:{ authorization:`Bearer ${groqKey}` }, body:fd, signal:sig }); }
+    catch (e) { if (e.name === "AbortError") throw e; if (tries < 2) { await sleep(1500 * (tries + 1), sig); continue; } throw fail("net"); }
+    if (r.ok) return r.json();
+    if (r.status === 401 || r.status === 403) throw fail("key");
+    if (r.status === 429) {
+      const wait = parseRetry(r);
+      if (wait <= 90 && tries < 4) { await countdown(wait, sig); continue; }
+      throw fail("quota", { wait });
+    }
+    if (r.status >= 500 && tries < 2) { await sleep(2000 * (tries + 1), sig); continue; }
+    throw fail("generic");
+  }
+}
+// "retry-after: 17" o "x-ratelimit-reset-audio-seconds: 7m12.5s"
+function parseRetry(r){
+  const ra = parseFloat(r.headers.get("retry-after"));
+  if (isFinite(ra)) return Math.ceil(ra);
+  const raw = r.headers.get("x-ratelimit-reset-audio-seconds") || r.headers.get("x-ratelimit-reset-requests") || "";
+  const m = raw.match(/(?:(\d+)h)?(?:(\d+)m(?!s))?(?:([\d.]+)s)?/);
+  const s = m ? (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0) : 0;
+  return s ? Math.ceil(s) : 3600;
+}
+async function countdown(s, sig){
+  for (let k = s; k > 0; k--) { status(t("sWait", { s:k }), t("sKeep")); await sleep(1000, sig); }
+}
+async function runCloud(from, sig){
+  const pcm = job.pcm, cuts = cutPoints(pcm, from, pcm.length, 600, 30), n = cuts.length - 1;
+  for (let i = 0; i < n; i++) {
+    const a = cuts[i], b = cuts[i + 1];
+    job.resumeAt = a;
+    status(t("sPart", { i:i + 1, n }), eta(a));
+    if (rms(pcm, a, b) < .002) { progress(b); continue; }   // silencio: no se envía
+    const prev = job.segs.slice(-6).map(s => s.text).join(" ").slice(-200);
+    const out = await groqPiece(pcm, a, b, prev, sig);
+    if (out.language && job.lang === "auto" && !job.detected) job.detected = out.language;
+    const off = a / SR;
+    (out.segments || []).forEach(sg => {
+      const txt = (sg.text || "").trim();
+      if (!txt || (sg.no_speech_prob > .85 && sg.avg_logprob < -.7)) return;
+      addSeg(off + sg.start, Math.min(off + sg.end, b / SR), txt);
+    });
+    progress(b);
+  }
+  job.resumeAt = pcm.length;
+}
+
+/* =========================================================
+   MOTOR 2 · TU DISPOSITIVO (Whisper dentro del navegador)
+   transformers.js en un Worker, con WebGPU si existe. El modelo se
+   descarga una vez y el navegador lo guarda en caché.
+   ========================================================= */
+const LOCAL_MODEL = { fast:"onnx-community/whisper-base", bal:"onnx-community/whisper-small", max:"onnx-community/whisper-large-v3-turbo" };
+const hasGPU = "gpu" in navigator;
+const WORKER_SRC = `
+import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
+env.allowLocalModels = false;
+let asr = null, cur = "";
+async function gpuInfo(){
+  try { const a = await navigator.gpu?.requestAdapter(); return a ? { ok:true, f16:a.features.has("shader-f16") } : { ok:false }; } catch (e) { return { ok:false }; }
+}
+self.onmessage = async ({ data }) => {
+  try {
+    if (data.type === "load") {
+      if (asr && cur === data.model) { postMessage({ type:"ready" }); return; }
+      if (asr) { try { await asr.dispose(); } catch (e) {} asr = null; }
+      const g = await gpuInfo(), big = data.model.includes("large");
+      const opts = g.ok
+        ? { device:"webgpu", dtype:{ encoder_model: big ? (g.f16 ? "fp16" : "q4") : "fp32", decoder_model_merged:"q4" } }
+        : { device:"wasm", dtype:"q8" };
+      opts.progress_callback = p => { if (p.status === "progress" || p.status === "done") postMessage({ type:"dl", file:p.file, loaded:p.loaded || 0, total:p.total || 0, done:p.status === "done" }); };
+      asr = await pipeline("automatic-speech-recognition", data.model, opts);
+      cur = data.model;
+      postMessage({ type:"ready" });
+    }
+    if (data.type === "run") {
+      const o = { task:"transcribe", return_timestamps:true };
+      if (data.language) o.language = data.language;
+      const out = await asr(data.audio, o);
+      postMessage({ type:"out", id:data.id, out });
+    }
+  } catch (e) { postMessage({ type:"err", msg:String(e && e.message || e) }); }
+};`;
+let worker = null, workerModel = "";
+function getWorker(){
+  if (!worker) { worker = new Worker(URL.createObjectURL(new Blob([WORKER_SRC], { type:"text/javascript" })), { type:"module" }); workerModel = ""; }
+  return worker;
+}
+function killWorker(){ if (worker) { worker.terminate(); worker = null; workerModel = ""; } }
+function workerCall(msg, onMsg, sig){
+  return new Promise((res, rej) => {
+    const w = getWorker();
+    const h = ({ data }) => {
+      if (data.type === "err") { cleanup(); rej(fail("local", { msg:data.msg })); return; }
+      const r = onMsg(data); if (r !== undefined) { cleanup(); res(r); }
+    };
+    const ab = () => { cleanup(); killWorker(); rej(new DOMException("abort", "AbortError")); };
+    const cleanup = () => { w.removeEventListener("message", h); sig?.removeEventListener("abort", ab); };
+    w.addEventListener("message", h); sig?.addEventListener("abort", ab, { once:true });
+    w.postMessage(msg, msg.audio ? [msg.audio.buffer] : []);
+  });
+}
+async function runLocal(from, sig){
+  const model = LOCAL_MODEL[job.prec];
+  if (workerModel !== model) {
+    const files = {};
+    status(t("sModelLoad"), "");
+    await workerCall({ type:"load", model }, d => {
+      if (d.type === "dl") {
+        files[d.file] = d.done ? { l:files[d.file]?.t || d.total, t:files[d.file]?.t || d.total } : { l:d.loaded, t:d.total };
+        const tot = Object.values(files).reduce((s, f) => s + f.t, 0), got = Object.values(files).reduce((s, f) => s + f.l, 0);
+        if (tot > 2e6) status(t("sModel"), `${fmtSize(got)} / ${fmtSize(tot)}`);
+        return;
+      }
+      if (d.type === "ready") return true;
+    }, sig);
+    workerModel = model;
+  }
+  const pcm = job.pcm, cuts = cutPoints(pcm, from, pcm.length, 29, 8), n = cuts.length - 1;
+  job.localStart = performance.now(); job.localFrom = from;
+  for (let i = 0; i < n; i++) {
+    const a = cuts[i], b = cuts[i + 1];
+    job.resumeAt = a;
+    status(t("sPart", { i:i + 1, n }), eta(a));
+    if (rms(pcm, a, b) < .002) { progress(b); continue; }
+    const out = await workerCall({ type:"run", id:i, audio:pcm.slice(a, b), language: job.lang === "auto" ? null : job.lang }, d => d.type === "out" ? d.out : undefined, sig);
+    const off = a / SR, end = b / SR;
+    const chunks = out.chunks?.length ? out.chunks : [{ timestamp:[0, null], text:out.text }];
+    chunks.forEach(c => {
+      const txt = (c.text || "").trim(); if (!txt) return;
+      const s = off + (c.timestamp?.[0] ?? 0), e = c.timestamp?.[1] == null ? end : off + c.timestamp[1];
+      addSeg(s, Math.min(Math.max(e, s + .3), end), txt);
+    });
+    progress(b);
+  }
+  job.resumeAt = pcm.length;
+}
+
+/* =========================================================
+   TRABAJO: estado y pantalla de progreso
+   ========================================================= */
+let job = null;        // { file, url, kind, size, dur, pcm, peaks, segs, ... }
+let view = null;       // transcripción mostrada { id, name, segs, dur, ... }
+let ctrl = null;       // AbortController del trabajo en curso
+let wakeLock = null;
+const busy = () => !!ctrl;
+
+function addSeg(start, end, text){
+  // Whisper a veces repite la última frase al empezar un trozo nuevo
+  const last = job.segs[job.segs.length - 1];
+  if (last && last.text === text && start - last.end < 2) return;
+  job.segs.push({ start, end, text });
+  const tail = job.segs.slice(-4).map(s => s.text);
+  $("#live").innerHTML = tail.slice(0, -1).map(esc).join(" ") + ` <b>${esc(tail[tail.length - 1])}</b>`;
+}
+function eta(at){
+  const done = (at - (job.etaFrom ?? 0)) / SR, el = (performance.now() - job.etaT0) / 1000;
+  const left = (job.pcm.length - at) / SR;
+  if (done < 20 || el < 2) return t("sSoon");
+  return t("sLeft", { t:human(left * el / done) });
+}
+function status(main, sub){ $("#jobT").textContent = main; $("#jobS").textContent = sub || ""; $("#jobStat").hidden = false; dock(); }
+function progress(at){
+  const p = job.pcm ? Math.min(1, at / job.pcm.length) : 0;
+  job.p = p;
+  $("#pctN").textContent = Math.round(p * 100);
+  const sc = $("#scan"); sc.hidden = false; sc.style.left = `calc(${p * 100}% - 1px)`;
+  drawWave(p);
+}
+function drawWave(p = job?.p || 0){
+  const cv = $("#waveCv"), r = cv.getBoundingClientRect();
+  if (!r.width) return;
+  const dpr = devicePixelRatio || 1; cv.width = r.width * dpr; cv.height = r.height * dpr;
+  const g = cv.getContext("2d"); g.scale(dpr, dpr);
+  const cs = getComputedStyle(document.documentElement), on = cs.getPropertyValue("--accent").trim() || "#2B63FF", off = cs.getPropertyValue("--line-2").trim();
+  const pk = job?.peaks || [], bw = 3, gap = 2, n = Math.floor((r.width - 16) / (bw + gap));
+  for (let k = 0; k < n; k++) {
+    const v = pk.length ? pk[Math.floor(k / n * pk.length)] : .15, h = Math.max(3, v * (r.height - 20));
+    g.fillStyle = k / n < p ? on : off;
+    g.beginPath(); g.roundRect(8 + k * (bw + gap), (r.height - h) / 2, bw, h, 2); g.fill();
+  }
+}
+addEventListener("resize", () => { if (job) drawWave(); });
+
+function pickFile(file){
+  if (!file || busy()) return;
+  if (!/^(video|audio)\//.test(file.type) && !/\.(mp4|mov|m4v|mkv|webm|avi|mp3|m4a|wav|aac|ogg|opus|flac|wma|3gp)$/i.test(file.name)) { toast(t("eDecode")); return; }
+  if (job?.url) URL.revokeObjectURL(job.url);
+  const kind = file.type.startsWith("audio/") || /\.(mp3|m4a|wav|aac|ogg|opus|flac|wma)$/i.test(file.name) ? "audio" : "video";
+  job = { file, url:URL.createObjectURL(file), kind, size:file.size, dur:0, pcm:null, peaks:null, segs:[], p:0 };
+  $("#drop").hidden = true; $("#job").hidden = false; $("#result").hidden = true; $("#exp").hidden = true; view = null;
+  $("#fName").textContent = file.name;
+  $("#thumb").innerHTML = kind === "video" ? `<video src="${job.url}#t=0.5" muted playsinline preload="metadata"></video>` : ICON.aud;
+  $("#live").innerHTML = ""; $("#errBox").hidden = true; $("#jobStat").hidden = true; $("#scan").hidden = true;
+  $("#jobActs").hidden = false; $("#cancelActs").hidden = true;
+  const m = document.createElement(kind); m.preload = "metadata"; m.src = job.url;
+  m.onloadedmetadata = () => { if (job && job.file === file && isFinite(m.duration)) { job.dur = m.duration; meta(); } };
+  meta(); drawWave(0); renderGo(); dock();
+  $("#job").scrollIntoView({ behavior:"smooth", block:"nearest" });
+}
+function meta(){
+  if (!job) return;
+  $("#fMeta").innerHTML = [extOf(job.file.name) || job.kind.toUpperCase(), job.dur ? clock(job.dur) : "", fmtSize(job.size)].filter(Boolean).map((x, i) => `<span class="tag${i ? "" : " a"}">${esc(x)}</span>`).join("");
+}
+function clearJob(){
+  if (busy()) ctrl.abort();
+  if (job?.url) URL.revokeObjectURL(job.url);
+  job = null;
+  $("#job").hidden = true; $("#drop").hidden = false;
+  renderGo(); dock();
+}
+$("#fRemove").onclick = clearJob;
+
+async function start(from = 0, engine = S.engine){
+  if (!job || busy()) return;
+  if (engine === "cloud" && !groqKey) { $("#settings").scrollIntoView({ behavior:"smooth", block:"center" }); $("#keyIn")?.focus(); toast(t("needKey")); return; }
+  ctrl = new AbortController(); const sig = ctrl.signal;
+  if (from === 0) { job.segs = []; job.detected = null; job.t0 = performance.now(); job.took = 0; $("#live").innerHTML = ""; }
+  job.prec = S.prec; job.lang = S.lang; job.engine = engine;
+  $("#drop").hidden = true; $("#job").hidden = false;
+  $("#errBox").hidden = true; $("#jobActs").hidden = true; $("#cancelActs").hidden = false; $("#result").hidden = true; $("#exp").hidden = true;
+  renderGo(); dock();
+  try { wakeLock = await navigator.wakeLock?.request("screen"); } catch (e) {}
+  try {
+    if (!job.pcm) {
+      status(t("sDecode"), fmtSize(job.size)); progress(0);
+      await new Promise(r => setTimeout(r, 30));
+      try { job.pcm = await decodeAudio(job.file); } catch (e) { throw fail("decode"); }
+      job.dur = job.pcm.length / SR; meta();
+      job.peaks = peaksOf(job.pcm, 600);
+      job.cleaned = false;
+    }
+    if (job.prec === "max" && !job.cleaned) { status(t("sClean"), ""); job.pcm = await cleanAudio(job.pcm); job.cleaned = true; }
+    if (sig.aborted) throw new DOMException("abort", "AbortError");
+    progress(from);
+    job.etaFrom = from; job.etaT0 = performance.now();
+    if (engine === "cloud") await runCloud(from, sig); else await runLocal(from, sig);
+    job.took = (performance.now() - job.t0) / 1000;
+    finish();
+  } catch (e) {
+    if (e.name === "AbortError") { toast(t("cancelled")); $("#jobActs").hidden = false; $("#jobStat").hidden = true; $("#scan").hidden = true; drawWave(0); }
+    else showError(e);
+  } finally {
+    ctrl = null; $("#cancelActs").hidden = true;
+    try { await wakeLock?.release(); } catch (e) {} wakeLock = null;
+    renderGo(); dock();
+  }
+}
+$("#cancelBtn").onclick = () => ctrl?.abort();
+
+function showError(e){
+  const code = e.code || "generic", box = $("#errBox"), acts = [];
+  const resume = job.resumeAt ?? 0;
+  const btn = (txt, cls, fn) => { const b = document.createElement("button"); b.className = `btn ${cls} sm`; b.textContent = txt; b.onclick = fn; acts.push(b); };
+  const map = { decode:["eDecode","eDecodeP"], key:["eKey","eKeyP"], quota:["eQuota","eQuotaP"], net:["eNet","eNetP"], local:["eLocal","eLocalP"], generic:["eGeneric","eNetP"] };
+  const [ti, pi] = map[code] || map.generic;
+  $("#errT").textContent = t(ti); $("#errP").textContent = t(pi, { t:human(e.wait || 3600) });
+  if (code === "quota") { btn(t("goLocal"), "accent", () => { setEngine("local"); start(resume, "local"); }); btn(t("retry"), "ghost", () => start(resume, "cloud")); }
+  else if (code === "key") { btn(t("keyChange"), "accent", () => { groqKey = ""; pref.del("ze-groq-key"); renderKey(); $("#settings").scrollIntoView({ behavior:"smooth", block:"center" }); }); }
+  else if (code === "local") { btn(t("retry"), "accent", () => start(resume, "local")); if (groqKey) btn(t("useCloud"), "ghost", () => { setEngine("cloud"); start(resume, "cloud"); }); }
+  else if (code !== "decode") btn(t("retry"), "accent", () => start(resume, job.engine));
+  $("#errActs").replaceChildren(...acts);
+  box.hidden = false; $("#jobActs").hidden = code !== "decode" && code !== "key";
+  if (code === "local") console.warn(e.msg);
+  else if (!e.code) console.error(e);
+}
+
+function finish(){
+  const segs = job.segs;
+  const rec = { id:Date.now().toString(36), name:job.file.name, date:new Date().toISOString(), dur:job.dur, lang:job.lang === "auto" ? (job.detected || "auto") : job.lang,
+    prec:job.prec, engine:job.engine, took:job.took, segs:segs.map(s => [Math.round(s.start * 100) / 100, Math.round(s.end * 100) / 100, s.text]) };
+  if (!segs.length) { showError(Object.assign(fail("generic"), {})); $("#errT").textContent = t("noSpeech"); $("#errP").textContent = ""; $("#errActs").replaceChildren(); return; }
+  status(t("sDone"), ""); progress(job.pcm.length);
+  saveRec(rec);
+  // el audio decodificado ocupa mucha memoria: se suelta al terminar
+  job.pcm = null; job.cleaned = false;
+  $("#job").hidden = true;
+  openView(rec, job.url, job.kind);
+}
+
+/* =========================================================
+   RESULTADO: reproductor sincronizado, edición y búsqueda
+   ========================================================= */
+let media = null;
+function openView(rec, url, kind){
+  view = { ...rec, segs:rec.segs.map(([s, e, x]) => ({ start:s, end:e, text:x })) };
+  $("#drop").hidden = !!url && !!job; $("#result").hidden = false; $("#exp").hidden = false;
+  if (!url) { $("#drop").hidden = false; $("#job").hidden = true; }
+  $("#resName").textContent = baseName(view.name);
+  const pl = $("#player");
+  if (url) {
+    pl.hidden = false; pl.className = `player${kind === "audio" ? " audio" : ""}`;
+    pl.innerHTML = kind === "audio" ? `<audio controls preload="metadata" src="${url}"></audio>` : `<video controls playsinline preload="metadata" src="${url}"></video>`;
+    media = pl.firstElementChild;
+    media.addEventListener("timeupdate", sync);
+  } else { pl.hidden = true; pl.innerHTML = ""; media = null; }
+  $("#findIn").value = "";
+  renderChips(); renderTx(); renderGo(); dock();
+  $("#result").scrollIntoView({ behavior:"smooth", block:"start" });
+}
+function renderChips(){
+  if (!view) return;
+  const c = [[ICON.clock, clock(view.dur)], [ICON.txt, t("cWords", { n:words(view.segs).toLocaleString(lang) })],
+    [ICON.globe, /^[a-z]{2}$/.test(view.lang) ? langName(view.lang) : view.lang === "auto" ? t("auto") : view.lang[0].toUpperCase() + view.lang.slice(1)],
+    [ICON.bolt, `${t(view.engine === "cloud" ? "cCloud" : "cLocal")} · ${t({ fast:"pFast", bal:"pBal", max:"pMax" }[view.prec])}${view.took ? " · " + t("cTook", { d:human(view.took) }) : ""}`]];
+  $("#chips").innerHTML = c.map(([i, x]) => `<span class="chip">${i}${esc(x)}</span>`).join("");
+}
+function renderTx(){
+  $("#tx").innerHTML = view.segs.map((s, i) => `<div class="row" data-i="${i}"><button class="ts" data-t="${s.start}">${clock(s.start)}</button><p contenteditable="true" spellcheck="false">${esc(s.text)}</p></div>`).join("");
+}
+$("#tx").addEventListener("click", e => {
+  const b = e.target.closest(".ts"); if (!b || !media) return;
+  media.currentTime = +b.dataset.t + .01; media.play?.().catch(() => {});
+});
+let editT;
+$("#tx").addEventListener("input", e => {
+  const row = e.target.closest(".row"); if (!row) return;
+  view.segs[+row.dataset.i].text = e.target.textContent.replace(/\s+/g, " ").trim();
+  clearTimeout(editT); editT = setTimeout(() => { updateRec(view); renderChips(); }, 600);
+});
+$("#tx").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches("p")) { e.preventDefault(); e.target.blur(); } });
+// pegar solo texto, sin formato
+$("#tx").addEventListener("paste", e => { if (!e.target.matches("p")) return; e.preventDefault(); document.execCommand("insertText", false, e.clipboardData.getData("text/plain")); });
+let lastOn = -1;
+function sync(){
+  if (!view || !media) return;
+  const ct = media.currentTime;
+  let k = -1; for (let i = 0; i < view.segs.length; i++) { if (view.segs[i].start <= ct + .05) k = i; else break; }
+  if (k === lastOn) return;
+  $(`.row[data-i="${lastOn}"]`)?.classList.remove("on");
+  lastOn = k;
+  const row = $(`.row[data-i="${k}"]`); if (!row) return;
+  row.classList.add("on");
+  const box = $("#tx");
+  if (!media.paused && !box.matches(":hover") && !box.contains(document.activeElement)) box.scrollTo({ top:row.offsetTop - box.clientHeight / 3, behavior:"smooth" });
+}
+$("#findIn").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  $$(".row", $("#tx")).forEach(r => {
+    const s = view.segs[+r.dataset.i], p = $("p", r), hit = !q || s.text.toLowerCase().includes(q);
+    r.classList.toggle("hide", !hit);
+    if (document.activeElement === p) return;
+    if (!q) { p.textContent = s.text; return; }
+    const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+    p.innerHTML = esc(s.text).replace(re, m => `<mark>${m}</mark>`);
+  });
+});
+$("#copyBtn").onclick = async () => {
+  try { await navigator.clipboard.writeText(plain(false)); toast(t("copied")); }
+  catch (e) { const ta = document.createElement("textarea"); ta.value = plain(false); document.body.append(ta); ta.select(); document.execCommand("copy"); ta.remove(); toast(t("copied")); }
+};
+
+/* =========================================================
+   EXPORTAR: TXT, SRT, VTT, CSV, DOCX y PDF
+   ========================================================= */
+// Junta las frases en párrafos: nuevo párrafo tras una pausa larga o cuando ya es largo
+function paragraphs(){
+  const out = []; let cur = null;
+  view.segs.forEach((s, i) => {
+    const prev = view.segs[i - 1];
+    const brk = !cur || s.start - prev.end > 1.6 || (cur.text.length > 480 && /[.!?…]$/.test(prev.text));
+    if (brk) { cur = { start:s.start, text:s.text }; out.push(cur); } else cur.text += " " + s.text;
+  });
+  return out;
+}
+const plain = ts => paragraphs().map(p => ts ? `[${clock(p.start)}] ${p.text}` : p.text).join("\n\n");
+// Subtítulos: trozos de como mucho 84 caracteres en 2 líneas, con el tiempo repartido
+function cues(){
+  const out = [];
+  view.segs.forEach(s => {
+    const txt = s.text.replace(/\s+/g, " ").trim(); if (!txt) return;
+    const parts = []; let rest = txt;
+    while (rest.length > 84) {
+      let cut = -1;
+      for (const re of [/[.!?…]\s/g, /[,;:]\s/g, /\s/g]) { let m; re.lastIndex = 0; while ((m = re.exec(rest)) && m.index < 84) if (m.index > 30) cut = m.index + 1; if (cut > 0) break; }
+      if (cut < 0) cut = rest.lastIndexOf(" ", 84) > 0 ? rest.lastIndexOf(" ", 84) : 84;
+      parts.push(rest.slice(0, cut).trim()); rest = rest.slice(cut).trim();
+    }
+    if (rest) parts.push(rest);
+    const tot = parts.reduce((n, p) => n + p.length, 0), span = s.end - s.start; let at = s.start;
+    parts.forEach(p => { const d = span * p.length / tot; out.push({ start:at, end:at + d, text:wrap2(p) }); at += d; });
+  });
+  return out;
+}
+function wrap2(s){
+  if (s.length <= 42) return s;
+  const mid = s.length / 2; let best = -1;
+  for (let i = 0; i < s.length; i++) if (s[i] === " " && (best < 0 || Math.abs(i - mid) < Math.abs(best - mid))) best = i;
+  return best < 0 ? s : s.slice(0, best) + "\n" + s.slice(best + 1);
+}
+const toSrt = () => cues().map((c, i) => `${i + 1}\n${stamp(c.start, ",")} --> ${stamp(c.end, ",")}\n${c.text}`).join("\n\n") + "\n";
+const toVtt = () => "WEBVTT\n\n" + cues().map(c => `${stamp(c.start, ".")} --> ${stamp(c.end, ".")}\n${c.text}`).join("\n\n") + "\n";
+const csvCell = s => /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+const toCsv = ts => "﻿" + (ts ? "inicio,fin,texto\n" + view.segs.map(s => [stamp(s.start, "."), stamp(s.end, "."), csvCell(s.text)].join(",")).join("\n")
+                                   : "texto\n" + view.segs.map(s => csvCell(s.text)).join("\n")) + "\n";
+const metaLine = () => [clock(view.dur), t("cWords", { n:words(view.segs).toLocaleString(lang) }), new Date(view.date).toLocaleDateString(lang, { day:"numeric", month:"long", year:"numeric" })].join("  ·  ");
+
+/* ---------- ZIP mínimo (sin compresión) para el .docx ---------- */
+const CRC = (() => { const tb = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; tb[n] = c >>> 0; } return tb; })();
+const crc32 = u8 => { let c = ~0; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 255] ^ (c >>> 8); return ~c >>> 0; };
+function makeZip(files, type){
+  const enc = new TextEncoder(), parts = [], central = [];
+  let off = 0;
+  for (const f of files) {
+    const data = enc.encode(f.text), nm = enc.encode(f.name), crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(12, 0x21, true);
+    lh.setUint32(14, crc, true); lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, nm.length, true);
+    parts.push(lh, nm, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(14, 0x21, true);
+    ch.setUint32(16, crc, true); ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true); ch.setUint16(28, nm.length, true); ch.setUint32(42, off, true);
+    central.push(ch, nm);
+    off += 30 + nm.length + data.length;
+  }
+  const cs = central.reduce((s, p) => s + p.byteLength, 0), end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true); end.setUint32(12, cs, true); end.setUint32(16, off, true);
+  return new Blob([...parts, ...central, end], { type });
+}
+function toDocx(ts){
+  const x = s => esc(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "");
+  const run = (txt, pr = "") => `<w:r>${pr ? `<w:rPr>${pr}</w:rPr>` : ""}<w:t xml:space="preserve">${x(txt)}</w:t></w:r>`;
+  const body = [
+    `<w:p><w:pPr><w:spacing w:after="80"/></w:pPr>${run(baseName(view.name), '<w:b/><w:sz w:val="40"/>')}</w:p>`,
+    `<w:p><w:pPr><w:spacing w:after="360"/></w:pPr>${run(metaLine(), '<w:color w:val="6C6B72"/><w:sz w:val="18"/>')}</w:p>`,
+    ...paragraphs().map(p => `<w:p><w:pPr><w:spacing w:after="200" w:line="300" w:lineRule="auto"/></w:pPr>${ts ? run(`[${clock(p.start)}]  `, '<w:color w:val="2B63FF"/><w:b/>') : ""}${run(p.text)}</w:p>`)
+  ].join("");
+  return makeZip([
+    { name:"[Content_Types].xml", text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>' },
+    { name:"_rels/.rels", text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>' },
+    { name:"word/document.xml", text:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1300" w:right="1300" w:bottom="1300" w:left="1300" w:header="700" w:footer="700" w:gutter="0"/></w:sectPr></w:body></w:document>` }
+  ], "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+}
+
+/* ---------- PDF ----------
+   jsPDF + Noto Sans (letras latinas con tildes, ș/ț, cirílico y griego).
+   Para otros alfabetos (árabe, chino, japonés…) se usa la impresión del
+   navegador, que los dibuja bien. Las librerías solo se cargan al pulsar PDF. */
+let pdfLib;
+const loadScript = src => new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = rej; document.head.append(s); });
+const b64 = buf => { const u = new Uint8Array(buf); let s = ""; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); };
+function getPdfLib(){
+  const F = "https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io/fonts/NotoSans/hinted/ttf/";
+  pdfLib ||= Promise.all([
+    loadScript("https://cdn.jsdelivr.net/npm/jspdf@4.2.1/dist/jspdf.umd.min.js"),
+    fetch(F + "NotoSans-Regular.ttf").then(r => r.arrayBuffer()).then(b64),
+    fetch(F + "NotoSans-Bold.ttf").then(r => r.arrayBuffer()).then(b64)
+  ]).then(([, reg, bold]) => ({ reg, bold })).catch(e => { pdfLib = null; throw e; });
+  return pdfLib;
+}
+const needsPrint = s => /[֐-᷿⺀-￯]/.test(s);
+async function toPdf(ts){
+  const fonts = await getPdfLib();
+  const doc = new window.jspdf.jsPDF({ unit:"pt", format:"a4" });
+  doc.addFileToVFS("NotoSans-Regular.ttf", fonts.reg); doc.addFont("NotoSans-Regular.ttf", "Noto", "normal");
+  doc.addFileToVFS("NotoSans-Bold.ttf", fonts.bold); doc.addFont("NotoSans-Bold.ttf", "Noto", "bold");
+  const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(), M = 56, CW = W - M * 2;
+  let y = M;
+  doc.setFillColor(43, 99, 255); doc.rect(0, 0, W, 6, "F");
+  doc.setFont("Noto", "bold"); doc.setFontSize(22); doc.setTextColor(13, 13, 16);
+  const title = doc.splitTextToSize(baseName(view.name), CW);
+  title.forEach(l => { doc.text(l, M, y + 18); y += 28; });
+  doc.setFont("Noto", "normal"); doc.setFontSize(9.5); doc.setTextColor(108, 107, 114);
+  doc.text(metaLine(), M, y + 6); y += 22;
+  doc.setDrawColor(220, 218, 212); doc.line(M, y, W - M, y); y += 24;
+  const LH = 16.5, TSW = ts ? 50 : 0;
+  doc.setFontSize(11);
+  for (const p of paragraphs()) {
+    const lines = doc.splitTextToSize(p.text, CW - TSW);
+    lines.forEach((l, i) => {
+      if (y > H - M - 20) { doc.addPage(); y = M; }
+      if (ts && i === 0) { doc.setFont("Noto", "bold"); doc.setFontSize(9); doc.setTextColor(43, 99, 255); doc.text(clock(p.start), M, y); doc.setFont("Noto", "normal"); doc.setFontSize(11); }
+      doc.setTextColor(25, 25, 30); doc.text(l, M + TSW, y); y += LH;
+    });
+    y += 8;
+  }
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) {
+    doc.setPage(i); doc.setFont("Noto", "normal"); doc.setFontSize(8.5); doc.setTextColor(150, 150, 156);
+    doc.text("ZongaElements · " + t("tool"), M, H - 28); doc.text(`${i} / ${pages}`, W - M, H - 28, { align:"right" });
+  }
+  return doc.output("blob");
+}
+function printPdf(ts){
+  const w = window.open("", "_blank"); if (!w) return;
+  w.document.write(`<!doctype html><html lang="${view.lang}"><meta charset="utf-8"><title>${esc(baseName(view.name))}</title>
+    <style>body{font:12pt/1.65 system-ui,-apple-system,"Segoe UI",sans-serif;color:#19191e;max-width:720px;margin:40px auto;padding:0 24px}h1{font-size:22pt;margin:0 0 4px}
+    .m{color:#6c6b72;font-size:9.5pt;border-bottom:1px solid #ddd;padding-bottom:14px;margin-bottom:22px}p{margin:0 0 12px}b{color:#2b63ff;font-size:9pt;margin-right:8px}</style>
+    <h1>${esc(baseName(view.name))}</h1><div class="m">${esc(metaLine())}</div>${paragraphs().map(p => `<p>${ts ? `<b>${clock(p.start)}</b>` : ""}${esc(p.text)}</p>`).join("")}`);
+  w.document.close(); w.focus(); setTimeout(() => w.print(), 300);
+  toast(t("pdfPrint"));
+}
+function save(blob, ext){
+  const a = document.createElement("a"), url = URL.createObjectURL(blob);
+  a.href = url; a.download = `${slug(baseName(view.name))}.${ext}`; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  toast(t("saved", { f:ext.toUpperCase() }));
+}
+const FMTS = [
+  ["pdf", "PDF", "fPdf"], ["docx", "Word", "fDocx"], ["txt", "TXT", "fTxt"],
+  ["srt", "SRT", "fSrt"], ["vtt", "VTT", "fVtt"], ["csv", "CSV", "fCsv"]
+];
+function renderFmts(){
+  $("#fmts").innerHTML = FMTS.map(([k, n, d]) => `<button class="fmt" data-f="${k}"><b>${n}</b><span>${esc(t(d))}</span><i>${ICON.dl}</i></button>`).join("");
+}
+$("#fmts").addEventListener("click", async e => {
+  const b = e.target.closest(".fmt"); if (!b || !view) return;
+  const f = b.dataset.f, ts = S.ts;
+  try {
+    if (f === "txt") save(new Blob([plain(ts) + "\n"], { type:"text/plain;charset=utf-8" }), "txt");
+    if (f === "srt") save(new Blob([toSrt()], { type:"application/x-subrip;charset=utf-8" }), "srt");
+    if (f === "vtt") save(new Blob([toVtt()], { type:"text/vtt;charset=utf-8" }), "vtt");
+    if (f === "csv") save(new Blob([toCsv(ts)], { type:"text/csv;charset=utf-8" }), "csv");
+    if (f === "docx") save(toDocx(ts), "docx");
+    if (f === "pdf") {
+      if (needsPrint(view.segs.map(s => s.text).join(" ") + view.name)) return printPdf(ts);
+      b.classList.add("busy"); toast(t("pdfWork"));
+      try { save(await toPdf(ts), "pdf"); } finally { b.classList.remove("busy"); }
+    }
+  } catch (err) { console.error(err); toast(t("eGeneric")); }
+});
+$("#tsTgl").addEventListener("change", e => { S.ts = e.target.checked; saveS(); });
+$("#newBtn").onclick = () => { if (busy()) return; if (media) media.pause(); clearJob(); $("#result").hidden = true; $("#exp").hidden = true; view = null; renderGo(); dock(); $("#drop").scrollIntoView({ behavior:"smooth", block:"center" }); };
+
+/* =========================================================
+   RECIENTES (solo en este dispositivo)
+   ========================================================= */
+const REC_KEY = "ze-transcriptor-hist";
+let recs = []; try { recs = JSON.parse(pref.get(REC_KEY) || "[]"); } catch (e) { recs = []; }
+function storeRecs(){
+  // si no cabe, se van quitando las más antiguas
+  while (recs.length) { try { localStorage.setItem(REC_KEY, JSON.stringify(recs)); break; } catch (e) { if (recs.length === 1) break; recs.pop(); } }
+  renderRecs();
+}
+function saveRec(r){ recs = [r, ...recs.filter(x => x.id !== r.id)].slice(0, 12); storeRecs(); }
+function updateRec(v){ const r = recs.find(x => x.id === v.id); if (!r) return; r.segs = v.segs.map(s => [s.start, s.end, s.text]); storeRecs(); }
+function renderRecs(){
+  $("#rec").hidden = !recs.length;
+  $("#recN").textContent = recs.length ? String(recs.length).padStart(2, "0") : "";
+  $("#recList").innerHTML = recs.map(r => `<div class="rec-it"><button class="open" data-id="${r.id}"><b>${esc(baseName(r.name))}</b><span>${esc(new Date(r.date).toLocaleDateString(lang, { day:"numeric", month:"short" }))} · ${clock(r.dur)} · ${esc(t("cWords", { n:words(r.segs.map(s => ({ text:s[2] }))).toLocaleString(lang) }))}</span></button><button class="ibtn x" data-del="${r.id}" aria-label="${esc(t("delRec"))}">${ICON.x}</button></div>`).join("");
+}
+$("#recList").addEventListener("click", e => {
+  const d = e.target.closest("[data-del]");
+  if (d) { recs = recs.filter(r => r.id !== d.dataset.del); storeRecs(); if (view?.id === d.dataset.del && !job) { $("#result").hidden = true; $("#exp").hidden = true; view = null; dock(); } return; }
+  const o = e.target.closest(".open"); if (!o || busy()) return;
+  const r = recs.find(x => x.id === o.dataset.id); if (!r) return;
+  if (media) media.pause();
+  // si es la del archivo que sigue cargado, se abre con su vídeo
+  const same = job && job.file.name === r.name && Math.abs(job.dur - r.dur) < 1;
+  if (!same && job) { clearJob(); }
+  openView(r, same ? job.url : null, same ? job.kind : null);
+});
+
+/* =========================================================
+   AJUSTES: precisión, motor y clave
+   ========================================================= */
+function setEngine(v){ S.engine = v; saveS(); paintSegs(); }
+function paintSegs(){
+  $$("#precSeg button").forEach(b => b.classList.toggle("on", b.dataset.v === S.prec));
+  $$("#engSeg button").forEach(b => b.classList.toggle("on", b.dataset.v === S.engine));
+  const c = S.engine === "cloud";
+  $("#precNote").textContent = t({ fast:"nFast", bal:"nBal", max:"nMax" }[S.prec] + (c ? "C" : "L"));
+  $("#engNote").innerHTML = c ? t("engCloud") : t("engLocal") + (hasGPU ? "" : " " + t("engLocalSlow"));
+  renderKey(); renderGo(); dock();
+}
+$("#precSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.prec = b.dataset.v; saveS(); paintSegs(); });
+$("#engSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; setEngine(b.dataset.v); });
+function renderKey(){
+  const box = $("#keyBox");
+  if (S.engine !== "cloud") { box.innerHTML = ""; return; }
+  if (groqKey) {
+    box.innerHTML = `<div class="key ok"><span class="dot">${ICON.ok}</span><span class="k-txt">${esc(t("keyOk"))}<small>${esc(groqKey.slice(0, 7))}…${esc(groqKey.slice(-4))}</small></span><button class="btn ghost sm" id="keyChange">${esc(t("keyChange"))}</button></div>`;
+    $("#keyChange").onclick = () => { groqKey = ""; pref.del("ze-groq-key"); renderKey(); renderGo(); $("#keyIn")?.focus(); };
+    return;
+  }
+  box.innerHTML = `<div class="key"><h4>${esc(t("keyT"))}</h4><ol class="steps"><li><span>${t("key1")}</span></li><li><span>${t("key2")}</span></li><li><span>${esc(t("key3"))}</span></li></ol>
+    <form class="key-row" id="keyForm"><input class="input" id="keyIn" type="password" autocomplete="off" spellcheck="false" placeholder="${esc(t("keyPh"))}"><button class="btn primary sm" id="keySave">${esc(t("keySave"))}</button></form>
+    <p class="key-err" id="keyErr" hidden></p></div>`;
+  $("#keyForm").onsubmit = async e => {
+    e.preventDefault();
+    const k = $("#keyIn").value.trim(), err = $("#keyErr"), btn = $("#keySave");
+    if (!k) return;
+    btn.disabled = true; btn.textContent = t("keyChecking"); err.hidden = true;
+    let ok = false, net = false;
+    try { ok = await checkKey(k); } catch (er) { net = true; }
+    if (ok) { groqKey = k; pref.set("ze-groq-key", k); renderKey(); renderGo(); dock(); toast(t("keyOk")); return; }
+    btn.disabled = false; btn.textContent = t("keySave"); err.textContent = t(net ? "keyNet" : "keyBad"); err.hidden = false;
+  };
+}
+function renderGo(){
+  const ok = !!job && !busy() && (S.engine === "local" || !!groqKey);
+  const again = !!view && !!job && view.name === job.file.name;
+  $("#goBtn").disabled = $("#goBtn2").disabled = !ok;
+  $("#goTxt").textContent = !job ? t("needFile") : S.engine === "cloud" && !groqKey ? t("needKey") : again ? t("goAgain") : t("go");
+  $("#goBtn2 span").textContent = again ? t("goAgain") : t("go");
+  $("#goBtn").hidden = busy();
+}
+$("#goBtn").onclick = $("#goBtn2").onclick = () => start(0);
+
+/* barra inferior en móvil */
+function dock(){
+  const d = $("#dock"), b = $("#dBtn");
+  if (busy()) { d.classList.add("on"); $("#dT").textContent = `${Math.round((job?.p || 0) * 100)} %`; $("#dS").textContent = $("#jobT").textContent; b.textContent = t("cancel"); b.onclick = () => ctrl?.abort(); b.className = "btn ghost"; b.style.color = "var(--bg)"; b.style.borderColor = "color-mix(in srgb,var(--bg) 30%,transparent)"; return; }
+  b.style.color = b.style.borderColor = ""; b.className = "btn accent";
+  if (view && !$("#exp").hidden) { d.classList.add("on"); $("#dT").textContent = baseName(view.name); $("#dS").textContent = t("dDone", { n:words(view.segs).toLocaleString(lang) }); b.textContent = t("dlBtn"); b.onclick = () => $("#exp").scrollIntoView({ behavior:"smooth", block:"start" }); return; }
+  if (job) { d.classList.add("on"); $("#dT").textContent = t("dReady"); $("#dS").textContent = job.file.name; b.textContent = S.engine === "cloud" && !groqKey ? t("keySave") : t("go"); b.onclick = () => (S.engine === "cloud" && !groqKey ? ($("#settings").scrollIntoView({ behavior:"smooth", block:"center" }), $("#keyIn")?.focus()) : start(0)); return; }
+  d.classList.remove("on");
+}
+
+/* =========================================================
+   ENTRADA DE ARCHIVOS: elegir, arrastrar y pegar
+   ========================================================= */
+const fileIn = $("#fileIn");
+fileIn.addEventListener("change", () => { pickFile(fileIn.files[0]); fileIn.value = ""; });
+$("#drop").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileIn.click(); } });
+let dragN = 0;
+const hasFiles = e => [...(e.dataTransfer?.types || [])].includes("Files");
+addEventListener("dragenter", e => { if (!hasFiles(e)) return; e.preventDefault(); dragN++; document.body.classList.add("dragging"); });
+addEventListener("dragover", e => { if (hasFiles(e)) e.preventDefault(); });
+addEventListener("dragleave", () => { if (--dragN <= 0) { dragN = 0; document.body.classList.remove("dragging"); } });
+addEventListener("drop", e => { if (!hasFiles(e)) return; e.preventDefault(); dragN = 0; document.body.classList.remove("dragging"); pickFile(e.dataTransfer.files[0]); });
+addEventListener("beforeunload", e => { if (busy()) e.preventDefault(); });
+
+/* =========================================================
+   DETALLES VISUALES: formatos que rotan y cinta
+   ========================================================= */
+const OUTS = [".txt", ".srt", ".pdf", ".docx", ".vtt", ".csv"], INS = ["MP4", "MOV", "MP3", "M4A", "WAV", "WEBM"];
+let fi = 0;
+setInterval(() => { fi++; $("#docExt").textContent = OUTS[fi % OUTS.length]; $("#h1ext").textContent = OUTS[(fi + 1) % OUTS.length]; }, 1800);
+$("#marq").innerHTML = [...Array(2)].map(() => INS.map((f, i) => `<span>${f}</span><span class="v">→</span><span class="v">${OUTS[i].slice(1).toUpperCase()}</span>`).join("")).join("");
+
+/* =========================================================
+   IDIOMA, TEMA
+   ========================================================= */
+const LANGS = ["es","en","ro"];
+function applyLang(l){
+  lang = T[l] ? l : "es"; pref.set("ze-lang", lang); document.documentElement.lang = lang;
+  document.title = `${t("tool")} · ZongaElements`;
+  $("#langBtn").textContent = lang.toUpperCase();
+  $$("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+  $$("[data-i18n-html]").forEach(el => el.innerHTML = t(el.dataset.i18nHtml));
+  $$("[data-i18n-ph]").forEach(el => el.placeholder = t(el.dataset.i18nPh));
+  $$("[data-i18n-aria]").forEach(el => el.setAttribute("aria-label", t(el.dataset.i18nAria)));
+  buildLangs(); renderFmts(); paintSegs(); renderRecs(); renderChips(); meta();
+}
+$("#langBtn").onclick = () => applyLang(LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]);
+const root = document.documentElement;
+root.dataset.theme = pref.get("ze-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+$("#themeBtn").addEventListener("click", () => { root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark"; pref.set("ze-theme", root.dataset.theme); if (job) setTimeout(drawWave, 50); });
+
+/* =========================================================
+   ARRANQUE
+   ========================================================= */
+$("#tsTgl").checked = S.ts;
+setTimeout(() => ZN.popup({ newsUrl: "../#novedades" }), 1200);
+try { ZE.mountAccount($(".controls")); } catch (e) {}
+applyLang(lang);
+})();
+</script>
+</body>
+</html>
