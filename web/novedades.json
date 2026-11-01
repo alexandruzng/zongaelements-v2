@@ -1,5 +1,26 @@
 [
   {
+    "id": "2026-11-01-beneficio-desplegable",
+    "date": "2026-11-01",
+    "type": "arreglo",
+    "title": {
+      "es": "Calendario de Beneficio: el menú de productos ya se ve entero",
+      "en": "Profit Calendar: the products menu now shows in full",
+      "ro": "Calendarul profitului: meniul de produse se vede acum întreg"
+    },
+    "items": {
+      "es": [
+        "Al abrir «Todos los productos», la lista aparece por encima de los totales en lugar de quedar escondida debajo."
+      ],
+      "en": [
+        "When you open “All products”, the list now appears above the totals instead of hiding underneath."
+      ],
+      "ro": [
+        "Când deschizi „Toate produsele”, lista apare acum deasupra totalurilor, nu ascunsă dedesubt."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-beneficio-pro",
     "date": "2026-11-01",
     "type": "mejora",
