@@ -1,5 +1,26 @@
 [
   {
+    "id": "2026-11-01-pedidos-en-ads",
+    "date": "2026-11-01",
+    "type": "mejora",
+    "title": {
+      "es": "Pedidos diarios ahora también en la sección de Ads",
+      "en": "Daily Orders now also in the Ads section",
+      "ro": "Comenzi zilnice acum și în secțiunea Ads"
+    },
+    "items": {
+      "es": [
+        "La herramienta de Pedidos diarios aparece en Orgánico y en Ads. Es la misma: tus datos son los mismos en las dos."
+      ],
+      "en": [
+        "The Daily Orders tool shows up in both Organic and Ads. It's the same tool, so your data is the same in both."
+      ],
+      "ro": [
+        "Instrumentul Comenzi zilnice apare atât în Organic, cât și în Ads. Este același instrument, deci datele tale sunt aceleași în ambele."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-beneficio-analisis",
     "date": "2026-11-01",
     "type": "nuevo",
