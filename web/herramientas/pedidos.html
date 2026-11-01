@@ -216,28 +216,44 @@ svg{display:block}
 .fact small{display:block;font-family:var(--mono);font-size:11px;opacity:.75}
 .fact>div{min-width:0}
 
-/* histórico */
-.hctl{display:flex;gap:8px;flex-wrap:wrap}
-.chart{width:100%;height:auto;overflow:visible}
-.chart text{font-family:var(--mono);font-size:10px;fill:var(--muted)}
-.chart .gl{stroke:var(--line-2);stroke-dasharray:4 5}
-.chart rect.b{stroke:var(--ink);stroke-width:2;transform-box:fill-box;transform-origin:bottom;animation:barUp .9s cubic-bezier(.3,1.4,.5,1) both}
-.chart rect.proj{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:5 4}
-@keyframes barUp{from{transform:scaleY(0)}}
-.chart .grp{cursor:pointer}
-.chart .grp .hit{fill:transparent}
-.chart .grp:hover .hit{fill:var(--bg-2)}
-.chart .grp.cur .hit{fill:var(--butter);stroke:var(--ink);stroke-width:2}
-.chart .grp.cur text{fill:#17161C;font-weight:700}
-.legend{display:flex;gap:12px;font-size:12.5px;font-weight:800;flex-wrap:wrap;margin-top:6px}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i{width:12px;height:12px;border-radius:4px;border:2px solid var(--ink)}
-.minis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
-.mini{padding:12px;border-radius:16px;background:var(--bg);border:2px solid var(--ink);min-width:0}
-.mini span{display:block;font-size:11.5px;font-weight:800;color:var(--muted);line-height:1.25}
-.mini b{display:block;font-family:var(--display);font-size:19px;letter-spacing:-.03em;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mini small{display:block;font-family:var(--mono);font-size:10.5px;margin-top:3px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* evolución por mes */
+.evo-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.evo-head .kick{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.evo-head h3{font-family:var(--display);font-weight:800;font-size:clamp(26px,7vw,34px);letter-spacing:-.04em;line-height:1}
+.evo-head .seg-ctl{min-width:236px}
+.ranges{display:flex;gap:8px;margin:16px 0 14px;flex-wrap:wrap}
+.chip.on{background:var(--ink);color:#fff}
+.hchart{position:relative;border-radius:20px;background:var(--bg);border:2px solid var(--line-2);padding:14px 10px 6px;touch-action:pan-y}
+.hchart svg{display:block;width:100%;overflow:visible}
+.hchart text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.hchart .gl{stroke:var(--line-2)}
+.hchart .ln{fill:none;stroke:var(--blue);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.3s cubic-bezier(.5,0,.2,1) .1s forwards}
+.hchart .ln.cur{stroke-dasharray:6 7;stroke-dashoffset:0;animation:fadeIn .5s 1.2s both;stroke-width:2.5}
+.hchart .area{opacity:0;animation:fadeIn .8s .6s forwards}
+.hchart .pt{fill:var(--card);stroke:var(--blue);stroke-width:2.5;opacity:0;animation:fadeIn .3s forwards}
+.hchart .pt.cur{stroke-dasharray:3 3}
+.hchart .pt.on{fill:var(--blue)}
+.hchart .vl{font-family:var(--display);font-weight:800;font-size:15px;fill:var(--blue);stroke:var(--bg);stroke-width:5px;stroke-linejoin:round;paint-order:stroke fill;opacity:0;animation:fadeIn .4s 1.3s forwards}
+.hchart .cross{stroke:var(--fg);stroke-width:1.5;stroke-dasharray:3 4;opacity:0;transition:opacity .15s}
+.hchart .cross.on{opacity:.45}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadeIn{to{opacity:1}}
+.htip{position:absolute;top:0;left:0;pointer-events:none;padding:8px 12px;border-radius:14px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;white-space:nowrap;transform:translate(-50%,calc(-100% - 12px));opacity:0;transition:opacity .15s;z-index:3}
+.htip b{display:block;font-family:var(--display);font-size:17px;letter-spacing:-.02em}
+.htip.on{opacity:1}
+.legend{display:flex;gap:8px 18px;font-size:13px;font-weight:700;color:var(--muted);flex-wrap:wrap;margin-top:14px;padding:0 4px}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:22px;height:0;border-top:3px solid var(--blue);border-radius:2px}
+.legend i.d{border-top-style:dashed}
+.minis{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:16px}
+.mini{padding:16px;border-radius:20px;background:var(--bg);border:2px solid var(--ink);min-width:0}
+.mini > span:first-child{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mini b{display:block;font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:-.04em;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini small{display:block;font-size:13.5px;font-weight:700;margin-top:4px;color:var(--muted);line-height:1.4}
 .mini small.good{color:var(--pos)} .mini small.bad{color:var(--neg)}
+.mini .pace{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:5px 10px;border-radius:100px;font-size:13px;font-weight:800;line-height:1.3}
+.mini .pace.good{background:rgba(34,197,94,.16);color:var(--pos)} .mini .pace.bad{background:rgba(255,90,78,.16);color:var(--neg)} .mini .pace.eq{background:var(--bg-2);color:var(--muted)}
+@media (min-width:600px){ .minis{grid-template-columns:repeat(3,minmax(0,1fr))} .mini b{font-size:26px} }
 .tblw{overflow-x:auto;margin:0 -6px;padding:0 6px;scrollbar-width:thin}
 .tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
 .tbl th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;text-align:right;padding:0 8px 10px;white-space:nowrap}
@@ -472,7 +488,7 @@ input:checked+.sw::after{transform:translateX(20px)}
    ========================================================= */
 const T = {
 es:{ tool:"Pedidos diarios", h1a:"Pedidos", h1b:"diarios", sub:"Toca un día y apunta tus pedidos y tu facturación.", settings:"Ajustes", cancel:"Cancelar", del:"Borrar",
-  prevM:"Mes anterior", nextM:"Mes siguiente", toToday:"Volver a hoy", impMonth:"Importar mes", impMonthS:"Cargar los pedidos de un mes pasado de golpe.", "sum.rev":"Facturación de {m}", addToday:"Apuntar hoy", perOrder:"pedido",
+  prevM:"Mes anterior", nextM:"Mes siguiente", toToday:"Volver a hoy", impMonth:"Importar mes", impMonthS:"Cargar los pedidos de un mes pasado de golpe.", "sum.rev":"Facturación de {m}", "e.kick":"Histórico completo", "e.t":"Evolución por mes", r6:"6 meses", r12:"12 meses", rAll:"Todo", "e.closed":"Mes cerrado (total a último día)", "e.curL":"Mes en curso (hasta hoy)", "e.cur":"Mes en curso", "e.best":"Mejor mes cerrado", "e.avg":"Media mensual", "e.avgS":"{n} meses cerrados", "e.none":"Sin registros de {m} todavía", "e.noPrev":"Sin datos de {m} para comparar", "e.better":"{p} mejor que {m} a día {d}", "e.worse":"{p} peor que {m} a día {d}", "e.same":"Igual que {m} a día {d}", "e.prevWas":"{m} a día {d}: {v}", "e.empty":"Cuando apuntes tus primeros días verás aquí cómo evoluciona cada mes.", addToday:"Apuntar hoy", perOrder:"pedido",
   "fx.today":"hoy","fx.yday":"ayer","fx.off":"sin conexión","fx.def":"aproximado","fx.title":"Tipo de cambio oficial del BCE. Pulsa para actualizar.",
   rev:"Facturación", orders:"Pedidos", costs:"Costes", cost:"Coste de producto", fees:"Comisiones", profit:"Beneficio", margin:"Margen", aov:"Ticket medio",
   "hero.lab":"Facturación de {m}","hero.good":"¡El negocio se mueve!","hero.bad":"Este mes pierdes dinero: revisa costes","hero.zero":"Apunta tu primer día de ventas",
@@ -499,7 +515,7 @@ es:{ tool:"Pedidos diarios", h1a:"Pedidos", h1b:"diarios", sub:"Toca un día y a
   "imp.fees":"Aplicar tus comisiones","imp.feesS":"{p} % + {f} por pedido a los días con facturación (la web antigua no las guardaba).","imp.go":"Importar","imp.none":"No hay nada nuevo que importar.","imp.ok":"¡Importado! {d} días y {m} totales de mes","imp.cost":"La web antigua no guardaba coste de producto ni comisiones: añádelos en cada día o en «Importar mes» para ver tu beneficio real.",
   wd:["L","M","X","J","V","S","D"], csvH:["fecha","pedidos","moneda","facturacion"] },
 en:{ tool:"Daily orders", h1a:"Daily", h1b:"orders", sub:"Tap a day and log your orders and revenue.", settings:"Settings", cancel:"Cancel", del:"Delete",
-  prevM:"Previous month", nextM:"Next month", toToday:"Back to today", impMonth:"Import month", impMonthS:"Load a past month's orders in one go.", "sum.rev":"{m} revenue", addToday:"Log today", perOrder:"order",
+  prevM:"Previous month", nextM:"Next month", toToday:"Back to today", impMonth:"Import month", impMonthS:"Load a past month's orders in one go.", "sum.rev":"{m} revenue", "e.kick":"Full history", "e.t":"Month by month", r6:"6 months", r12:"12 months", rAll:"All", "e.closed":"Closed month (total on last day)", "e.curL":"Current month (so far)", "e.cur":"Current month", "e.best":"Best closed month", "e.avg":"Monthly average", "e.avgS":"{n} closed months", "e.none":"No records for {m} yet", "e.noPrev":"No {m} data to compare", "e.better":"{p} better than {m} by day {d}", "e.worse":"{p} worse than {m} by day {d}", "e.same":"Same as {m} by day {d}", "e.prevWas":"{m} by day {d}: {v}", "e.empty":"Once you log your first days you'll see how each month evolves here.", addToday:"Log today", perOrder:"order",
   "fx.today":"today","fx.yday":"yesterday","fx.off":"offline","fx.def":"approximate","fx.title":"Official ECB exchange rate. Tap to refresh.",
   rev:"Revenue", orders:"Orders", costs:"Costs", cost:"Product cost", fees:"Fees", profit:"Profit", margin:"Margin", aov:"Average order",
   "hero.lab":"{m} revenue","hero.good":"Business is moving!","hero.bad":"You're losing money this month: check your costs","hero.zero":"Log your first sales day",
@@ -526,7 +542,7 @@ en:{ tool:"Daily orders", h1a:"Daily", h1b:"orders", sub:"Tap a day and log your
   "imp.fees":"Apply your fees","imp.feesS":"{p}% + {f} per order to days with revenue (the old site didn't store them).","imp.go":"Import","imp.none":"Nothing new to import.","imp.ok":"Imported! {d} days and {m} monthly totals","imp.cost":"The old site didn't store product cost or fees: add them per day or in “Import month” to see your real profit.",
   wd:["M","T","W","T","F","S","S"], csvH:["date","orders","currency","revenue"] },
 ro:{ tool:"Comenzi zilnice", h1a:"Comenzi", h1b:"zilnice", sub:"Atinge o zi și notează comenzile și încasările.", settings:"Setări", cancel:"Anulează", del:"Șterge",
-  prevM:"Luna trecută", nextM:"Luna următoare", toToday:"Înapoi la azi", impMonth:"Importă luna", impMonthS:"Încarcă dintr-odată comenzile unei luni trecute.", "sum.rev":"Încasări în {m}", addToday:"Notează azi", perOrder:"comandă",
+  prevM:"Luna trecută", nextM:"Luna următoare", toToday:"Înapoi la azi", impMonth:"Importă luna", impMonthS:"Încarcă dintr-odată comenzile unei luni trecute.", "sum.rev":"Încasări în {m}", "e.kick":"Istoric complet", "e.t":"Evoluție lunară", r6:"6 luni", r12:"12 luni", rAll:"Tot", "e.closed":"Lună închisă (total în ultima zi)", "e.curL":"Luna curentă (până azi)", "e.cur":"Luna curentă", "e.best":"Cea mai bună lună închisă", "e.avg":"Medie lunară", "e.avgS":"{n} luni închise", "e.none":"Încă nimic notat în {m}", "e.noPrev":"Fără date în {m} pentru comparație", "e.better":"cu {p} mai bine decât {m} în ziua {d}", "e.worse":"cu {p} mai slab decât {m} în ziua {d}", "e.same":"La fel ca {m} în ziua {d}", "e.prevWas":"{m} în ziua {d}: {v}", "e.empty":"Când notezi primele zile vei vedea aici cum evoluează fiecare lună.", addToday:"Notează azi", perOrder:"comandă",
   "fx.today":"azi","fx.yday":"ieri","fx.off":"fără conexiune","fx.def":"aproximativ","fx.title":"Cursul oficial BCE. Apasă ca să-l actualizezi.",
   rev:"Încasări", orders:"Comenzi", costs:"Costuri", cost:"Cost produs", fees:"Comisioane", profit:"Profit", margin:"Marjă", aov:"Valoare medie",
   "hero.lab":"Încasări în {m}","hero.good":"Afacerea merge!","hero.bad":"Luna asta pierzi bani: verifică costurile","hero.zero":"Notează prima zi cu vânzări",
@@ -666,10 +682,10 @@ const FX = (() => {
 const D = () => S.settings.cur;
 const conv = (a, cu, r) => !a ? 0 : cu === D() ? a : cu === "EUR" ? a * r : a / r;
 const nf = {};
-const fmt = (v, dec=2, cur=D()) => { const k = lang+cur+dec; nf[k] = nf[k] || new Intl.NumberFormat(LOC[lang], { style:"currency", currency:cur, currencyDisplay:"narrowSymbol", minimumFractionDigits:dec, maximumFractionDigits:dec }); return nf[k].format(Math.abs(v) < .005 ? 0 : v); };
+const fmt = (v, dec=2, cur=D()) => { const k = lang+cur+dec; nf[k] = nf[k] || new Intl.NumberFormat(LOC[lang], { style:"currency", currency:cur, currencyDisplay:"narrowSymbol", minimumFractionDigits:dec, maximumFractionDigits:dec, useGrouping:"always" }); return nf[k].format(Math.abs(v) < .005 ? 0 : v); };
 const compact = v => { const a = Math.abs(v); return a >= 1000 ? (v/1000).toLocaleString(LOC[lang], { maximumFractionDigits:1 }) + "k" : Math.round(v).toLocaleString(LOC[lang]); };
 function moneyH(v){
-  const k = "p"+lang+D(); nf[k] = nf[k] || new Intl.NumberFormat(LOC[lang], { style:"currency", currency:D(), currencyDisplay:"narrowSymbol", minimumFractionDigits:2, maximumFractionDigits:2 });
+  const k = "p"+lang+D(); nf[k] = nf[k] || new Intl.NumberFormat(LOC[lang], { style:"currency", currency:D(), currencyDisplay:"narrowSymbol", minimumFractionDigits:2, maximumFractionDigits:2, useGrouping:"always" });
   let out = v < -.004 ? "−" : "", small = false;
   for (const p of nf[k].formatToParts(Math.abs(v) < .005 ? 0 : Math.abs(v))){
     if (p.type === "minusSign") continue;
@@ -774,15 +790,15 @@ const shake = el => { el.classList.remove("shake"); void el.offsetWidth; el.clas
 /* =========================================================
    VISTA
    ========================================================= */
-const view = { key:keyOf(new Date()) };
+const view = { key:keyOf(new Date()), metric:pref.get("ze-orders-metric") === "o" ? "o" : "rev", range:["6","12","all"].includes(pref.get("ze-orders-range")) ? pref.get("ze-orders-range") : "12" };
 const afterPaint = f => requestAnimationFrame(() => requestAnimationFrame(f));
 
 function render(){
   const lb = FX.label(); $("#fxTxt").textContent = lb.txt; $("#fxPill").className = "fx " + lb.cls;
   $("#mTitle").textContent = monthName(view.key).replace(" de ", " ");
   $("#todayChip").hidden = view.key === keyOf(new Date());
-  $("#app").innerHTML = `<div class="grid">${calHTML(monthAgg(view.key))}</div>`;
-  afterPaint(() => $$("[data-count]").forEach(el => countUp(el, +el.dataset.count, moneyH)));
+  $("#app").innerHTML = `<div class="grid">${calHTML(monthAgg(view.key))}${evoHTML()}</div>`;
+  afterPaint(() => { $$("[data-count]").forEach(el => countUp(el, +el.dataset.count, moneyH)); drawEvo(); });
 }
 /* Pantalla única: facturación y pedidos del mes arriba, calendario debajo */
 function calHTML(a){
@@ -801,6 +817,113 @@ function calHTML(a){
     ${a.declared ? `<div class="calnote">📥 ${esc(t("cal.declared", { r:fmt(a.declared.rev) }))}<button class="btn sm" data-act="month" style="height:34px;box-shadow:2px 2px 0 var(--sh)">${t("cal.edit")}</button></div>` : ""}</article>`;
 }
 
+/* =========================================================
+   EVOLUCIÓN POR MES — línea de meses cerrados + mes en curso discontinuo
+   ========================================================= */
+const fmtPct = v => Math.round(v * 100).toLocaleString(LOC[lang]) + " %";
+const mLabel = k => cap(monthName(k, { month:"short" }).replace(".", "")) + " " + k.slice(2, 4);
+const mOf = (a, m) => m === "rev" ? a.rev : a.o;
+const fmtV = (v, m) => m === "rev" ? fmt(v, 0) : Math.round(v).toLocaleString(LOC[lang], { useGrouping:"always" });
+/* eje corto: 2,5k $ · 10k $ (o 2.5k $ en inglés) */
+const fmtAxis = (v, m) => { const n = (v >= 1000 ? (v / 1000).toLocaleString(LOC[lang], { maximumFractionDigits:1 }) + "k" : Math.round(v).toLocaleString(LOC[lang])); return m === "rev" ? (D() === "EUR" ? n + " €" : lang === "en" ? "$" + n : n + " $") : n; };
+const hasData = k => !!S.months[k] || Object.keys(S.days).some(d => d.startsWith(k));
+/* meses desde el primero con datos hasta hoy, recortados al rango elegido */
+function evoMonths(){
+  const now = keyOf(new Date()), all = [...new Set([...Object.keys(S.days).map(d => d.slice(0, 7)), ...Object.keys(S.months)])].filter(k => k <= now).sort();
+  if (!all.length) return [];
+  const out = []; for (let k = all[0]; k <= now; k = shiftKey(k, 1)) out.push(k);
+  return view.range === "all" ? out : out.slice(-(+view.range));
+}
+/* lo que llevabas el mes anterior hasta el mismo día del mes */
+function paceVsPrev(m){
+  const now = new Date(), k = keyOf(now), d = now.getDate(), pk = shiftKey(k, -1), lim = Math.min(d, daysIn(pk));
+  let prev = 0;
+  for (let i = 1; i <= lim; i++){ const x = S.days[`${pk}-${pad(i)}`]; if (x) prev += mOf(dayVals(x), m); }
+  const pm = S.months[pk];   // total del mes importado sin días: se reparte por igual
+  if (pm && m === "rev") prev += conv(pm.rev || 0, pm.cu, pm.r) * lim / daysIn(pk);
+  return { cur:mOf(monthAgg(k), m), prev, pk, d:lim };
+}
+function evoHTML(){
+  const m = view.metric, now = keyOf(new Date()), ks = evoMonths();
+  const head = `<div class="evo-head"><div><span class="kick">${t("e.kick")}</span><h3>${t("e.t")}</h3></div>
+    <div class="seg-ctl" data-seg="metric">${[["o", t("orders")], ["rev", t("rev")]].map(([v, l]) => `<button data-v="${v}" class="${m === v ? "on" : ""}">${l}</button>`).join("")}</div></div>
+    <div class="ranges" data-seg="range">${[["6", t("r6")], ["12", t("r12")], ["all", t("rAll")]].map(([v, l]) => `<button class="chip ${view.range === v ? "on" : ""}" data-v="${v}">${l}</button>`).join("")}</div>`;
+  if (!ks.length) return `<article class="card s12 rise">${head}<div class="empty"><span class="em">📈</span>${t("e.empty")}</div></article>`;
+  const closed = ks.filter(k => k < now && hasData(k)).map(k => ({ k, v:mOf(monthAgg(k), m) }));
+  const best = closed.reduce((b, x) => !b || x.v > b.v ? x : b, null);
+  const avg = closed.length ? closed.reduce((s, x) => s + x.v, 0) / closed.length : null;
+  // mes en curso: comparación con el mes anterior al mismo día
+  const pc = paceVsPrev(m), curName = monthName(now, { month:"long" }), prevName = monthName(pc.pk, { month:"long" });
+  let pace = "";
+  if (!hasData(now)) pace = `<small>${esc(t("e.none", { m:curName }))}</small>`;
+  else if (!(pc.prev > 0)) pace = `<small>${esc(t("e.noPrev", { m:prevName }))}</small>`;
+  else {
+    const p = (pc.cur - pc.prev) / pc.prev, same = Math.abs(p) < .005;
+    pace = `<span class="pace ${same ? "eq" : p > 0 ? "good" : "bad"}">${same ? "=" : p > 0 ? "↑" : "↓"} ${esc(same ? t("e.same", { m:prevName, d:pc.d }) : t(p > 0 ? "e.better" : "e.worse", { p:fmtPct(Math.abs(p)), m:prevName, d:pc.d }))}</span>
+      <small>${esc(t("e.prevWas", { m:cap(prevName), d:pc.d, v:fmtV(pc.prev, m) }))}</small>`;
+  }
+  return `<article class="card s12 rise">${head}
+    <div class="hchart" id="hchart"></div>
+    <div class="legend"><span><i></i>${t("e.closed")}</span>${hasData(now) && ks.includes(now) ? `<span><i class="d"></i>${t("e.curL")}</span>` : ""}</div>
+    <div class="minis">
+      <div class="mini"><span>${t("e.cur")}</span><b class="num">${fmtV(pc.cur, m)}</b>${pace}</div>
+      <div class="mini"><span>${t("e.best")}</span><b class="num">${best ? fmtV(best.v, m) : "—"}</b><small>${best ? esc(monthName(best.k)) : "—"}</small></div>
+      <div class="mini"><span>${t("e.avg")}</span><b class="num">${avg == null ? "—" : fmtV(avg, m)}</b><small>${esc(t("e.avgS", { n:closed.length }))}</small></div></div></article>`;
+}
+/* curva suave que no se pasa de los puntos (monótona) */
+function smoothPath(P){
+  if (P.length < 2) return P.length ? `M${P[0][0]},${P[0][1]}` : "";
+  const n = P.length, dx = [], sl = [], tg = [];
+  for (let i = 0; i < n - 1; i++){ dx[i] = P[i+1][0] - P[i][0]; sl[i] = (P[i+1][1] - P[i][1]) / dx[i]; }
+  tg[0] = sl[0]; tg[n-1] = sl[n-2];
+  for (let i = 1; i < n - 1; i++) tg[i] = sl[i-1] * sl[i] <= 0 ? 0 : 3 * (dx[i-1] + dx[i]) / ((2*dx[i] + dx[i-1]) / sl[i-1] + (dx[i] + 2*dx[i-1]) / sl[i]);
+  let d = `M${P[0][0]},${P[0][1]}`;
+  for (let i = 0; i < n - 1; i++){ const h = dx[i] / 3; d += ` C${P[i][0] + h},${P[i][1] + tg[i]*h} ${P[i+1][0] - h},${P[i+1][1] - tg[i+1]*h} ${P[i+1][0]},${P[i+1][1]}`; }
+  return d;
+}
+const niceStep = v => { const e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * e; };
+function drawEvo(){
+  const box = $("#hchart"); if (!box) return;
+  const m = view.metric, now = keyOf(new Date()), ks = evoMonths();
+  const pts = ks.map(k => ({ k, v:mOf(monthAgg(k), m), cur:k === now })).filter(p => !p.cur || hasData(now));
+  const W = box.clientWidth - 20, H = W < 480 ? 210 : 270, L = 46, R = 22, T = 26, B = 30;
+  const step = niceStep(Math.max(1, ...pts.map(p => p.v)) / 4), top = step * 4;
+  const X = i => pts.length < 2 ? L + (W - L - R) / 2 : L + i * (W - L - R) / (pts.length - 1), Y = v => T + (1 - v / top) * (H - T - B);
+  const P = pts.map((p, i) => [+X(i).toFixed(1), +Y(p.v).toFixed(1)]);
+  const closedN = pts.filter(p => !p.cur).length, C = P.slice(0, closedN), last = C[C.length - 1];
+  const every = Math.ceil(pts.length / (W < 480 ? 4 : 7));
+  const grid = [0, 1, 2, 3, 4].map(i => { const v = step * i, y = Y(v); return `<line class="gl" x1="${L}" x2="${W - R + 10}" y1="${y}" y2="${y}"/><text x="${L - 10}" y="${y + 4}" text-anchor="end">${esc(fmtAxis(v, m))}</text>`; }).join("");
+  const xl = pts.map((p, i) => (i % every === 0 || i === pts.length - 1) && !(i !== pts.length - 1 && pts.length - 1 - i < every) ? `<text x="${P[i][0]}" y="${H - 6}" text-anchor="middle">${esc(mLabel(p.k))}</text>` : "").join("");
+  const line = C.length ? smoothPath(C) : "";
+  const area = C.length > 1 ? `${line} L${last[0]},${Y(0)} L${C[0][0]},${Y(0)} Z` : "";
+  const curSeg = closedN < pts.length && last ? `<path class="ln cur" d="M${last[0]},${last[1]} L${P[closedN][0]},${P[closedN][1]}"/>` : "";
+  // valor del último mes cerrado: a su izquierda si está pegado al borde, si no encima
+  const edge = last && last[0] > W - 90;
+  const lbl = last ? `<text class="vl" x="${edge ? last[0] - 12 : last[0]}" y="${edge ? last[1] + 5 : Math.max(T + 4, last[1] - 14)}" text-anchor="${edge ? "end" : "middle"}">${esc(fmtV(pts[closedN - 1].v, m))}</text>` : "";
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="${esc(t("e.t"))}">
+    <defs><linearGradient id="evoG" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--blue)" stop-opacity=".22"/><stop offset="1" stop-color="var(--blue)" stop-opacity="0"/></linearGradient></defs>
+    ${grid}${xl}<line class="cross" id="evoX" y1="${T - 6}" y2="${Y(0)}"/>
+    ${area ? `<path class="area" d="${area}" fill="url(#evoG)"/>` : ""}${line ? `<path class="ln" d="${line}"/>` : ""}${curSeg}
+    ${P.map((q, i) => `<circle class="pt ${pts[i].cur ? "cur" : ""}" cx="${q[0]}" cy="${q[1]}" r="5.5" style="animation-delay:${.4 + i * (1 / Math.max(1, P.length))}s"/>`).join("")}${lbl}</svg>
+    <div class="htip" id="evoTip"></div>`;
+  const ln = $(".ln:not(.cur)", box); if (ln) ln.style.setProperty("--len", Math.ceil(ln.getTotalLength()));
+  // tooltip: el mes más cercano al dedo o al ratón
+  const svg = $("svg", box), tip = $("#evoTip"), cross = $("#evoX"), dots = $$(".pt", box);
+  const pick = e => {
+    const r = svg.getBoundingClientRect(), x = (e.clientX - r.left) * W / r.width;
+    let i = 0; P.forEach((q, j) => { if (Math.abs(q[0] - x) < Math.abs(P[i][0] - x)) i = j; });
+    dots.forEach((d, j) => d.classList.toggle("on", j === i));
+    cross.setAttribute("x1", P[i][0]); cross.setAttribute("x2", P[i][0]); cross.classList.add("on");
+    tip.innerHTML = `${esc(monthName(pts[i].k))}${pts[i].cur ? ` · ${esc(t("e.curL").toLowerCase())}` : ""}<b>${esc(fmtV(pts[i].v, m))}</b>`;
+    const px = P[i][0] * r.width / W + 10, half = tip.offsetWidth / 2;
+    tip.style.left = Math.min(box.clientWidth - half - 4, Math.max(half + 4, px)) + "px"; tip.style.top = (P[i][1] * r.height / H + 14) + "px"; tip.classList.add("on");
+  };
+  const hide = () => { tip.classList.remove("on"); cross.classList.remove("on"); dots.forEach(d => d.classList.remove("on")); };
+  svg.addEventListener("pointermove", pick); svg.addEventListener("pointerdown", pick);
+  svg.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") hide(); });
+}
+let evoRT = 0; addEventListener("resize", () => { clearTimeout(evoRT); evoRT = setTimeout(drawEvo, 150); });
+
 /* ---------- eventos ---------- */
 function setMonth(k){ view.key = k; render(); }
 document.addEventListener("click", e => {
@@ -814,6 +937,8 @@ document.addEventListener("click", e => {
     return;
   }
   const d = e.target.closest("[data-day]"); if (d) return openDay(d.dataset.day);
+  const s = e.target.closest("[data-seg] [data-v]");
+  if (s){ const id = s.closest("[data-seg]").dataset.seg; view[id] = s.dataset.v; pref.set("ze-orders-" + id, s.dataset.v); SFX.play("tick"); render(); }
 });
 $("#todayBtn").addEventListener("click", () => openDay(todayIso()));
 

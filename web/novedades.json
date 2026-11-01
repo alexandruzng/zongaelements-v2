@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-11-01-pedidos-evolucion",
+    "date": "2026-11-01",
+    "type": "mejora",
+    "title": {
+      "es": "Pedidos diarios: vuelve la evolución por mes",
+      "en": "Daily orders: month-by-month chart is back",
+      "ro": "Comenzi zilnice: revine evoluția lunară"
+    },
+    "items": {
+      "es": [
+        "Debajo del calendario tienes un gráfico de línea con tu facturación o tus pedidos de cada mes (6 meses, 12 meses o todo).",
+        "«Mes en curso» te dice si vas mejor o peor que el mes pasado en las mismas fechas. Por ejemplo: «↑ 20 % mejor que octubre a día 10».",
+        "También ves tu mejor mes cerrado y tu media mensual."
+      ],
+      "en": [
+        "Below the calendar there's a line chart with your revenue or orders for each month (6 months, 12 months or all).",
+        "“Current month” tells you whether you're doing better or worse than last month on the same dates. For example: “↑ 20% better than October by day 10”.",
+        "You also see your best closed month and your monthly average."
+      ],
+      "ro": [
+        "Sub calendar ai un grafic cu încasările sau comenzile fiecărei luni (6 luni, 12 luni sau tot).",
+        "„Luna curentă” îți spune dacă mergi mai bine sau mai slab decât luna trecută în aceleași zile. De exemplu: „↑ cu 20 % mai bine decât octombrie în ziua 10”.",
+        "Vezi și cea mai bună lună închisă și media lunară."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-calendario-beneficio",
     "date": "2026-11-01",
     "type": "nuevo",
