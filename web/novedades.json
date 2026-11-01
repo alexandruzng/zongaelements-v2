@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-11-01-pedidos-simple",
+    "date": "2026-11-01",
+    "type": "mejora",
+    "title": {
+      "es": "Pedidos diarios, más simple",
+      "en": "Daily orders, simpler",
+      "ro": "Comenzi zilnice, mai simplu"
+    },
+    "items": {
+      "es": [
+        "Ahora solo ves el calendario y, arriba, la facturación y los pedidos del mes. Nada más.",
+        "Al tocar un día solo te pregunta cuántos pedidos has tenido y la facturación: fuera coste de producto, comisiones y beneficio.",
+        "«Importar mes» pasa a Ajustes."
+      ],
+      "en": [
+        "Now you just see the calendar, with the month's revenue and orders on top. Nothing else.",
+        "Tapping a day only asks how many orders you got and the revenue: no more product cost, fees or profit.",
+        "“Import month” has moved to Settings."
+      ],
+      "ro": [
+        "Acum vezi doar calendarul și, deasupra, încasările și comenzile lunii. Nimic altceva.",
+        "Când atingi o zi te întreabă doar câte comenzi ai avut și încasările: fără cost de produs, comisioane sau profit.",
+        "„Importă luna” s-a mutat în Setări."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-pedidos-colores",
     "date": "2026-11-01",
     "type": "mejora",
