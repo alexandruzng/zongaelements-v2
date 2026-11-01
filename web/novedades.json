@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-11-01-beneficio-pro",
+    "date": "2026-11-01",
+    "type": "mejora",
+    "title": {
+      "es": "Calendario de Beneficio: vuelve el estilo de siempre, en versión pro",
+      "en": "Profit Calendar: the classic look is back, in a pro version",
+      "ro": "Calendarul profitului: revine stilul dintotdeauna, în versiune pro"
+    },
+    "items": {
+      "es": [
+        "Las casillas vuelven a ser tarjetas con degradado verde o rojo según ganes o pierdas, con un punto de color en cada día.",
+        "El beneficio del mes destaca de nuevo en una tarjeta roja, junto a ganancias, costes, margen, pedidos y días.",
+        "Botones, modal del día y moneda activa en rojo, más pulidos y con mejor lectura en el móvil."
+      ],
+      "en": [
+        "Squares are cards again, with a green or red gradient depending on whether you win or lose, and a coloured dot on each day.",
+        "This month's profit stands out again in a red card, next to revenue, costs, margin, orders and days.",
+        "Buttons, the day window and the active currency in red, more polished and easier to read on mobile."
+      ],
+      "ro": [
+        "Pătrățelele redevin carduri cu degradeu verde sau roșu după cum câștigi sau pierzi, cu un punct colorat pe fiecare zi.",
+        "Profitul lunii iese din nou în evidență într-un card roșu, lângă încasări, costuri, marjă, comenzi și zile.",
+        "Butoanele, fereastra zilei și moneda activă în roșu, mai rafinate și mai ușor de citit pe mobil."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-beneficio-importar",
     "date": "2026-11-01",
     "type": "nuevo",
