@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-11-01-beneficio-importar",
+    "date": "2026-11-01",
+    "type": "nuevo",
+    "title": {
+      "es": "Calendario de Beneficio: importa tu copia de la web antigua",
+      "en": "Profit Calendar: import your backup from the old site",
+      "ro": "Calendarul profitului: importă copia de pe site-ul vechi"
+    },
+    "items": {
+      "es": [
+        "Nuevo botón «Importar copia» en Productos: sube el .json de Zonga Elements y recupera tus productos, sus fotos y todos sus días.",
+        "Antes de importar ves cuántos productos y días hay y el beneficio total.",
+        "Si importas dos veces no se duplica nada: lo que ya tienes aquí no se toca."
+      ],
+      "en": [
+        "New “Import backup” button in Products: upload your Zonga Elements .json and get back your products, their photos and all their days.",
+        "Before importing you see how many products and days there are and the total profit.",
+        "Importing twice doesn't duplicate anything: what you already have here stays untouched."
+      ],
+      "ro": [
+        "Buton nou „Importă copia” în Produse: încarcă .json-ul din Zonga Elements și recuperezi produsele, pozele și toate zilele lor.",
+        "Înainte de import vezi câte produse și zile sunt și profitul total.",
+        "Dacă imporți de două ori nu se dublează nimic: ce ai deja aici rămâne neatins."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-beneficio-formal",
     "date": "2026-11-01",
     "type": "mejora",

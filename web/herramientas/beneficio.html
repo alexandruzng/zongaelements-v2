@@ -120,6 +120,7 @@ svg{display:block}
 .btn.dark:hover{opacity:.9}
 .btn.red{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn.sm{height:40px;padding:0 14px;font-size:14px}
+.btn:disabled{opacity:.4;pointer-events:none}
 .btn.full{width:100%}
 .linkbtn{font-weight:500;color:var(--fg);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px;transition:text-decoration-color .2s}
 .linkbtn:hover{text-decoration-color:var(--fg)}
@@ -309,6 +310,31 @@ svg{display:block}
 .txt{width:100%;height:44px;border-radius:var(--r-sm);border:1px solid var(--line-2);background:var(--card);padding:0 12px;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s}
 .txt:focus{border-color:var(--fg);box-shadow:0 0 0 3px var(--accent-soft)}
 
+/* Importar copia */
+.hint-btns,.phead-btns,.empty-btns{display:flex;gap:8px;flex-wrap:wrap}
+.empty-btns{justify-content:center}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:28px 16px;border:1px dashed var(--line-2);border-radius:12px;background:var(--bg-2);cursor:pointer;transition:border-color .2s,background .2s}
+.drop:hover,.drop.over{border-color:var(--fg);background:var(--card)}
+.drop .ico{margin-bottom:4px}
+.drop b{font-weight:500;font-size:14.5px}
+.drop small{font-size:12.5px;color:var(--muted)}
+.drop.busy{opacity:.5;pointer-events:none}
+.imp-msg{margin-top:14px;padding:12px 14px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--bg-2);font-size:13.5px;line-height:1.5;color:var(--muted)}
+.imp-msg.err{border-color:var(--neg-line);background:var(--neg-bg);color:var(--neg)}
+.imp-h{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:20px 0 10px}
+.imp-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden}
+.imp-sum div{padding:9px 11px;background:var(--card);min-width:0}
+.imp-sum span{display:block;font-size:11.5px;color:var(--muted)}
+.imp-sum b{display:block;font-family:var(--mono);font-weight:500;font-size:15px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.imp-sum small{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:2px}
+.imp-list{display:grid;gap:6px;margin-top:12px}
+.imp-row{display:flex;align-items:center;gap:10px;padding:7px 9px;border:1px solid var(--line);border-radius:10px;font-size:14px}
+.imp-row .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.imp-row .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.imp-row .tag{font-size:11px;padding:2px 7px;border-radius:5px;background:var(--bg-2);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));z-index:650;transform:translate(-50%,12px);opacity:0;pointer-events:none;padding:11px 16px;border-radius:var(--r-sm);background:var(--fg);color:var(--bg);font-weight:500;font-size:14px;box-shadow:var(--sh-3);transition:opacity .25s,transform .25s;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
 /* Confirmación */
 .confirm{position:fixed;left:50%;top:50%;z-index:420;width:min(400px,calc(100% - 28px));transform:translate(-50%,-48%);opacity:0;visibility:hidden;transition:opacity .2s,transform .2s,visibility 0s .2s;padding:22px;box-shadow:var(--sh-3)}
 .confirm.on{opacity:1;visibility:visible;transform:translate(-50%,-50%);transition:opacity .2s,transform .2s}
@@ -417,7 +443,7 @@ svg{display:block}
   <section id="viewCal">
     <div class="card hint-card rise" id="calHint" hidden>
       <p><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></span><span data-i18n="hint">Crea tu primer producto para empezar a registrar días.</span></p>
-      <button type="button" class="btn dark sm" id="hintCreate" data-i18n="hintBtn">Crear producto</button>
+      <div class="hint-btns"><button type="button" class="btn sm" data-imp><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg><span data-i18n="impBtn">Importar copia</span></button><button type="button" class="btn dark sm" id="hintCreate" data-i18n="hintBtn">Crear producto</button></div>
     </div>
 
     <div class="toolbar rise" style="animation-delay:.1s">
@@ -465,13 +491,14 @@ svg{display:block}
   <section id="viewProd" hidden>
     <div class="phead">
       <div><h2 data-i18n="prodTitle">Productos testeados</h2><span class="count" id="prodCount">—</span></div>
-      <button type="button" class="btn dark" id="newProdBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="newProdBtn">Nuevo producto</span></button>
+      <div class="phead-btns"><button type="button" class="btn" data-imp><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg><span data-i18n="impBtn">Importar copia</span></button>
+      <button type="button" class="btn dark" id="newProdBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="newProdBtn">Nuevo producto</span></button></div>
     </div>
     <div class="pgrid" id="prodGrid"></div>
     <div class="card empty" id="prodEmpty" hidden>
       <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></span>
       <p data-i18n="empty">Aún no has creado ningún producto.</p>
-      <button type="button" class="btn dark" id="emptyCreate" data-i18n="emptyBtn">Crear mi primer producto</button>
+      <div class="empty-btns"><button type="button" class="btn" data-imp><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg><span data-i18n="impBtn">Importar copia</span></button><button type="button" class="btn dark" id="emptyCreate" data-i18n="emptyBtn">Crear mi primer producto</button></div>
     </div>
   </section>
 
@@ -559,6 +586,25 @@ svg{display:block}
   </div>
 </div>
 
+<!-- ======= IMPORTAR COPIA DE LA WEB ANTIGUA ======= -->
+<div class="scrim top-layer" id="impScrim"></div>
+<div class="sheet small top-layer" id="impSheet" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="m-head">
+    <div><h2 data-i18n="impT">Importar copia de la web antigua</h2><div class="sub" data-i18n="impP">Sube el archivo .json de copia de seguridad de Zonga Elements.</div></div>
+    <button type="button" class="x-btn" id="impClose" data-i18n-aria="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="m-body">
+    <label class="drop" id="impDrop" for="impFile"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg></span><b data-i18n="impPick">Elige tu archivo .json</b><small data-i18n="impPickS">o arrástralo aquí</small></label>
+    <input type="file" id="impFile" accept=".json,application/json" hidden>
+    <div id="impRes"></div>
+  </div>
+  <div class="m-foot" id="impFoot" hidden>
+    <div></div>
+    <div class="acts"><button type="button" class="btn sm" id="impCancel" data-i18n="cancel">Cancelar</button><button type="button" class="btn sm dark" id="impGo" data-i18n="impGo">Importar</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
 <!-- ======= CONFIRMAR BORRADO ======= -->
 <div class="scrim c-layer" id="cScrim"></div>
 <div class="card confirm" id="confirm" role="alertdialog" aria-modal="true">
@@ -585,6 +631,9 @@ es:{ back:"Volver", eyebrow:"Tracker de Ads", h1a:"Calendario de", h1b:"Benefici
   sEarn:"Ganancias", sCost:"Costes", sProfit:"Beneficio del mes", sMargin:"Margen medio", sOrders:"Pedidos", sDays:"Días con datos",
   hint:"Crea tu primer producto para empezar a registrar días.", hintBtn:"Crear producto", order1:"1 pedido", orderN:"{n} pedidos",
   prodTitle:"Productos testeados", count1:"1 producto", countN:"{n} productos", newProdBtn:"Nuevo producto", empty:"Aún no has creado ningún producto.", emptyBtn:"Crear mi primer producto",
+  impBtn:"Importar copia", impT:"Importar copia de la web antigua", impP:"Sube el archivo .json de copia de seguridad de Zonga Elements. Se añaden tus productos y sus días; lo que ya tengas aquí no se toca.",
+  impPick:"Elige tu archivo .json", impPickS:"o arrástralo aquí", impReading:"Leyendo el archivo…", impBad:"Este archivo no es una copia de Zonga Elements con datos del Calendario de Beneficio.", impErr:"No se ha podido leer el archivo. Comprueba que es el .json de la copia de seguridad.",
+  impFound:"Esto es lo que hay en tu copia", impProds:"Productos", impDays:"Días con datos", impProfit:"Beneficio total", impNew:"Nuevo", impMerge:"Ya existe · se completa", impSkip:"{n} días ya los tenías aquí y se saltarán.", impGo:"Importar", impNone:"No hay nada nuevo que importar.", impOk:"Copia importada · productos nuevos: {p} · días: {d}", impLegacy:"Producto 1",
   days1:"1 día con datos", daysN:"{n} días con datos", inc:"Ingresos", exp:"Gastos", profit:"Beneficio", margin:"Margen", seeCal:"Ver calendario", delAria:"Eliminar producto",
   delConfirm:'¿Eliminar "{name}" y todos sus días registrados? No se puede deshacer.', delYes:"Eliminar", cancel:"Cancelar",
   pickQ:"¿Para qué producto es este día?", change:"cambiar producto", gastos:"Gastos", fProduct:"Coste del Producto", fAd:"Coste de Anuncios", fComm:"Comisiones",
@@ -599,6 +648,9 @@ en:{ back:"Back", eyebrow:"Ads tracker", h1a:"Profit", h1b:"Calendar", sub:"Log 
   sEarn:"Revenue", sCost:"Costs", sProfit:"Profit this month", sMargin:"Average margin", sOrders:"Orders", sDays:"Days with data",
   hint:"Create your first product to start logging days.", hintBtn:"Create product", order1:"1 order", orderN:"{n} orders",
   prodTitle:"Tested products", count1:"1 product", countN:"{n} products", newProdBtn:"New product", empty:"You haven't created any products yet.", emptyBtn:"Create my first product",
+  impBtn:"Import backup", impT:"Import a backup from the old site", impP:"Upload the Zonga Elements backup .json file. Your products and their days are added; whatever you already have here stays untouched.",
+  impPick:"Choose your .json file", impPickS:"or drop it here", impReading:"Reading the file…", impBad:"This file isn't a Zonga Elements backup with Profit Calendar data.", impErr:"The file couldn't be read. Check it's the backup .json.",
+  impFound:"Here's what's in your backup", impProds:"Products", impDays:"Days with data", impProfit:"Total profit", impNew:"New", impMerge:"Already here · will be completed", impSkip:"You already had {n} days here; they'll be skipped.", impGo:"Import", impNone:"Nothing new to import.", impOk:"Backup imported · new products: {p} · days: {d}", impLegacy:"Product 1",
   days1:"1 day with data", daysN:"{n} days with data", inc:"Revenue", exp:"Expenses", profit:"Profit", margin:"Margin", seeCal:"View calendar", delAria:"Delete product",
   delConfirm:'Delete "{name}" and all its logged days? This can\'t be undone.', delYes:"Delete", cancel:"Cancel",
   pickQ:"Which product is this day for?", change:"change product", gastos:"Expenses", fProduct:"Product cost", fAd:"Ad spend", fComm:"Fees",
@@ -613,6 +665,9 @@ ro:{ back:"Înapoi", eyebrow:"Tracker de Ads", h1a:"Calendarul", h1b:"profitului
   sEarn:"Încasări", sCost:"Costuri", sProfit:"Profitul lunii", sMargin:"Marjă medie", sOrders:"Comenzi", sDays:"Zile cu date",
   hint:"Creează primul produs ca să începi să notezi zilele.", hintBtn:"Creează produs", order1:"1 comandă", orderN:"{n} comenzi",
   prodTitle:"Produse testate", count1:"1 produs", countN:"{n} produse", newProdBtn:"Produs nou", empty:"Încă n-ai creat niciun produs.", emptyBtn:"Creează primul produs",
+  impBtn:"Importă copia", impT:"Importă o copie de pe site-ul vechi", impP:"Încarcă fișierul .json de backup din Zonga Elements. Se adaugă produsele și zilele lor; ce ai deja aici rămâne neatins.",
+  impPick:"Alege fișierul .json", impPickS:"sau trage-l aici", impReading:"Se citește fișierul…", impBad:"Fișierul nu e o copie Zonga Elements cu date din Calendarul profitului.", impErr:"Fișierul nu s-a putut citi. Verifică dacă e .json-ul de backup.",
+  impFound:"Iată ce conține copia ta", impProds:"Produse", impDays:"Zile cu date", impProfit:"Profit total", impNew:"Nou", impMerge:"Există deja · se completează", impSkip:"Aveai deja {n} zile aici; vor fi sărite.", impGo:"Importă", impNone:"Nimic nou de importat.", impOk:"Copie importată · produse noi: {p} · zile: {d}", impLegacy:"Produsul 1",
   days1:"1 zi cu date", daysN:"{n} zile cu date", inc:"Încasări", exp:"Cheltuieli", profit:"Profit", margin:"Marjă", seeCal:"Vezi calendarul", delAria:"Șterge produsul",
   delConfirm:'Ștergi „{name}" și toate zilele notate? Nu se poate anula.', delYes:"Șterge", cancel:"Anulează",
   pickQ:"Pentru ce produs este ziua asta?", change:"schimbă produsul", gastos:"Cheltuieli", fProduct:"Costul produsului", fAd:"Costul reclamelor", fComm:"Comisioane",
@@ -949,7 +1004,7 @@ const renderView = () => { if (curView === "productos") renderProducts(); else r
 function openLayer(sheet, scrim){ $(sheet).classList.add("on"); $(sheet).setAttribute("aria-hidden", "false"); $(scrim).classList.add("on"); lockScroll(); }
 function closeLayer(sheet, scrim){ $(sheet).classList.remove("on"); $(sheet).setAttribute("aria-hidden", "true"); $(scrim).classList.remove("on"); lockScroll(); }
 const isOpen = id => $(id).classList.contains("on");
-function lockScroll(){ document.body.classList.toggle("locked", ["daySheet", "prodSheet", "confirm"].some(isOpen)); }
+function lockScroll(){ document.body.classList.toggle("locked", ["daySheet", "prodSheet", "impSheet", "confirm"].some(isOpen)); }
 
 /* ---------- Modal del día ---------- */
 function openDay(key){
@@ -1073,6 +1128,118 @@ function createProduct(){
   }
 }
 
+/* ---------- Importar copia de la web antigua ----------
+   El archivo es { data:{ clave:"valor" } }. Esta herramienta guardaba su estado en
+   "zonga_tracker_beneficio_v3" ({ currency, products, data }, comprimido con lz-string
+   y el prefijo "LZ1:"). Si no está, se usan los formatos anteriores (v2 / v1), igual
+   que hacía la propia herramienta al migrar. */
+let LZ = null, IMP = null;
+const loadLZ = () => LZ ? Promise.resolve(LZ) : new Promise((res, rej) => {
+  const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js";
+  sc.onload = () => res(LZ = window.LZString); sc.onerror = rej; document.head.appendChild(sc);
+});
+function readKey(data, k){
+  const v = data[k]; if (v == null) return null;
+  if (typeof v !== "string") return v;
+  if (v.startsWith("LZ1:")){
+    for (const f of ["decompressFromEncodedURIComponent", "decompressFromBase64", "decompressFromUTF16", "decompress"]){
+      try { const r = LZ[f](v.slice(4)); if (r) return JSON.parse(r); } catch (e) {}
+    }
+    return null;
+  }
+  try { return JSON.parse(v); } catch (e) { return null; }
+}
+const DAY_RE = /^\d{4}-\d\d-\d\d$/;
+const str = v => v == null ? "" : String(v);
+// Solo los 5 campos del día, como texto (igual que los guarda el formulario)
+const cleanEntry = e => ({ product: str(e.product), ad: str(e.ad), commission: str(e.commission), earnings: str(e.earnings), orders: str(e.orders) });
+function cleanDays(obj){
+  const out = {};
+  if (obj && typeof obj === "object") Object.entries(obj).forEach(([d, e]) => { if (DAY_RE.test(d) && e && typeof e === "object" && calcEntry(e).has) out[d] = cleanEntry(e); });
+  return out;
+}
+// Devuelve { currency, products:[{ id, name, photo, days }] } o null
+function backupState(data){
+  const v3 = readKey(data, "zonga_tracker_beneficio_v3");
+  if (v3 && Array.isArray(v3.products)){
+    return { currency: v3.currency, products: v3.products.filter(p => p && p.id && p.name).map(p => ({
+      id: String(p.id), name: String(p.name).slice(0, 80),
+      photo: typeof p.photo === "string" && p.photo.startsWith("data:image/") ? p.photo : "",
+      days: cleanDays((v3.data || {})[p.id]) })) };
+  }
+  const v2 = readKey(data, "zonga_tracker_beneficio_v2");
+  if (v2 && v2.entries){
+    const days = cleanDays(v2.entries);
+    return { currency: v2.currency, products: Object.keys(days).length ? [{ id: "legacy-v2", name: t("impLegacy"), photo: "", days }] : [] };
+  }
+  const v1 = readKey(data, "zonga_tracker_beneficio_v1");
+  if (v1 && Array.isArray(v1.rows)){
+    const raw = {};
+    v1.rows.forEach(r => { if (r && r.date) raw[r.date] = { product: r.product ?? "", ad: r.ad ?? "", commission: "", earnings: r.earnings ?? "" }; });
+    const days = cleanDays(raw);
+    return { currency: v1.currency, products: Object.keys(days).length ? [{ id: "legacy-v1", name: t("impLegacy"), photo: "", days }] : [] };
+  }
+  return null;
+}
+function openImport(){
+  IMP = null; $("impRes").innerHTML = ""; $("impFile").value = ""; $("impFoot").hidden = true; $("impDrop").classList.remove("busy");
+  openLayer("impSheet", "impScrim");
+}
+function closeImport(){ closeLayer("impSheet", "impScrim"); }
+async function parseBackup(file){
+  const box = $("impRes"); $("impDrop").classList.add("busy"); $("impFoot").hidden = true; IMP = null;
+  box.innerHTML = '<div class="imp-msg">' + esc(t("impReading")) + '</div>';
+  try {
+    const json = JSON.parse(await file.text()), data = json && (json.data || json);
+    if (!data || typeof data !== "object" || !Object.keys(data).some(k => k.startsWith("zonga_tracker_beneficio_"))) throw "bad";
+    await loadLZ();
+    const B = backupState(data);
+    if (!B || !B.products.length) throw "bad";
+    let newDays = 0, skip = 0, totDays = 0, profit = 0, first = "", last = "";
+    const rows = B.products.map(p => {
+      const have = productById(p.id), mine = (have && S.data[p.id]) || {};
+      const ds = Object.keys(p.days);
+      ds.forEach(d => { const c = calcEntry(p.days[d]); profit += c.profit; if (!first || d < first) first = d; if (!last || d > last) last = d; });
+      const add = ds.filter(d => !mine[d]);
+      totDays += ds.length; newDays += add.length; skip += ds.length - add.length;
+      return { p, exists: !!have, add };
+    });
+    IMP = { B, rows, newDays, newProds: rows.filter(r => !r.exists).length };
+    const dshort = d => new Date(d + "T00:00:00").toLocaleDateString(loc(), { day: "numeric", month: "short", year: "2-digit" }).replace(".", "");
+    box.innerHTML = '<div class="imp-h">' + esc(t("impFound")) + '</div>' +
+      '<div class="imp-sum"><div><span>' + esc(t("impProds")) + '</span><b>' + B.products.length + '</b></div>' +
+      '<div><span>' + esc(t("impDays")) + '</span><b>' + totDays + '</b>' + (first ? '<small>' + esc(dshort(first) + " → " + dshort(last)) + '</small>' : "") + '</div>' +
+      '<div><span>' + esc(t("impProfit")) + '</span><b class="' + (profit > 0 ? "pos" : profit < 0 ? "neg" : "") + '">' + esc(money(profit)) + '</b></div></div>' +
+      '<div class="imp-list">' + rows.map(r => '<div class="imp-row">' + thumbHTML(r.p, "t26") + '<span class="nm">' + esc(r.p.name) + '</span>' +
+        '<span class="meta">' + esc(Object.keys(r.p.days).length === 1 ? t("days1") : t("daysN", { n: Object.keys(r.p.days).length })) + '</span>' +
+        '<span class="tag">' + esc(r.exists ? t("impMerge") : t("impNew")) + '</span></div>').join("") + '</div>' +
+      (skip ? '<div class="imp-msg">' + esc(t("impSkip", { n: skip })) + '</div>' : "");
+    const any = IMP.newDays > 0 || IMP.newProds > 0;
+    $("impGo").disabled = !any; $("impGo").textContent = any ? t("impGo") : t("impNone");
+    $("impFoot").hidden = false;
+  } catch (e){
+    box.innerHTML = '<div class="imp-msg err">' + esc(e === "bad" ? t("impBad") : t("impErr")) + '</div>';
+  }
+  $("impDrop").classList.remove("busy");
+}
+function runImport(){
+  if (!IMP) return;
+  // Con la herramienta vacía se respeta también la moneda que tenías elegida
+  if (!S.products.length && CUR[IMP.B.currency]) S.currency = IMP.B.currency;
+  IMP.rows.forEach(({ p, exists, add }) => {
+    if (!exists) S.products.push({ id: p.id, name: p.name, photo: p.photo });
+    if (!S.data[p.id]) S.data[p.id] = {};
+    add.forEach(d => { S.data[p.id][d] = p.days[d]; });
+  });
+  save();
+  const msg = t("impOk", { p: IMP.newProds, d: IMP.newDays });
+  IMP = null; closeImport();
+  paintCur(); renderRateTag(); renderDropdown(); renderView();
+  toast(msg);
+}
+let toastT = 0;
+function toast(msg){ const el = $("toast"); el.textContent = msg; el.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("on"), 3500); }
+
 /* ---------- Confirmar borrado ---------- */
 let confirmCb = null;
 function askConfirm(text, cb){
@@ -1193,6 +1360,17 @@ function onProdCard(e){
 $("prodGrid").addEventListener("click", onProdCard);
 $("prodGrid").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches(".pcard")){ e.preventDefault(); onProdCard(e); } });
 
+// Importar copia
+$$("[data-imp]").forEach(b => b.addEventListener("click", openImport));
+$("impFile").addEventListener("change", e => { const f = e.target.files && e.target.files[0]; if (f) parseBackup(f); });
+["dragenter", "dragover"].forEach(ev => $("impDrop").addEventListener(ev, e => { e.preventDefault(); $("impDrop").classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => $("impDrop").addEventListener(ev, e => { e.preventDefault(); $("impDrop").classList.remove("over"); }));
+$("impDrop").addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (f) parseBackup(f); });
+$("impGo").addEventListener("click", runImport);
+$("impCancel").addEventListener("click", closeImport);
+$("impClose").addEventListener("click", closeImport);
+$("impScrim").addEventListener("click", closeImport);
+
 // Modal crear producto
 $("photoBtn").addEventListener("click", () => $("pPhoto").click());
 $("pPhoto").addEventListener("change", e => handlePhotoFile(e.target.files && e.target.files[0]));
@@ -1213,6 +1391,7 @@ document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
   if (isOpen("confirm")) closeConfirm(false);
   else if (isOpen("prodSheet")) closeCreate();
+  else if (isOpen("impSheet")) closeImport();
   else if (isOpen("daySheet")) closeDay();
   else toggleDD(false);
 });
