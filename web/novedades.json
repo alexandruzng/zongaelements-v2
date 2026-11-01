@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-11-01-beneficio-formal",
+    "date": "2026-11-01",
+    "type": "mejora",
+    "title": {
+      "es": "Calendario de Beneficio, con un diseño más serio",
+      "en": "Profit Calendar, with a more professional look",
+      "ro": "Calendarul profitului, cu un aspect mai serios"
+    },
+    "items": {
+      "es": [
+        "Nuevo aspecto tipo panel financiero: líneas finas, cifras alineadas y colores más sobrios.",
+        "El calendario se lee como una tabla, con verde y rojo más discretos.",
+        "Todo funciona igual: tus datos y cálculos no cambian."
+      ],
+      "en": [
+        "New financial-dashboard look: thin lines, aligned figures and calmer colours.",
+        "The calendar reads like a table, with subtler green and red.",
+        "Everything works the same: your data and calculations don't change."
+      ],
+      "ro": [
+        "Aspect nou de panou financiar: linii fine, cifre aliniate și culori mai sobre.",
+        "Calendarul se citește ca un tabel, cu verde și roșu mai discrete.",
+        "Totul funcționează la fel: datele și calculele tale nu se schimbă."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-pedidos-evolucion",
     "date": "2026-11-01",
     "type": "mejora",
