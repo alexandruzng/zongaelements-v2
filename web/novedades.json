@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-11-01-calendario-beneficio",
+    "date": "2026-11-01",
+    "type": "nuevo",
+    "title": {
+      "es": "Nueva herramienta: Calendario de Beneficio",
+      "en": "New tool: Profit Calendar",
+      "ro": "Instrument nou: Calendarul profitului"
+    },
+    "items": {
+      "es": [
+        "En la sección Ads: apunta cada día, por producto, lo que gastas en producto, anuncios y comisiones y lo que ganas.",
+        "Cada casilla del calendario te dice el beneficio del día: verde si ganas, rojo si pierdes, con tus pedidos debajo.",
+        "Ve las cifras en €, $, £ o RON con el cambio del día, y el resumen de cada producto en la pestaña Productos."
+      ],
+      "en": [
+        "In the Ads section: log each day, per product, what you spend on stock, ads and fees and what you earn.",
+        "Each calendar square shows the day's profit: green if you win, red if you lose, with your orders below.",
+        "See figures in €, $, £ or RON at today's rate, and each product's summary in the Products tab."
+      ],
+      "ro": [
+        "În secțiunea Ads: notează zilnic, pe produs, cât cheltui pe marfă, reclame și comisioane și cât câștigi.",
+        "Fiecare pătrățel din calendar îți arată profitul zilei: verde dacă câștigi, roșu dacă pierzi, cu comenzile dedesubt.",
+        "Vezi cifrele în €, $, £ sau RON la cursul zilei și rezumatul fiecărui produs în fila Produse."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-pedidos-simple",
     "date": "2026-11-01",
     "type": "mejora",

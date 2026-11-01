@@ -173,3 +173,29 @@ create extension if not exists pg_net with schema extensions;
 --     headers := jsonb_build_object('content-type', 'application/json', 'x-cron-secret', '<CRON_SECRET>'),
 --     body := '{}'::jsonb)
 -- $$);
+
+-- =========================================================
+-- Calendario de Beneficio (2026-11-01)
+-- Añade la herramienta 'profit' a la lista permitida (re-ejecutable).
+-- =========================================================
+alter table public.user_data drop constraint if exists user_data_tool_check;
+alter table public.user_data add constraint user_data_tool_check check (tool in ('planner', 'habits', 'finance', 'orders', 'profit'));
+
+create or replace function public.add_backup(p_tool text, p_data jsonb default null) returns void
+language plpgsql security definer set search_path = public as $$
+declare d jsonb := p_data;
+begin
+  if auth.uid() is null then raise exception 'not authenticated'; end if;
+  if p_tool not in ('planner', 'habits', 'finance', 'orders', 'profit') then raise exception 'bad tool'; end if;
+  if d is null then
+    select data into d from user_data where user_id = auth.uid() and tool = p_tool;
+  end if;
+  if d is null then return; end if;
+  insert into user_data_history (user_id, tool, data) values (auth.uid(), p_tool, d);
+  delete from user_data_history where id in (
+    select id from user_data_history
+    where user_id = auth.uid() and tool = p_tool
+    order by saved_at desc offset 20);
+end $$;
+revoke all on function public.add_backup(text, jsonb) from public;
+grant execute on function public.add_backup(text, jsonb) to authenticated;
