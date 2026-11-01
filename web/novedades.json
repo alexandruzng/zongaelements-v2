@@ -1,5 +1,38 @@
 [
   {
+    "id": "2026-11-01-beneficio-analisis",
+    "date": "2026-11-01",
+    "type": "nuevo",
+    "title": {
+      "es": "Calendario de Beneficio: ROAS, mapa de calor, gráfico y veredicto por producto",
+      "en": "Profit Calendar: ROAS, heat map, chart and a verdict per product",
+      "ro": "Calendarul profitului: ROAS, hartă termică, grafic și verdict pe produs"
+    },
+    "items": {
+      "es": [
+        "Nuevas métricas de anuncios: ROAS, ROAS de equilibrio (el mínimo para no perder), coste por pedido y gasto en anuncios.",
+        "El calendario es ahora un mapa de calor: cuanto más ganas o pierdes un día, más intenso es el color. Además, el total de cada semana.",
+        "Gráfico de beneficio acumulado del mes comparado con el anterior, y ▲▼ frente al mes pasado en cada total.",
+        "Cada producto lleva su veredicto de los últimos 14 días (Escalar, Vigilar o Cortar) y se ordenan de mejor a peor.",
+        "Objetivo de beneficio mensual con barra de progreso, exportar a CSV y «Copiar gastos» del día anterior."
+      ],
+      "en": [
+        "New ad metrics: ROAS, break-even ROAS (the minimum not to lose money), cost per order and ad spend.",
+        "The calendar is now a heat map: the more you win or lose on a day, the stronger the colour. Plus each week's total.",
+        "Cumulative profit chart for the month compared with the previous one, and ▲▼ versus last month on every total.",
+        "Each product gets a verdict for the last 14 days (Scale, Watch or Cut) and they're ranked best to worst.",
+        "Monthly profit goal with a progress bar, CSV export and “Copy expenses” from the previous day."
+      ],
+      "ro": [
+        "Metrici noi pentru reclame: ROAS, ROAS de echilibru (minimul ca să nu pierzi), cost pe comandă și cheltuieli pe reclame.",
+        "Calendarul e acum o hartă termică: cu cât câștigi sau pierzi mai mult într-o zi, cu atât culoarea e mai intensă. Plus totalul fiecărei săptămâni.",
+        "Grafic cu profitul cumulat al lunii comparat cu luna anterioară și ▲▼ față de luna trecută la fiecare total.",
+        "Fiecare produs primește un verdict pe ultimele 14 zile (Scalează, Urmărește sau Oprește) și sunt ordonate de la cel mai bun la cel mai slab.",
+        "Obiectiv lunar de profit cu bară de progres, export CSV și „Copiază cheltuielile” din ziua anterioară."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-beneficio-desplegable",
     "date": "2026-11-01",
     "type": "arreglo",

@@ -26,6 +26,7 @@
   --red:#E5322D; --red-2:#B4161B; --red-soft:#FEF0EF; --red-glow:rgba(229,50,45,.28);
   --pos:#0E9F5B; --neg:#E0352B;
   --pos-bg:#E9F9F0; --neg-bg:#FDEEEC; --pos-line:#C9EFD9; --neg-line:#F8D3CF;
+  --pos-ink:#067A43; --neg-ink:#C21F17; --hmin:7%; --hspan:36%; --warn:#B54708; --warn-bg:#FEF4E6;
   --sh-1:0 1px 2px rgba(16,24,40,.05);
   --sh-2:0 1px 2px rgba(16,24,40,.04),0 4px 12px -2px rgba(16,24,40,.06);
   --sh-3:0 2px 4px rgba(16,24,40,.04),0 16px 32px -8px rgba(16,24,40,.14);
@@ -40,6 +41,7 @@
     --line:#1F252E; --line-2:#2B323D;
     --red-soft:rgba(229,50,45,.14); --pos:#34D17F; --neg:#FF6B5F;
     --pos-bg:#0F2219; --neg-bg:#2A1413; --pos-line:#1A4430; --neg-line:#4A221F;
+    --pos-ink:#5BE39A; --neg-ink:#FF8B80; --hmin:12%; --hspan:30%; --warn:#FDB022; --warn-bg:rgba(247,144,9,.14);
     --sh-1:0 1px 2px rgba(0,0,0,.5); --sh-2:0 1px 2px rgba(0,0,0,.5),0 4px 12px -2px rgba(0,0,0,.5); --sh-3:0 2px 4px rgba(0,0,0,.5),0 16px 32px -8px rgba(0,0,0,.7); --sh-4:0 32px 80px -20px rgba(0,0,0,.9);
     color-scheme:dark;
   }
@@ -49,6 +51,7 @@
   --line:#1F252E; --line-2:#2B323D;
   --red-soft:rgba(229,50,45,.14); --pos:#34D17F; --neg:#FF6B5F;
   --pos-bg:#0F2219; --neg-bg:#2A1413; --pos-line:#1A4430; --neg-line:#4A221F;
+    --pos-ink:#5BE39A; --neg-ink:#FF8B80; --hmin:12%; --hspan:30%; --warn:#FDB022; --warn-bg:rgba(247,144,9,.14);
   --sh-1:0 1px 2px rgba(0,0,0,.5); --sh-2:0 1px 2px rgba(0,0,0,.5),0 4px 12px -2px rgba(0,0,0,.5); --sh-3:0 2px 4px rgba(0,0,0,.5),0 16px 32px -8px rgba(0,0,0,.7); --sh-4:0 32px 80px -20px rgba(0,0,0,.9);
   color-scheme:dark;
 }
@@ -220,8 +223,6 @@ svg{display:block}
 .day.neg-bg::after{background:var(--neg)}
 .day.today{border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
 .day.today .dn{background:var(--red);color:#fff}
-.day.pos-bg{background:linear-gradient(180deg,var(--card) 0%,var(--pos-bg) 100%);border-color:var(--pos-line)}
-.day.neg-bg{background:linear-gradient(180deg,var(--card) 0%,var(--neg-bg) 100%);border-color:var(--neg-line)}
 .day.has:not(.pos-bg):not(.neg-bg){background:var(--bg-2)}
 .day .dp{display:block;width:100%;text-align:center;font-weight:800;font-size:10.5px;letter-spacing:-.03em;line-height:1.15;white-space:nowrap;overflow:hidden;font-variant-numeric:tabular-nums}
 .day .dp.pos{color:var(--pos)} .day .dp.neg{color:var(--neg)} .day .dp.zero{color:var(--muted)}
@@ -332,6 +333,93 @@ svg{display:block}
 .txt{width:100%;height:48px;border-radius:var(--r-sm);border:1px solid var(--line-2);background:var(--card);padding:0 13px;font-size:16px;font-weight:600;outline:none;transition:border-color .2s,box-shadow .2s}
 .txt:focus{border-color:var(--red);box-shadow:0 0 0 4px var(--red-soft)}
 
+
+/* ---- Comparación con el mes anterior ---- */
+.stat .dl{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:-4px}
+.stat .dl.good{color:var(--pos)} .stat .dl.bad{color:var(--neg)}
+.stat.big .dl,.stat.big .dl.good,.stat.big .dl.bad{color:rgba(255,255,255,.9)}
+.stat .s{font-size:12px;font-weight:500;color:var(--muted);line-height:1.35;margin-top:-4px}
+.stat .v.pos{color:var(--pos)} .stat .v.neg{color:var(--neg)}
+.stat.big .v.pos,.stat.big .v.neg{color:#fff}
+/* ---- Objetivo mensual ---- */
+.goal{position:relative;z-index:1;display:grid;gap:7px;margin-top:2px}
+.gbar{height:6px;border-radius:100px;background:rgba(255,255,255,.25);overflow:hidden}
+.gbar i{display:block;height:100%;width:0;border-radius:inherit;background:#fff;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.grow{display:flex;justify-content:space-between;align-items:center;gap:4px 8px;flex-wrap:wrap;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.88)}
+.glink{font-weight:700;font-size:11.5px;color:#fff;text-decoration:underline;text-decoration-color:rgba(255,255,255,.5);text-underline-offset:2px;white-space:nowrap}
+/* ---- Métricas de anuncios ---- */
+.stats.ads{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* ---- Gráfico acumulado ---- */
+.chart{margin-bottom:18px;padding:18px 16px 14px}
+.ch-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bottom:16px}
+.ch-k{display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.ch-head b{display:block;font-weight:800;font-size:clamp(22px,6vw,28px);letter-spacing:-.035em;margin-top:4px}
+.ch-head b.pos{color:var(--pos)} .ch-head b.neg{color:var(--neg)}
+.ch-leg{display:flex;gap:14px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.ch-leg>span{display:inline-flex;align-items:center;gap:7px}
+.ch-leg i{display:inline-block;width:18px;height:3px;border-radius:2px}
+.ch-leg i.cur{background:linear-gradient(90deg,var(--pos) 50%,var(--neg) 50%)}
+.ch-leg i.prev{background:repeating-linear-gradient(90deg,var(--faint) 0 4px,transparent 4px 7px)}
+.ch-wrap{position:relative;height:170px;margin-left:52px;touch-action:pan-y;cursor:crosshair}
+.ch-wrap svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ch-wrap .zero{stroke:var(--line-2);stroke-width:1;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}
+.ch-wrap .prev{fill:none;stroke:var(--faint);stroke-width:1.6;stroke-dasharray:5 5;opacity:.8;vector-effect:non-scaling-stroke}
+.ch-wrap .ln{fill:none;stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.ch-wrap .ln.up{stroke:var(--pos)} .ch-wrap .ln.dn{stroke:var(--neg)}
+.ch-y{position:absolute;left:-52px;top:0;bottom:0;width:46px;pointer-events:none}
+.ch-y span{position:absolute;right:0;transform:translateY(-50%);font-size:10.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+.ch-x{position:relative;height:16px;margin:8px 0 0 52px}
+.ch-x span{position:absolute;transform:translateX(-50%);font-size:10.5px;font-weight:600;color:var(--muted)}
+.ch-guide{position:absolute;top:0;bottom:0;width:1px;background:var(--line-2);opacity:0;pointer-events:none;transition:opacity .15s}
+.ch-dot{position:absolute;width:11px;height:11px;border-radius:50%;border:2px solid var(--card);box-shadow:0 0 0 1px var(--line-2),0 2px 6px rgba(0,0,0,.2);transform:translate(-50%,-50%);opacity:0;pointer-events:none;background:var(--muted)}
+.ch-dot.pos{background:var(--pos)} .ch-dot.neg{background:var(--neg)}
+.ch-tip{position:absolute;transform:translate(-50%,calc(-100% - 12px));background:var(--fg);color:var(--bg);font-size:12px;font-weight:600;padding:7px 10px;border-radius:10px;white-space:nowrap;opacity:0;pointer-events:none;box-shadow:var(--sh-3);z-index:2}
+.ch-tip small{display:block;font-size:11px;font-weight:500;opacity:.75;margin-top:2px}
+.ch-guide.on,.ch-dot.on,.ch-tip.on{opacity:1}
+/* ---- Mapa de calor ---- */
+.day.pos-bg{background:linear-gradient(180deg,color-mix(in srgb,var(--pos) calc(var(--r,0) * var(--hspan) * .5),var(--card)) 0%,color-mix(in srgb,var(--pos) calc(var(--hmin) + var(--r,0) * var(--hspan)),var(--card)) 100%);border-color:color-mix(in srgb,var(--pos) calc(14% + var(--r,0) * 26%),var(--line))}
+.day.neg-bg{background:linear-gradient(180deg,color-mix(in srgb,var(--neg) calc(var(--r,0) * var(--hspan) * .5),var(--card)) 0%,color-mix(in srgb,var(--neg) calc(var(--hmin) + var(--r,0) * var(--hspan)),var(--card)) 100%);border-color:color-mix(in srgb,var(--neg) calc(14% + var(--r,0) * 26%),var(--line))}
+.day .dp.pos{color:var(--pos-ink)} .day .dp.neg{color:var(--neg-ink)}
+.heat-leg{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:14px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.heat-leg span{margin:0 6px}
+.heat-leg i{width:18px;height:12px;border-radius:4px;background:color-mix(in srgb,var(--c) var(--a),var(--card));border:1px solid var(--line)}
+.heat-leg i.z{background:var(--card)}
+/* ---- Totales por semana ---- */
+.wkh,.wk{display:none}
+.wk{position:relative;min-width:0;flex-direction:column;justify-content:space-between;align-items:center;padding:10px 8px 9px;border-radius:16px;background:var(--bg-2);border:1px dashed var(--line-2);text-align:center}
+.wk .wl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.wk .wv{display:block;width:100%;font-weight:800;font-size:13.5px;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;color:var(--muted)}
+.wk.pos .wv{color:var(--pos-ink)} .wk.neg .wv{color:var(--neg-ink)}
+.wk .do{display:flex;align-items:center;justify-content:center;gap:4px;min-height:14px;font-size:11.5px;font-weight:700;color:var(--muted)}
+.wk .do svg{width:11px;height:11px}
+.weeks{display:flex;gap:6px;overflow-x:auto;margin-top:12px;padding-bottom:2px;scrollbar-width:none}
+.weeks::-webkit-scrollbar{display:none}
+.wkc{flex:none;display:flex;flex-direction:column;gap:2px;padding:7px 10px;border-radius:11px;background:var(--bg-2);font-size:11px;font-weight:600;color:var(--muted)}
+.wkc b{font-size:13px;font-weight:800;color:var(--fg);white-space:nowrap}
+.wkc.pos b{color:var(--pos)} .wkc.neg b{color:var(--neg)}
+/* ---- Productos: veredicto, ranking y CSV ---- */
+.pnote{font-size:13px;font-weight:500;color:var(--muted);margin-top:8px}
+.rk{width:26px;height:26px;border-radius:8px;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-size:12.5px;font-weight:800;flex:none}
+.pc-trend{display:grid;gap:10px;padding:12px;border-radius:14px;border:1px solid var(--line)}
+.pt-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.vtag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:800;text-transform:none;letter-spacing:0;white-space:nowrap}
+.vtag i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.v-scale{background:var(--pos-bg);color:var(--pos)} .v-cut{background:var(--neg-bg);color:var(--neg)}
+.v-watch{background:var(--warn-bg);color:var(--warn)} .v-none{background:var(--bg-2);color:var(--muted)}
+.spark{position:relative;display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:3px;height:46px}
+.spark::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
+.spark span{position:relative}
+.spark i{position:absolute;left:0;right:0;border-radius:3px}
+.spark i.p{bottom:50%;height:calc(var(--h) * 50%);background:var(--pos)}
+.spark i.n{top:50%;height:calc(var(--h) * 50%);background:var(--neg)}
+.spark i.e{top:calc(50% - 2px);height:4px;background:var(--line-2);border-radius:2px}
+.pt-why{font-size:12.5px;font-weight:600;color:var(--muted)}
+/* ---- Modal del día: copiar gastos ---- */
+.copyprev{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:40px;margin:2px 0 12px;border-radius:12px;border:1px dashed var(--neg-line);background:var(--card);font-weight:700;font-size:13.5px;transition:border-color .2s,color .2s}
+.copyprev svg{width:15px;height:15px}
+.copyprev:hover{border-color:var(--red);color:var(--red)}
+.sum{grid-template-columns:repeat(3,minmax(0,1fr))}
+
 /* Importar copia */
 .hint-btns,.phead-btns,.empty-btns{display:flex;gap:8px;flex-wrap:wrap}
 .empty-btns{justify-content:center}
@@ -380,6 +468,19 @@ svg{display:block}
   .mnav .mlabel{text-align:center;padding:0 6px}
   .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
   .stat.wide{grid-column:span 2}
+  .stats.ads{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .stats.ads .stat.wide{grid-column:auto}
+  .chart{padding:22px 22px 16px}
+  .ch-wrap{height:210px;margin-left:64px}
+  .ch-y{left:-64px;width:56px}
+  .ch-x{margin-left:64px}
+  .grid,.wdays{grid-template-columns:repeat(7,minmax(0,1fr)) minmax(0,.9fr)}
+  .wkh{display:block}
+  .wk{display:flex}
+  .weeks{display:none}
+  .sum{grid-template-columns:repeat(6,minmax(0,1fr))}
+  #daySheet .m-foot{grid-template-columns:1fr}
+  #daySheet .m-foot .acts{justify-self:end}
   .cal{padding:20px 20px 18px}
   .wdays,.grid{gap:10px}
   .wdays span{font-size:11.5px}
@@ -492,25 +593,43 @@ svg{display:block}
     </div>
 
     <div class="stats rise" style="animation-delay:.14s">
-      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></i><span data-i18n="sEarn">Ganancias</span></div><div class="v" id="sEarn">—</div></div>
-      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 9v8H9"/></svg></i><span data-i18n="sCost">Costes</span></div><div class="v" id="sCost">—</div></div>
-      <div class="stat big"><div class="k" data-i18n="sProfit">Beneficio del mes</div><div class="v" id="sProfit">—</div></div>
-      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M19 5 5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></i><span data-i18n="sMargin">Margen medio</span></div><div class="v" id="sMargin">—</div></div>
-      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></i><span data-i18n="sOrders">Pedidos</span></div><div class="v" id="sOrders">—</div></div>
+      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></i><span data-i18n="sEarn">Ganancias</span></div><div class="v" id="sEarn">—</div><span class="dl" id="dEarn" hidden></span></div>
+      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 9v8H9"/></svg></i><span data-i18n="sCost">Costes</span></div><div class="v" id="sCost">—</div><span class="dl" id="dCost" hidden></span></div>
+      <div class="stat big"><div class="k" data-i18n="sProfit">Beneficio del mes</div><div class="v" id="sProfit">—</div><span class="dl" id="dProfit" hidden></span><div class="goal" id="goalBox"><div class="gbar" id="goalBar" hidden><i id="goalFill"></i></div><div class="grow"><span id="goalTxt"></span><button type="button" class="glink" id="goalBtn"></button></div></div></div>
+      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M19 5 5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></i><span data-i18n="sMargin">Margen medio</span></div><div class="v" id="sMargin">—</div><span class="dl" id="dMargin" hidden></span></div>
+      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></i><span data-i18n="sOrders">Pedidos</span></div><div class="v" id="sOrders">—</div><span class="dl" id="dOrders" hidden></span></div>
       <div class="stat wide"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 14h.01M12 14h.01M16 14h.01"/></svg></i><span data-i18n="sDays">Días con datos</span></div><div class="v" id="sDays">—</div></div>
+    </div>
+
+    <div class="stats ads rise" style="animation-delay:.16s">
+      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></i><span data-i18n="sRoas">ROAS</span></div><div class="v" id="sRoas">—</div><span class="s" id="sRoasS"></span></div>
+      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg></i><span data-i18n="sBe">ROAS de equilibrio</span></div><div class="v" id="sBe">—</div><span class="s" data-i18n="sBeS">Mínimo para no perder</span></div>
+      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></i><span data-i18n="sCpa">Coste por pedido</span></div><div class="v" id="sCpa">—</div><span class="s" data-i18n="sCpaS">Anuncios ÷ pedidos</span></div>
+      <div class="stat"><div class="k"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></i><span data-i18n="sAds">Gasto en anuncios</span></div><div class="v" id="sAds">—</div><span class="s" id="sAdsS"></span></div>
+    </div>
+
+    <div class="card chart rise" id="chartCard" style="animation-delay:.17s">
+      <div class="ch-head">
+        <div><span class="ch-k" data-i18n="chT">Beneficio acumulado</span><b id="chNow">—</b></div>
+        <div class="ch-leg"><span><i class="cur"></i><span data-i18n="chCur">Este mes</span></span><span id="chLegPrevW"><i class="prev"></i><span id="chLegPrev"></span></span></div>
+      </div>
+      <div class="ch-wrap" id="chWrap"><div class="ch-y" id="chY"></div><svg id="chSvg" viewBox="0 0 1000 240" preserveAspectRatio="none" aria-hidden="true"></svg><div class="ch-guide" id="chGuide"></div><div class="ch-dot" id="chDot"></div><div class="ch-tip" id="chTip"></div></div>
+      <div class="ch-x" id="chX"></div>
     </div>
 
     <div class="card cal rise" style="animation-delay:.18s">
       <div class="wdays" id="wdays"></div>
       <div class="grid" id="calGrid"></div>
+      <div class="weeks" id="weeks"></div>
+      <div class="heat-leg" aria-hidden="true"><span data-i18n="heatLess">Pierdes</span><i style="--c:var(--neg);--a:55%"></i><i style="--c:var(--neg);--a:32%"></i><i style="--c:var(--neg);--a:14%"></i><i class="z"></i><i style="--c:var(--pos);--a:14%"></i><i style="--c:var(--pos);--a:32%"></i><i style="--c:var(--pos);--a:55%"></i><span data-i18n="heatMore">Ganas</span></div>
     </div>
   </section>
 
   <!-- ======= VISTA PRODUCTOS ======= -->
   <section id="viewProd" hidden>
     <div class="phead">
-      <div><h2 data-i18n="prodTitle">Productos testeados</h2><span class="count" id="prodCount">—</span></div>
-      <div class="phead-btns"><button type="button" class="btn" data-imp><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg><span data-i18n="impBtn">Importar copia</span></button>
+      <div><h2 data-i18n="prodTitle">Productos testeados</h2><span class="count" id="prodCount">—</span><p class="pnote" id="rankNote" data-i18n="rankNote">Ordenados de mejor a peor según los últimos 14 días.</p></div>
+      <div class="phead-btns"><button type="button" class="btn" id="csvBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg><span data-i18n="csv">Exportar CSV</span></button><button type="button" class="btn" data-imp><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg><span data-i18n="impBtn">Importar copia</span></button>
       <button type="button" class="btn dark" id="newProdBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="newProdBtn">Nuevo producto</span></button></div>
     </div>
     <div class="pgrid" id="prodGrid"></div>
@@ -551,6 +670,7 @@ svg{display:block}
           <div class="field"><label for="mProduct" data-i18n="fProduct">Coste del Producto</label><div class="amt"><span class="u">€</span><input type="number" id="mProduct" step="0.01" min="0" inputmode="decimal" placeholder="0"></div></div>
           <div class="field"><label for="mAd" data-i18n="fAd">Coste de Anuncios</label><div class="amt"><span class="u">€</span><input type="number" id="mAd" step="0.01" min="0" inputmode="decimal" placeholder="0"></div></div>
           <div class="field"><label for="mCommission" data-i18n="fComm">Comisiones</label><div class="amt"><span class="u">€</span><input type="number" id="mCommission" step="0.01" min="0" inputmode="decimal" placeholder="0"></div></div>
+          <button type="button" class="copyprev" id="copyPrev" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><span id="copyPrevTxt"></span></button>
           <p class="hint" data-i18n-html="eurNote">Introduce siempre los importes en <b>euros</b>. El selector $ / £ / RON solo cambia cómo se muestran las cifras.</p>
         </div>
         <div class="sec e">
@@ -567,6 +687,8 @@ svg{display:block}
         <div class="pf"><span data-i18n="rProfit">Beneficio</span><b id="mProfit">—</b></div>
         <div><span data-i18n="rMargin">Margen</span><b id="mMargin">—</b></div>
         <div><span data-i18n="rOrders">Pedidos</span><b id="mOrdersOut">—</b></div>
+        <div><span data-i18n="mRoas">ROAS</span><b id="mRoas">—</b></div>
+        <div><span data-i18n="mCpa">Coste/pedido</span><b id="mCpa">—</b></div>
       </div>
       <div class="acts">
         <button type="button" class="btn sm" id="mClear" data-i18n="clear">Vaciar día</button>
@@ -602,6 +724,23 @@ svg{display:block}
       <button type="button" class="btn sm" id="pCancel" data-i18n="cancel">Cancelar</button>
       <button type="button" class="btn sm dark" id="pCreate" data-i18n="npCreate">Crear producto</button>
     </div>
+  </div>
+</div>
+
+<!-- ======= OBJETIVO MENSUAL ======= -->
+<div class="scrim top-layer" id="goalScrim"></div>
+<div class="sheet small top-layer" id="goalSheet" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="m-head">
+    <div><h2 data-i18n="goalT">Objetivo de beneficio mensual</h2><div class="sub" data-i18n="goalP">Pon cuánto quieres ganar cada mes. Lo verás como una barra en la tarjeta del beneficio.</div></div>
+    <button type="button" class="x-btn" id="goalClose" data-i18n-aria="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="m-body">
+    <div class="field"><label for="goalIn" data-i18n="goalL">Objetivo mensual</label><div class="amt"><span class="u">€</span><input type="number" id="goalIn" step="1" min="0" inputmode="decimal" placeholder="2000"></div>
+      <span class="hint" data-i18n-html="goalEur">En <b>euros</b>, como el resto de importes.</span></div>
+  </div>
+  <div class="m-foot">
+    <div></div>
+    <div class="acts"><button type="button" class="btn sm" id="goalRemove" data-i18n="goalRemove">Quitar objetivo</button><button type="button" class="btn sm dark" id="goalSave" data-i18n="goalSave">Guardar</button></div>
   </div>
 </div>
 
@@ -653,6 +792,12 @@ es:{ back:"Volver", eyebrow:"Tracker de Ads", h1a:"Calendario de", h1b:"Benefici
   impBtn:"Importar copia", impT:"Importar copia de la web antigua", impP:"Sube el archivo .json de copia de seguridad de Zonga Elements. Se añaden tus productos y sus días; lo que ya tengas aquí no se toca.",
   impPick:"Elige tu archivo .json", impPickS:"o arrástralo aquí", impReading:"Leyendo el archivo…", impBad:"Este archivo no es una copia de Zonga Elements con datos del Calendario de Beneficio.", impErr:"No se ha podido leer el archivo. Comprueba que es el .json de la copia de seguridad.",
   impFound:"Esto es lo que hay en tu copia", impProds:"Productos", impDays:"Días con datos", impProfit:"Beneficio total", impNew:"Nuevo", impMerge:"Ya existe · se completa", impSkip:"{n} días ya los tenías aquí y se saltarán.", impGo:"Importar", impNone:"No hay nada nuevo que importar.", impOk:"Copia importada · productos nuevos: {p} · días: {d}", impLegacy:"Producto 1",
+  dVs:"vs {m}", sRoas:"ROAS", sRoasS:"Ganancias ÷ anuncios", roasOk:"Por encima del equilibrio: ganas", roasBad:"Por debajo del equilibrio: pierdes", sBe:"ROAS de equilibrio", sBeS:"Mínimo para no perder", sCpa:"Coste por pedido", sCpaS:"Anuncios ÷ pedidos", sAds:"Gasto en anuncios", sAdsS:"{p} de tus costes", mRoas:"ROAS", mCpa:"Coste/pedido",
+  goalSet:"Fijar objetivo", goalEdit:"Editar", goalTxt:"Objetivo {g} · {p}", goalDone:"¡Objetivo de {g} cumplido!", goalT:"Objetivo de beneficio mensual", goalP:"Pon cuánto quieres ganar cada mes. Lo verás como una barra en la tarjeta del beneficio.", goalL:"Objetivo mensual", goalEur:"En <b>euros</b>, como el resto de importes.", goalSave:"Guardar", goalRemove:"Quitar objetivo",
+  chT:"Beneficio acumulado", chCur:"Este mes", chDay:"ese día {v}", wk:"Sem. {n}", wkH:"Semana", heatLess:"Pierdes", heatMore:"Ganas",
+  v14:"Últimos 14 días", v_scale:"Escalar", v_watch:"Vigilar", v_cut:"Cortar", v_none:"Sin datos recientes", vWhy:"{p} · margen {m} · tendencia {tr}", rankNote:"Ordenados de mejor a peor según los últimos 14 días.",
+  csv:"Exportar CSV", csvOk:"CSV descargado · {n} días", csvEmpty:"Aún no hay días que exportar.", csvHead:"Fecha|Producto|Coste producto (€)|Anuncios (€)|Comisiones (€)|Ganancias (€)|Pedidos|Costes (€)|Beneficio (€)|Margen (%)|ROAS",
+  copyPrev:"Copiar gastos del {d}", copied:"Gastos copiados del {d}",
   days1:"1 día con datos", daysN:"{n} días con datos", inc:"Ingresos", exp:"Gastos", profit:"Beneficio", margin:"Margen", seeCal:"Ver calendario", delAria:"Eliminar producto",
   delConfirm:'¿Eliminar "{name}" y todos sus días registrados? No se puede deshacer.', delYes:"Eliminar", cancel:"Cancelar",
   pickQ:"¿Para qué producto es este día?", change:"cambiar producto", gastos:"Gastos", fProduct:"Coste del Producto", fAd:"Coste de Anuncios", fComm:"Comisiones",
@@ -670,6 +815,12 @@ en:{ back:"Back", eyebrow:"Ads tracker", h1a:"Profit", h1b:"Calendar", sub:"Log 
   impBtn:"Import backup", impT:"Import a backup from the old site", impP:"Upload the Zonga Elements backup .json file. Your products and their days are added; whatever you already have here stays untouched.",
   impPick:"Choose your .json file", impPickS:"or drop it here", impReading:"Reading the file…", impBad:"This file isn't a Zonga Elements backup with Profit Calendar data.", impErr:"The file couldn't be read. Check it's the backup .json.",
   impFound:"Here's what's in your backup", impProds:"Products", impDays:"Days with data", impProfit:"Total profit", impNew:"New", impMerge:"Already here · will be completed", impSkip:"You already had {n} days here; they'll be skipped.", impGo:"Import", impNone:"Nothing new to import.", impOk:"Backup imported · new products: {p} · days: {d}", impLegacy:"Product 1",
+  dVs:"vs {m}", sRoas:"ROAS", sRoasS:"Revenue ÷ ad spend", roasOk:"Above break-even: you're profitable", roasBad:"Below break-even: you're losing", sBe:"Break-even ROAS", sBeS:"Minimum not to lose money", sCpa:"Cost per order", sCpaS:"Ad spend ÷ orders", sAds:"Ad spend", sAdsS:"{p} of your costs", mRoas:"ROAS", mCpa:"Cost/order",
+  goalSet:"Set a goal", goalEdit:"Edit", goalTxt:"Goal {g} · {p}", goalDone:"{g} goal reached!", goalT:"Monthly profit goal", goalP:"Set how much you want to earn each month. You'll see it as a bar on the profit card.", goalL:"Monthly goal", goalEur:"In <b>euros</b>, like every other amount.", goalSave:"Save", goalRemove:"Remove goal",
+  chT:"Cumulative profit", chCur:"This month", chDay:"that day {v}", wk:"Wk {n}", wkH:"Week", heatLess:"Loss", heatMore:"Profit",
+  v14:"Last 14 days", v_scale:"Scale", v_watch:"Watch", v_cut:"Cut", v_none:"No recent data", vWhy:"{p} · margin {m} · trend {tr}", rankNote:"Ranked best to worst over the last 14 days.",
+  csv:"Export CSV", csvOk:"CSV downloaded · {n} days", csvEmpty:"No days to export yet.", csvHead:"Date|Product|Product cost (€)|Ad spend (€)|Fees (€)|Revenue (€)|Orders|Costs (€)|Profit (€)|Margin (%)|ROAS",
+  copyPrev:"Copy expenses from {d}", copied:"Expenses copied from {d}",
   days1:"1 day with data", daysN:"{n} days with data", inc:"Revenue", exp:"Expenses", profit:"Profit", margin:"Margin", seeCal:"View calendar", delAria:"Delete product",
   delConfirm:'Delete "{name}" and all its logged days? This can\'t be undone.', delYes:"Delete", cancel:"Cancel",
   pickQ:"Which product is this day for?", change:"change product", gastos:"Expenses", fProduct:"Product cost", fAd:"Ad spend", fComm:"Fees",
@@ -687,6 +838,12 @@ ro:{ back:"Înapoi", eyebrow:"Tracker de Ads", h1a:"Calendarul", h1b:"profitului
   impBtn:"Importă copia", impT:"Importă o copie de pe site-ul vechi", impP:"Încarcă fișierul .json de backup din Zonga Elements. Se adaugă produsele și zilele lor; ce ai deja aici rămâne neatins.",
   impPick:"Alege fișierul .json", impPickS:"sau trage-l aici", impReading:"Se citește fișierul…", impBad:"Fișierul nu e o copie Zonga Elements cu date din Calendarul profitului.", impErr:"Fișierul nu s-a putut citi. Verifică dacă e .json-ul de backup.",
   impFound:"Iată ce conține copia ta", impProds:"Produse", impDays:"Zile cu date", impProfit:"Profit total", impNew:"Nou", impMerge:"Există deja · se completează", impSkip:"Aveai deja {n} zile aici; vor fi sărite.", impGo:"Importă", impNone:"Nimic nou de importat.", impOk:"Copie importată · produse noi: {p} · zile: {d}", impLegacy:"Produsul 1",
+  dVs:"vs {m}", sRoas:"ROAS", sRoasS:"Încasări ÷ reclame", roasOk:"Peste pragul de rentabilitate: câștigi", roasBad:"Sub pragul de rentabilitate: pierzi", sBe:"ROAS de echilibru", sBeS:"Minimul ca să nu pierzi", sCpa:"Cost pe comandă", sCpaS:"Reclame ÷ comenzi", sAds:"Cheltuieli pe reclame", sAdsS:"{p} din costuri", mRoas:"ROAS", mCpa:"Cost/comandă",
+  goalSet:"Setează obiectiv", goalEdit:"Editează", goalTxt:"Obiectiv {g} · {p}", goalDone:"Obiectivul de {g} atins!", goalT:"Obiectiv lunar de profit", goalP:"Pune cât vrei să câștigi în fiecare lună. Îl vei vedea ca o bară pe cardul profitului.", goalL:"Obiectiv lunar", goalEur:"În <b>euro</b>, ca toate celelalte sume.", goalSave:"Salvează", goalRemove:"Elimină obiectivul",
+  chT:"Profit cumulat", chCur:"Luna aceasta", chDay:"în ziua aceea {v}", wk:"Săpt. {n}", wkH:"Săptămâna", heatLess:"Pierzi", heatMore:"Câștigi",
+  v14:"Ultimele 14 zile", v_scale:"Scalează", v_watch:"Urmărește", v_cut:"Oprește", v_none:"Fără date recente", vWhy:"{p} · marjă {m} · tendință {tr}", rankNote:"Ordonate de la cel mai bun la cel mai slab după ultimele 14 zile.",
+  csv:"Exportă CSV", csvOk:"CSV descărcat · {n} zile", csvEmpty:"Încă nu sunt zile de exportat.", csvHead:"Data|Produs|Cost produs (€)|Reclame (€)|Comisioane (€)|Încasări (€)|Comenzi|Costuri (€)|Profit (€)|Marjă (%)|ROAS",
+  copyPrev:"Copiază cheltuielile din {d}", copied:"Cheltuieli copiate din {d}",
   days1:"1 zi cu date", daysN:"{n} zile cu date", inc:"Încasări", exp:"Cheltuieli", profit:"Profit", margin:"Marjă", seeCal:"Vezi calendarul", delAria:"Șterge produsul",
   delConfirm:'Ștergi „{name}" și toate zilele notate? Nu se poate anula.', delYes:"Șterge", cancel:"Anulează",
   pickQ:"Pentru ce produs este ziua asta?", change:"schimbă produsul", gastos:"Cheltuieli", fProduct:"Costul produsului", fAd:"Costul reclamelor", fComm:"Comisioane",
@@ -784,6 +941,7 @@ if (!S || S.v !== 1) S = { v:1, currency:"EUR", products:[], data:{} };
 if (!CUR[S.currency]) S.currency = "EUR";
 if (!Array.isArray(S.products)) S.products = [];
 if (!S.data || typeof S.data !== "object") S.data = {};
+if (!(S.goal > 0)) S.goal = 0;      // objetivo de beneficio mensual, en euros (0 = sin objetivo)
 
 /* Estado de la pantalla */
 let selectedProductId = "all";     // filtro del calendario
@@ -849,15 +1007,15 @@ function calcEntry(e){
 // Agrega un día según el filtro (producto concreto o "all")
 function dayAgg(dateKey){
   if (selectedProductId === "all"){
-    let E = 0, costs = 0, profit = 0, orders = 0, any = false;
+    let E = 0, costs = 0, profit = 0, orders = 0, A = 0, P = 0, C = 0, any = false;
     S.products.forEach(p => {
       const c = calcEntry((S.data[p.id] || {})[dateKey]);
-      if (c.has){ any = true; E += c.E; costs += c.costs; profit += c.profit; orders += c.O; }
+      if (c.has){ any = true; E += c.E; costs += c.costs; profit += c.profit; orders += c.O; A += c.A; P += c.P; C += c.C; }
     });
-    return { E, costs, profit, orders, has: any };
+    return { E, costs, profit, orders, A, P, C, has: any };
   }
   const c = calcEntry((S.data[selectedProductId] || {})[dateKey]);
-  return { E: c.E, costs: c.costs, profit: c.profit, orders: c.O, has: c.has };
+  return { E: c.E, costs: c.costs, profit: c.profit, orders: c.O, A: c.A, P: c.P, C: c.C, has: c.has };
 }
 // Estadísticas totales de un producto (todo el historial)
 function productStats(id){
@@ -867,6 +1025,37 @@ function productStats(id){
   return { E, costs, profit, margin: E > 0 ? (profit / E) * 100 : NaN, days };
 }
 const signOf = x => x > 0 ? "pos" : (x < 0 ? "neg" : "zero");
+
+/* ---------- Métricas de anuncios (nuevas; salen de los mismos datos) ----------
+   ROAS = ganancias ÷ anuncios. ROAS de equilibrio = ganancias ÷ (ganancias − producto − comisiones):
+   el ROAS mínimo para que lo que queda tras producto y comisiones pague los anuncios.
+   Coste por pedido = anuncios ÷ pedidos. */
+function adMetrics(E, A, P, C, O){
+  const contrib = E - P - C;
+  return { roas: A > 0 ? E / A : NaN, beRoas: contrib > 0 ? E / contrib : NaN, cpa: O > 0 ? A / O : NaN };
+}
+const xFmt = x => isFinite(x) ? x.toLocaleString(loc(), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "x" : "—";
+const signed = x => (x > 0 ? "+" : "") + money(x);
+function money0(x){
+  if (!isFinite(x)) return "—";
+  const v = convert(x).toLocaleString(loc(), { maximumFractionDigits: 0, useGrouping: "always" });
+  return S.currency === "RON" ? v + " RON" : symbol() + v;
+}
+const dayShortL = k => new Date(k + "T00:00:00").toLocaleDateString(loc(), { day: "numeric", month: "short" }).replace(".", "");
+const todayKeyNow = () => { const d = new Date(); return keyOf(d.getFullYear(), d.getMonth(), d.getDate()); };
+
+// Suma los días 1..upTo de un mes según el filtro y guarda el beneficio de cada día (null si no hay datos)
+function monthTotals(y, m, upTo){
+  const N = new Date(y, m + 1, 0).getDate(), last = Math.min(N, upTo || N);
+  const T = { E: 0, costs: 0, profit: 0, orders: 0, A: 0, P: 0, C: 0, days: 0, daily: [] };
+  for (let d = 1; d <= last; d++){
+    const a = dayAgg(keyOf(y, m, d));
+    if (a.has){ T.E += a.E; T.costs += a.costs; T.profit += a.profit; T.orders += a.orders; T.A += a.A; T.P += a.P; T.C += a.C; T.days++; T.daily.push(a.profit); }
+    else T.daily.push(null);
+  }
+  T.margin = T.E > 0 ? (T.profit / T.E) * 100 : NaN;
+  return T;
+}
 
 /* ---------- Desplegable de producto ---------- */
 function renderDropdown(){
@@ -913,28 +1102,133 @@ function renderRateTag(){
 /* ---------- Totales del mes visible ---------- */
 function renderStats(){
   const y = view.getFullYear(), m = view.getMonth();
-  const days = new Date(y, m + 1, 0).getDate();
-  let TE = 0, TC = 0, TPr = 0, TO = 0, nDays = 0;
-  for (let d = 1; d <= days; d++){
-    const a = dayAgg(keyOf(y, m, d));
-    if (a.has){ TE += a.E; TC += a.costs; TPr += a.profit; TO += a.orders; nDays++; }
-  }
-  const margin = TE > 0 ? (TPr / TE) * 100 : NaN;
-  $("sEarn").textContent = money(TE);
-  $("sCost").textContent = money(TC);
-  const pr = $("sProfit"); pr.textContent = money(TPr);
-  pr.classList.remove("pos", "neg"); if (TPr > 0) pr.classList.add("pos"); else if (TPr < 0) pr.classList.add("neg");
-  $("sMargin").textContent = isFinite(margin) ? pct(margin) : "—";
-  $("sOrders").textContent = int(TO);
-  $("sDays").textContent = nDays;
+  const T = monthTotals(y, m);
+  $("sEarn").textContent = money(T.E);
+  $("sCost").textContent = money(T.costs);
+  const pr = $("sProfit"); pr.textContent = money(T.profit);
+  pr.classList.remove("pos", "neg"); if (T.profit > 0) pr.classList.add("pos"); else if (T.profit < 0) pr.classList.add("neg");
+  $("sMargin").textContent = isFinite(T.margin) ? pct(T.margin) : "—";
+  $("sOrders").textContent = int(T.orders);
+  $("sDays").textContent = T.days;
+
+  // Comparación con el mes anterior (en el mes en curso, hasta el mismo día)
+  const tn = new Date(), isCur = y === tn.getFullYear() && m === tn.getMonth();
+  const pv = new Date(y, m - 1, 1), prev = monthTotals(pv.getFullYear(), pv.getMonth(), isCur ? tn.getDate() : 0);
+  const lbl = pv.toLocaleDateString(loc(), { month: "short" }).replace(".", ""), show = prev.days > 0 && T.days > 0;
+  delta("dEarn", T.E, prev.E, show, lbl);
+  delta("dCost", T.costs, prev.costs, show, lbl, { invert: true });
+  delta("dProfit", T.profit, prev.profit, show, lbl);
+  delta("dMargin", T.margin, prev.margin, show, lbl, { points: true });
+  delta("dOrders", T.orders, prev.orders, show, lbl);
+
+  // Métricas de anuncios
+  const M = adMetrics(T.E, T.A, T.P, T.C, T.orders);
+  const ro = $("sRoas"); ro.textContent = xFmt(M.roas); ro.classList.remove("pos", "neg");
+  if (isFinite(M.roas) && isFinite(M.beRoas)){ const ok = M.roas >= M.beRoas; ro.classList.add(ok ? "pos" : "neg"); $("sRoasS").textContent = t(ok ? "roasOk" : "roasBad"); }
+  else $("sRoasS").textContent = t("sRoasS");
+  $("sBe").textContent = xFmt(M.beRoas);
+  $("sCpa").textContent = isFinite(M.cpa) ? money(M.cpa) : "—";
+  $("sAds").textContent = money(T.A);
+  $("sAdsS").textContent = T.costs > 0 ? t("sAdsS", { p: pct(T.A / T.costs * 100) }) : "";
+
+  renderGoal(T.profit);
+  renderChart();
   fit(".stat .v", 12);
+}
+// ▲ / ▼ frente al mes anterior. En costes, subir es malo. El margen se compara en puntos.
+function delta(id, cur, prev, show, lbl, { invert = false, points = false } = {}){
+  const el = $(id);
+  if (!show || !isFinite(cur) || !isFinite(prev) || (!points && prev === 0)){ el.hidden = true; return; }
+  const d = points ? cur - prev : (cur - prev) / Math.abs(prev) * 100;
+  const up = d > 0.05, down = d < -0.05;
+  el.hidden = false;
+  el.className = "dl" + (up ? (invert ? " bad" : " good") : down ? (invert ? " good" : " bad") : "");
+  el.textContent = (up ? "▲ " : down ? "▼ " : "= ") + Math.abs(d).toLocaleString(loc(), { maximumFractionDigits: 1 }) + (points ? " pp " : " % ") + t("dVs", { m: lbl });
+}
+
+/* ---------- Objetivo mensual (solo con «Todos los productos») ---------- */
+function renderGoal(profit){
+  const all = selectedProductId === "all";
+  $("goalBox").hidden = !all;
+  if (!all) return;
+  const g = S.goal;
+  $("goalBtn").textContent = g ? t("goalEdit") : t("goalSet");
+  $("goalBar").hidden = !g;
+  if (!g){ $("goalTxt").textContent = ""; return; }
+  const r = profit / g;
+  $("goalFill").style.width = (Math.max(0, Math.min(1, r)) * 100) + "%";
+  $("goalTxt").textContent = r >= 1 ? t("goalDone", { g: money0(g) }) : t("goalTxt", { g: money0(g), p: pct(Math.max(0, r * 100)) });
+}
+function openGoal(){ $("goalIn").value = S.goal || ""; openLayer("goalSheet", "goalScrim"); setTimeout(() => $("goalIn").focus(), 60); }
+function closeGoal(){ closeLayer("goalSheet", "goalScrim"); }
+function saveGoal(v){
+  const x = parseFloat(v);
+  S.goal = isFinite(x) && x > 0 ? Math.round(x * 100) / 100 : 0;
+  save(); closeGoal(); renderStats();
+}
+
+/* ---------- Gráfico de beneficio acumulado ---------- */
+let CH = null;
+function renderChart(){
+  const y = view.getFullYear(), m = view.getMonth(), N = new Date(y, m + 1, 0).getDate(), tn = new Date();
+  const isCur = y === tn.getFullYear() && m === tn.getMonth(), isFuture = new Date(y, m, 1) > tn;
+  const cur = monthTotals(y, m, isCur ? tn.getDate() : N);
+  const pv = new Date(y, m - 1, 1), prev = monthTotals(pv.getFullYear(), pv.getMonth());
+  const cum = a => { let acc = 0; return a.map(v => acc += (v || 0)); };
+  const c = isFuture || !cur.days ? [] : cum(cur.daily), p = prev.days ? cum(prev.daily).slice(0, N) : [];
+  CH = null; hideTip();
+  $("chartCard").hidden = !c.length && !p.length;
+  if (!c.length && !p.length) return;
+  const vals = [0, ...c, ...p];
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  if (hi === lo){ hi += 1; lo -= 1; }
+  const padv = (hi - lo) * 0.12; hi += padv; if (lo < 0) lo -= padv;
+  const W = 1000, H = 240, X = i => N > 1 ? i / (N - 1) * W : W / 2, Y = v => (hi - v) / (hi - lo) * H, z = Y(0);
+  const line = a => "M" + a.map((v, i) => X(i).toFixed(1) + "," + Y(v).toFixed(1)).join(" L");
+  const area = a => line(a) + " L" + X(a.length - 1).toFixed(1) + "," + z.toFixed(1) + " L0," + z.toFixed(1) + " Z";
+  let svg = '<defs><clipPath id="chUp"><rect x="-5" y="-50" width="1010" height="' + (z + 50).toFixed(1) + '"/></clipPath>' +
+    '<clipPath id="chDn"><rect x="-5" y="' + z.toFixed(1) + '" width="1010" height="' + (H - z + 50).toFixed(1) + '"/></clipPath>' +
+    '<linearGradient id="chGp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--pos);stop-opacity:.32"/><stop offset="1" style="stop-color:var(--pos);stop-opacity:0"/></linearGradient>' +
+    '<linearGradient id="chGn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--neg);stop-opacity:0"/><stop offset="1" style="stop-color:var(--neg);stop-opacity:.32"/></linearGradient></defs>' +
+    '<line class="zero" x1="0" x2="1000" y1="' + z.toFixed(1) + '" y2="' + z.toFixed(1) + '"/>';
+  if (p.length > 1) svg += '<path class="prev" d="' + line(p) + '"/>';
+  if (c.length){
+    const one = c.length === 1 ? [c[0], c[0]] : c;   // un solo día: se dibuja un tramo corto
+    svg += '<path class="ar" clip-path="url(#chUp)" fill="url(#chGp)" d="' + area(one) + '"/><path class="ar" clip-path="url(#chDn)" fill="url(#chGn)" d="' + area(one) + '"/>' +
+           '<path class="ln up" clip-path="url(#chUp)" d="' + line(one) + '"/><path class="ln dn" clip-path="url(#chDn)" d="' + line(one) + '"/>';
+  }
+  $("chSvg").innerHTML = svg;
+  $("chY").innerHTML = [hi, 0, lo].filter((v, i) => i === 1 || Math.abs(v) > 0.005).map(v => '<span style="top:' + (Y(v) / H * 100).toFixed(2) + '%">' + esc(money0(v)) + '</span>').join("");
+  const ticks = [...new Set([1, 8, 15, 22, N])];
+  $("chX").innerHTML = ticks.map(d => '<span style="left:' + (X(d - 1) / W * 100).toFixed(2) + '%">' + d + '</span>').join("");
+  const now = c.length ? c[c.length - 1] : 0, nEl = $("chNow");
+  nEl.textContent = c.length ? signed(now) : "—"; nEl.className = c.length ? signOf(now) : "";
+  $("chLegPrevW").hidden = p.length < 2;
+  $("chLegPrev").textContent = cap(pv.toLocaleDateString(loc(), { month: "long" }));
+  CH = { N, c, daily: cur.daily, X, Y, W, H, y, m };
+}
+function hideTip(){ ["chGuide", "chDot", "chTip"].forEach(id => $(id).classList.remove("on")); }
+function chartHover(e){
+  if (!CH || !CH.c.length) return;
+  const r = $("chWrap").getBoundingClientRect();
+  let i = Math.round((e.clientX - r.left) / r.width * (CH.N - 1));
+  i = Math.max(0, Math.min(CH.c.length - 1, i));
+  const xp = CH.X(i) / CH.W * 100, yp = CH.Y(CH.c[i]) / CH.H * 100, v = CH.c[i], dv = CH.daily[i];
+  $("chGuide").style.left = xp + "%";
+  const dot = $("chDot"); dot.style.left = xp + "%"; dot.style.top = yp + "%"; dot.className = "ch-dot on " + signOf(v);
+  const tip = $("chTip");
+  tip.innerHTML = '<b>' + esc(dayShortL(keyOf(CH.y, CH.m, i + 1))) + '</b> · ' + esc(signed(v)) + (dv != null ? '<small>' + esc(t("chDay", { v: signed(dv) })) + '</small>' : "");
+  const px = Math.max(70, Math.min(r.width - 70, xp / 100 * r.width));
+  tip.style.left = px + "px"; tip.style.top = yp + "%";
+  $("chGuide").classList.add("on"); tip.classList.add("on");
 }
 
 /* ---------- Calendario ---------- */
 function renderWeekdays(){
   // 2024-01-01 fue lunes: de ahí sacamos los nombres cortos en el idioma activo
   $("wdays").innerHTML = [...Array(7)].map((_, i) =>
-    "<span>" + esc(new Date(2024, 0, 1 + i).toLocaleDateString(loc(), { weekday: "short" }).replace(".", "")) + "</span>").join("");
+    "<span>" + esc(new Date(2024, 0, 1 + i).toLocaleDateString(loc(), { weekday: "short" }).replace(".", "")) + "</span>").join("") +
+    '<span class="wkh">' + esc(t("wkH")) + '</span>';
 }
 function renderCalendar(){
   $("calHint").hidden = S.products.length > 0;
@@ -942,19 +1236,25 @@ function renderCalendar(){
   $("monthLabel").textContent = cap(view.toLocaleDateString(loc(), { month: "long", year: "numeric" }));
   const offset = (new Date(y, m, 1).getDay() + 6) % 7;
   const daysInMonth = new Date(y, m + 1, 0).getDate();
-  const tn = new Date();
-  const todayKey = keyOf(tn.getFullYear(), tn.getMonth(), tn.getDate());
+  const todayKey = todayKeyNow();
+  const aggs = [];
+  for (let d = 1; d <= daysInMonth; d++) aggs.push(dayAgg(keyOf(y, m, d)));
+  // Mapa de calor: la intensidad depende de cuánto ganas o pierdes frente al mejor/peor día del mes
+  const maxPos = Math.max(0, ...aggs.filter(a => a.has).map(a => a.profit));
+  const maxNeg = Math.max(0, ...aggs.filter(a => a.has).map(a => -a.profit));
 
-  let html = "";
-  for (let i = 0; i < offset; i++) html += '<div class="day empty"></div>';
+  const cells = [], vals = [];
+  for (let i = 0; i < offset; i++){ cells.push('<div class="day empty"></div>'); vals.push(null); }
   for (let d = 1; d <= daysInMonth; d++){
     const key = keyOf(y, m, d);
-    const a = dayAgg(key);
-    let cls = "day";
+    const a = aggs[d - 1];
+    let cls = "day", heat = "";
     if (key === todayKey) cls += " today";
     let body = "";
     if (a.has){
       cls += " has" + (a.profit > 0 ? " pos-bg" : (a.profit < 0 ? " neg-bg" : ""));
+      const mx = a.profit > 0 ? maxPos : maxNeg;
+      if (a.profit !== 0 && mx > 0) heat = ";--r:" + Math.sqrt(Math.abs(a.profit) / mx).toFixed(3);
       // Beneficio en el centro y pedidos abajo. Sin pedidos la fila se queda vacía
       // para que el beneficio siga centrado.
       const tip = a.orders > 0 ? ' title="' + esc(a.orders === 1 ? t("order1") : t("orderN", { n: int(a.orders) })) + '"' : "";
@@ -962,12 +1262,26 @@ function renderCalendar(){
              '<span class="do"' + tip + '>' + (a.orders > 0 ? BAG_SVG + int(a.orders) : "&nbsp;") + '</span>';
     }
     const aria = cap(new Date(y, m, d).toLocaleDateString(loc(), { weekday: "long", day: "numeric", month: "long" })) + (a.has ? " · " + money(a.profit) : "");
-    html += '<button type="button" class="' + cls + '" style="--i:' + (offset + d) + '" data-date="' + key + '" aria-label="' + esc(aria) + '"><span class="dn">' + d + '</span>' + body + '</button>';
+    cells.push('<button type="button" class="' + cls + '" style="--i:' + (offset + d) + heat + '" data-date="' + key + '" aria-label="' + esc(aria) + '"><span class="dn">' + d + '</span>' + body + '</button>');
+    vals.push(a);
   }
   // huecos tras el último día para cerrar la semana (la tabla no queda coja)
-  for (let i = 0; i < (7 - (offset + daysInMonth) % 7) % 7; i++) html += '<div class="day empty"></div>';
+  while (cells.length % 7){ cells.push('<div class="day empty"></div>'); vals.push(null); }
+
+  // Total de cada semana: columna a la derecha (escritorio) y fila de chips (móvil)
+  let html = "", chips = "";
+  for (let r = 0; r < cells.length / 7; r++){
+    const wk = vals.slice(r * 7, r * 7 + 7).filter(a => a && a.has);
+    const sum = wk.reduce((acc, a) => acc + a.profit, 0), ord = wk.reduce((acc, a) => acc + a.orders, 0);
+    const sg = wk.length ? signOf(sum) : "zero", lab = t("wk", { n: r + 1 });
+    html += cells.slice(r * 7, r * 7 + 7).join("") +
+      '<div class="wk ' + sg + '"><span class="wl">' + esc(lab) + '</span><span class="wv">' + (wk.length ? moneyCell(sum) : "—") + '</span>' +
+      '<span class="do">' + (ord > 0 ? BAG_SVG + int(ord) : "&nbsp;") + '</span></div>';
+    chips += '<span class="wkc ' + sg + '"><span>' + esc(lab) + '</span><b>' + esc(wk.length ? signed(sum) : "—") + '</b></span>';
+  }
   $("calGrid").classList.toggle("long", S.currency === "RON");
   $("calGrid").innerHTML = html;
+  $("weeks").innerHTML = chips;
   fitCells();
   renderStats();
 }
@@ -980,22 +1294,57 @@ function fit(sel, min){
     while (el.scrollWidth > el.clientWidth + 0.5 && fs > min){ fs -= 0.5; el.style.fontSize = fs + "px"; }
   });
 }
-function fitCells(){ fit("#calGrid .dp", 6.5); fit(".stat .v", 12); }
+function fitCells(){ fit("#calGrid .dp", 6.5); fit("#calGrid .wv", 6.5); fit(".stat .v", 12); }
 const fitAll = () => { fitCells(); fit(".pc-stats b", 11); fit(".sum b", 10); };
 
 /* ---------- Vista productos ---------- */
+/* Veredicto de los últimos 14 días (hasta hoy):
+   Escalar = gana, margen ≥ 15 % y la última semana va igual o mejor que la anterior.
+   Cortar  = pierde en los 14 días y sus últimos días con datos (hasta 3) son pérdidas.
+   Vigilar = el resto. Sin datos recientes = ningún día apuntado en esos 14 días. */
+function trend14(id){
+  const d = S.data[id] || {}, tn = new Date(), cs = [];
+  for (let i = 13; i >= 0; i--){
+    const dt = new Date(tn.getFullYear(), tn.getMonth(), tn.getDate() - i);
+    const c = calcEntry(d[keyOf(dt.getFullYear(), dt.getMonth(), dt.getDate())]);
+    cs.push(c.has ? c : null);
+  }
+  const got = cs.filter(Boolean), sum = (a, k) => a.reduce((acc, c) => acc + (c ? c[k] : 0), 0);
+  const profit = sum(cs, "profit"), E = sum(cs, "E"), margin = E > 0 ? profit / E * 100 : NaN;
+  const up = sum(cs.slice(7), "profit") >= sum(cs.slice(0, 7), "profit");
+  let v = "none";
+  if (got.length){
+    if (profit < 0 && got.slice(-3).every(c => c.profit < 0)) v = "cut";
+    else if (profit > 0 && margin >= 15 && up) v = "scale";
+    else v = "watch";
+  }
+  return { vals: cs.map(c => c ? c.profit : null), profit, margin, up, v };
+}
+const V_ORDER = { scale: 0, watch: 1, cut: 2, none: 3 };
+function sparkHTML(vals){
+  const mx = Math.max(0, ...vals.filter(v => v != null).map(Math.abs));
+  return '<div class="spark">' + vals.map(v => '<span>' + (v == null ? '<i class="e"></i>' :
+    '<i class="' + (v >= 0 ? "p" : "n") + '" style="--h:' + (mx > 0 ? Math.max(0.08, Math.abs(v) / mx) : 0.08).toFixed(3) + '"></i>') + '</span>').join("") + '</div>';
+}
 function renderProducts(){
   const np = S.products.length;
   $("prodCount").textContent = np === 1 ? t("count1") : t("countN", { n: np });
   $("prodEmpty").hidden = np > 0;
-  $("prodGrid").innerHTML = S.products.map((p, i) => {
-    const s = productStats(p.id);
+  $("rankNote").hidden = np < 2;
+  $("csvBtn").hidden = np === 0;
+  // Ranking: primero los que conviene escalar, y dentro de cada grupo por beneficio de los últimos 14 días
+  const list = S.products.map(p => ({ p, s: productStats(p.id), tr: trend14(p.id) }))
+    .sort((a, b) => (V_ORDER[a.tr.v] - V_ORDER[b.tr.v]) || (b.tr.profit - a.tr.profit) || (b.s.profit - a.s.profit));
+  $("prodGrid").innerHTML = list.map(({ p, s, tr }, i) => {
     const sign = s.profit > 0 ? "pos" : (s.profit < 0 ? "neg" : "");
+    const why = tr.v === "none" ? "" : t("vWhy", { p: signed(tr.profit), m: isFinite(tr.margin) ? pct(tr.margin) : "—", tr: tr.up ? "↑" : "↓" });
     return '<div class="card pcard rise" style="animation-delay:' + (i * 50) + 'ms" data-pid="' + esc(p.id) + '" role="button" tabindex="0">' +
-      '<div class="pc-top">' + thumbHTML(p, "t48") +
+      '<div class="pc-top">' + (np > 1 ? '<span class="rk">' + (i + 1) + '</span>' : "") + thumbHTML(p, "t48") +
         '<div class="tx"><h3>' + esc(p.name) + '</h3><div class="sub">' + esc(s.days === 1 ? t("days1") : t("daysN", { n: s.days })) + '</div></div>' +
         '<button type="button" class="pc-del" data-del="' + esc(p.id) + '" aria-label="' + esc(t("delAria")) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/></svg></button>' +
       '</div>' +
+      '<div class="pc-trend"><div class="pt-head"><span>' + esc(t("v14")) + '</span><span class="vtag v-' + tr.v + '"><i></i>' + esc(t("v_" + tr.v)) + '</span></div>' +
+        sparkHTML(tr.vals) + (why ? '<div class="pt-why">' + esc(why) + '</div>' : "") + '</div>' +
       '<div class="pc-stats">' +
         '<div><span>' + esc(t("inc")) + '</span><b>' + esc(money(s.E)) + '</b></div>' +
         '<div><span>' + esc(t("exp")) + '</span><b>' + esc(money(s.costs)) + '</b></div>' +
@@ -1006,6 +1355,27 @@ function renderProducts(){
     '</div>';
   }).join("");
   fit(".pc-stats b", 11);
+}
+
+/* ---------- Exportar CSV (todos los productos y días, importes en euros) ---------- */
+function exportCsv(){
+  const rows = [];
+  S.products.forEach(p => Object.keys(S.data[p.id] || {}).forEach(d => { const c = calcEntry(S.data[p.id][d]); if (c.has) rows.push([d, p.name, c]); }));
+  if (!rows.length){ toast(t("csvEmpty")); return; }
+  rows.sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : a[1].localeCompare(b[1]));
+  const dec = lang === "en" ? "." : ",";
+  const num = x => isFinite(x) ? x.toFixed(2).replace(".", dec) : "";
+  const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const lines = [t("csvHead").split("|").map(q).join(";")].concat(rows.map(([d, name, c]) => {
+    const M = adMetrics(c.E, c.A, c.P, c.C, c.O);
+    return [d, q(name), num(c.P), num(c.A), num(c.C), num(c.E), Math.round(c.O), num(c.costs), num(c.profit), num(c.margin), num(M.roas)].join(";");
+  }));
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["\ufeff" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" }));
+  a.download = "calendario-beneficio-" + todayKeyNow() + ".csv";
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  toast(t("csvOk", { n: rows.length }));
 }
 
 /* ---------- Cambio de vista ---------- */
@@ -1023,7 +1393,7 @@ const renderView = () => { if (curView === "productos") renderProducts(); else r
 function openLayer(sheet, scrim){ $(sheet).classList.add("on"); $(sheet).setAttribute("aria-hidden", "false"); $(scrim).classList.add("on"); lockScroll(); }
 function closeLayer(sheet, scrim){ $(sheet).classList.remove("on"); $(sheet).setAttribute("aria-hidden", "true"); $(scrim).classList.remove("on"); lockScroll(); }
 const isOpen = id => $(id).classList.contains("on");
-function lockScroll(){ document.body.classList.toggle("locked", ["daySheet", "prodSheet", "impSheet", "confirm"].some(isOpen)); }
+function lockScroll(){ document.body.classList.toggle("locked", ["daySheet", "prodSheet", "impSheet", "goalSheet", "confirm"].some(isOpen)); }
 
 /* ---------- Modal del día ---------- */
 function openDay(key){
@@ -1066,6 +1436,7 @@ function goStepData(){
   $("mEarn").value = e.earnings ?? "";
   $("mOrders").value = e.orders ?? "";
   showStep("data");
+  paintCopyPrev();
   refreshDay();
   setTimeout(() => $("mEarn").focus(), 60);
 }
@@ -1086,7 +1457,27 @@ function refreshDay(){
   if (c.profit > 0) pEl.classList.add("pos"); else if (c.profit < 0) pEl.classList.add("neg");
   $("mMargin").textContent = isFinite(c.margin) ? pct(c.margin) : "—";
   $("mOrdersOut").textContent = $("mOrders").value === "" ? "—" : int(c.O);
+  const M = adMetrics(c.E, c.A, c.P, c.C, c.O);
+  $("mRoas").textContent = xFmt(M.roas);
+  $("mCpa").textContent = isFinite(M.cpa) ? money(M.cpa) : "—";
   fit(".sum b", 10);
+}
+// «Copiar gastos del …»: el último día anterior con datos de este producto
+function prevEntryKey(){
+  const d = S.data[modalProduct] || {};
+  return Object.keys(d).filter(k => k < currentDate && calcEntry(d[k]).has).sort().pop() || null;
+}
+function paintCopyPrev(){
+  const k = prevEntryKey();
+  $("copyPrev").hidden = !k;
+  if (k) $("copyPrevTxt").textContent = t("copyPrev", { d: dayShortL(k) });
+}
+function copyPrev(){
+  const k = prevEntryKey(); if (!k) return;
+  const e = S.data[modalProduct][k];
+  $("mProduct").value = e.product ?? ""; $("mAd").value = e.ad ?? ""; $("mCommission").value = e.commission ?? "";
+  readDayToEntry(); refreshDay();
+  toast(t("copied", { d: dayShortL(k) }));
 }
 function closeDay(){
   closeLayer("daySheet", "dayScrim");
@@ -1379,6 +1770,19 @@ function onProdCard(e){
 $("prodGrid").addEventListener("click", onProdCard);
 $("prodGrid").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches(".pcard")){ e.preventDefault(); onProdCard(e); } });
 
+// Novedades: gráfico, objetivo, CSV y copiar gastos
+$("chWrap").addEventListener("pointermove", chartHover);
+$("chWrap").addEventListener("pointerdown", chartHover);
+$("chWrap").addEventListener("pointerleave", hideTip);
+$("goalBtn").addEventListener("click", openGoal);
+$("goalSave").addEventListener("click", () => saveGoal($("goalIn").value));
+$("goalIn").addEventListener("keydown", e => { if (e.key === "Enter") saveGoal($("goalIn").value); });
+$("goalRemove").addEventListener("click", () => saveGoal(0));
+$("goalClose").addEventListener("click", closeGoal);
+$("goalScrim").addEventListener("click", closeGoal);
+$("csvBtn").addEventListener("click", exportCsv);
+$("copyPrev").addEventListener("click", copyPrev);
+
 // Importar copia
 $$("[data-imp]").forEach(b => b.addEventListener("click", openImport));
 $("impFile").addEventListener("change", e => { const f = e.target.files && e.target.files[0]; if (f) parseBackup(f); });
@@ -1411,6 +1815,7 @@ document.addEventListener("keydown", e => {
   if (isOpen("confirm")) closeConfirm(false);
   else if (isOpen("prodSheet")) closeCreate();
   else if (isOpen("impSheet")) closeImport();
+  else if (isOpen("goalSheet")) closeGoal();
   else if (isOpen("daySheet")) closeDay();
   else toggleDD(false);
 });
