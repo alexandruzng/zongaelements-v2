@@ -1,5 +1,26 @@
 [
   {
+    "id": "2026-11-01-pedidos-colores",
+    "date": "2026-11-01",
+    "type": "mejora",
+    "title": {
+      "es": "Pedidos diarios: rojo y verde en el calendario",
+      "en": "Daily orders: red and green on the calendar",
+      "ro": "Comenzi zilnice: roșu și verde în calendar"
+    },
+    "items": {
+      "es": [
+        "Los días con 0 pedidos salen en rojo y los días con 1 o más pedidos, en verde (más intenso cuantos más pedidos)."
+      ],
+      "en": [
+        "Days with 0 orders now show in red and days with 1 or more orders in green (the more orders, the stronger the green)."
+      ],
+      "ro": [
+        "Zilele cu 0 comenzi apar acum cu roșu, iar cele cu 1 sau mai multe comenzi cu verde (cu cât mai multe comenzi, cu atât mai intens)."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-bloqueo-temporal",
     "date": "2026-11-01",
     "type": "nuevo",
