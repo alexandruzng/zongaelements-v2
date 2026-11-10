@@ -124,11 +124,12 @@ svg{display:block}
 .bar-in{display:flex;align-items:center;gap:10px;padding:4px 4px 4px 10px}
 .plat{width:44px;height:44px;flex:none;border-radius:14px;background:var(--bg);display:grid;place-items:center;color:var(--muted);position:relative;overflow:hidden;transition:background .4s,color .4s}
 .plat svg{width:22px;height:22px;position:absolute;transition:transform .5s cubic-bezier(.3,1.6,.5,1),opacity .3s}
-.plat .p-tt,.plat .p-ig{opacity:0;transform:scale(.4) rotate(-30deg)}
+.plat .p-tt,.plat .p-ig,.plat .p-yt{opacity:0;transform:scale(.4) rotate(-30deg)}
 .plat[data-p="tiktok"]{background:var(--fg);color:var(--bg)}
 .plat[data-p="instagram"]{background:linear-gradient(135deg,#FFB547,#FF2D7A 45%,#7A3BFF);color:#fff}
-.plat[data-p="tiktok"] .p-tt,.plat[data-p="instagram"] .p-ig{opacity:1;transform:none}
-.plat[data-p="tiktok"] .p-link,.plat[data-p="instagram"] .p-link{opacity:0;transform:scale(.4) rotate(30deg)}
+.plat[data-p="youtube"]{background:#FF0033;color:#fff}
+.plat[data-p="tiktok"] .p-tt,.plat[data-p="instagram"] .p-ig,.plat[data-p="youtube"] .p-yt{opacity:1;transform:none}
+.plat[data-p="tiktok"] .p-link,.plat[data-p="instagram"] .p-link,.plat[data-p="youtube"] .p-link{opacity:0;transform:scale(.4) rotate(30deg)}
 #url{flex:1;min-width:0;height:52px;border:0;background:none;outline:none;font-size:17px;font-weight:600}
 #url::placeholder{color:var(--muted);font-weight:500;opacity:.85}
 .bar-acts{display:flex;gap:8px;padding:8px 4px 4px}
@@ -176,6 +177,7 @@ svg{display:block}
 .phone .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 30%,transparent 60%,rgba(0,0,0,.6));pointer-events:none}
 .phone .badge{position:absolute;left:8px;top:8px;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;color:#fff;background:#0D0D10}
 .phone .badge.ig{background:linear-gradient(135deg,#FFB547,#FF2D7A 45%,#7A3BFF)}
+.phone .badge.yt{background:#FF0033}
 .phone .badge svg{width:14px;height:14px}
 .phone .dur{position:absolute;right:8px;bottom:8px;padding:3px 7px;border-radius:8px;background:rgba(0,0,0,.6);color:#fff;font-family:var(--mono);font-size:10.5px}
 .phone .play{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.92);color:#0D0D10;display:grid;place-items:center;transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
@@ -335,11 +337,12 @@ svg{display:block}
   <div class="head">
     <div class="kicker mono rise"><b>02</b><i></i><span data-i18n="kick">Descargador · Orgánico × Ads</span></div>
     <h1 class="h1 rise d1"><span data-i18n="h1a">Pega el enlace.</span><br><em data-i18n="h1b">Bájalo en HD.</em><span class="ext">.mp4</span></h1>
-    <p class="lead rise d2" data-i18n-html="lead">Vídeos de <b>TikTok</b> e <b>Instagram</b> a la máxima calidad que existe, con un solo clic. Sin marca de agua, con su texto, sus hashtags y sus métricas.</p>
+    <p class="lead rise d2" data-i18n-html="lead">Vídeos de <b>TikTok</b>, <b>Instagram</b> y <b>YouTube</b> a la máxima calidad que existe, con un solo clic. Sin marca de agua, con su texto, sus hashtags y sus métricas.</p>
     <div class="pills rise d3">
       <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span data-i18n="pNoWm">Sin marca de agua</span></span>
       <span class="pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.2v12.4a2.6 2.6 0 1 1-1.8-2.5V9.6a5.8 5.8 0 1 0 5 5.8V9.1a7.4 7.4 0 0 0 4.3 1.4V7.3a4.3 4.3 0 0 1-3.2-1.5z"/></svg>TikTok</span>
       <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>Instagram</span>
+      <span class="pill"><svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8A26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15.1V8.9l5.4 3.1z"/></svg>YouTube</span>
     </div>
   </div>
 
@@ -350,15 +353,16 @@ svg{display:block}
           <svg class="p-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>
           <svg class="p-tt" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.2v12.4a2.6 2.6 0 1 1-1.8-2.5V9.6a5.8 5.8 0 1 0 5 5.8V9.1a7.4 7.4 0 0 0 4.3 1.4V7.3a4.3 4.3 0 0 1-3.2-1.5z"/></svg>
           <svg class="p-ig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
+          <svg class="p-yt" viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8A26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15.1V8.9l5.4 3.1z"/></svg>
         </div>
-        <input id="url" type="url" inputmode="url" enterkeyhint="go" spellcheck="false" data-i18n-ph="ph" placeholder="Pega aquí el enlace de TikTok o Instagram" aria-label="Enlace">
+        <input id="url" type="url" inputmode="url" enterkeyhint="go" spellcheck="false" data-i18n-ph="ph" placeholder="Pega aquí el enlace de TikTok, Instagram o YouTube" aria-label="Enlace">
       </div>
       <div class="bar-acts">
         <button type="button" class="btn ghost" id="pasteBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg><span data-i18n="paste">Pegar</span></button>
         <button type="submit" class="btn accent" id="goBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="go">Buscar vídeo</span></button>
       </div>
     </div>
-    <div class="bar-foot"><span data-i18n="multi">Puedes pegar varios enlaces a la vez.</span><span class="ex"><span>tiktok.com/@…/video/…</span><span>vm.tiktok.com/…</span><span>instagram.com/reel/…</span></span></div>
+    <div class="bar-foot"><span data-i18n="multi">Puedes pegar varios enlaces a la vez.</span><span class="ex"><span>tiktok.com/@…/video/…</span><span>vm.tiktok.com/…</span><span>instagram.com/reel/…</span><span>youtu.be/…</span></span></div>
   </form>
 
   <div class="marq mono" aria-hidden="true"><div id="marq"></div></div>
@@ -394,10 +398,10 @@ svg{display:block}
    ========================================================= */
 const T = {
 es:{ tool:"Descargador de vídeos", kick:"Descargador · Orgánico × Ads", h1a:"Pega el enlace.", h1b:"Bájalo en HD.", langA:"Cambiar idioma",
-  lead:"Vídeos de <b>TikTok</b> e <b>Instagram</b> a la máxima calidad que existe, con un solo clic. Sin marca de agua, con su texto, sus hashtags y sus métricas.",
-  pNoWm:"Sin marca de agua", ph:"Pega aquí el enlace de TikTok o Instagram", paste:"Pegar", go:"Buscar vídeo", multi:"Puedes pegar varios enlaces a la vez.",
+  lead:"Vídeos de <b>TikTok</b>, <b>Instagram</b> y <b>YouTube</b> a la máxima calidad que existe, con un solo clic. Sin marca de agua, con su texto, sus hashtags y sus métricas.",
+  pNoWm:"Sin marca de agua", ph:"Pega aquí el enlace de TikTok, Instagram o YouTube", paste:"Pegar", go:"Buscar vídeo", multi:"Puedes pegar varios enlaces a la vez.",
   hist:"Recientes", clear:"Vaciar", histEmpty:"Aquí aparecerán los vídeos que descargues.",
-  s1t:"Copia el enlace", s1p:"En TikTok o Instagram pulsa «Compartir» → «Copiar enlace».",
+  s1t:"Copia el enlace", s1p:"En TikTok, Instagram o YouTube pulsa «Compartir» → «Copiar enlace».",
   s2t:"Pégalo aquí", s2p:"Lo detectamos solo y te enseñamos las calidades que existen de verdad.",
   s3t:"Un clic y listo", s3p:"Se guarda en tu dispositivo. En iPhone lo tienes en «Archivos» → «Descargas».",
   legal:"Solo vídeos públicos. Úsalo para tu research, como referencia o con tu propio contenido: resubir vídeos de otros sin permiso puede hacer que las redes te bajen el alcance.",
@@ -408,19 +412,21 @@ es:{ tool:"Descargador de vídeos", kick:"Descargador · Orgánico × Ads", h1a:
   photos:"{n} fotos", items:"{n} archivos", all:"Descargar todo (.zip)", allS:"{n} archivos en un ZIP", photo:"Foto", video:"Vídeo",
   dl:"Descargando {p}", dlMb:"{a} de {b}", saved:"Descargado", zipping:"Preparando el ZIP…",
   opened:"Se ha abierto en otra pestaña: mantén pulsado o clic derecho → Guardar.",
-  eBad:"Este enlace no es de TikTok ni de Instagram.", eBadP:"Copia el enlace desde el botón «Compartir» del vídeo y pégalo aquí.",
+  eBad:"Este enlace no es de TikTok, Instagram ni YouTube.", eBadP:"Copia el enlace desde el botón «Compartir» del vídeo y pégalo aquí.",
   eNF:"No hemos encontrado el vídeo", eNFP:"Puede que sea privado, que se haya borrado o que el enlace esté incompleto.",
   eNet:"No hay conexión", eNetP:"Revisa tu conexión a internet y vuelve a probar.",
   eBusy:"Demasiadas peticiones seguidas", eBusyP:"Espera unos segundos y vuelve a probar.",
   eIgOff:"Instagram aún no está activado", eIgOffP:"Falta publicar la función del servidor para Instagram. TikTok ya funciona.",
+  eYtOff:"YouTube aún no está activado", eYtOffP:"Falta conectar la API de YouTube en RapidAPI. TikTok e Instagram ya funcionan.",
+  ytA:"MP4 · con sonido", ytNoA:"MP4 · sin sonido (solo imagen)", audioM4a:"M4A · solo el sonido",
   eAuth:"Tu sesión ha caducado", eAuthP:"Recarga la página y vuelve a iniciar sesión.",
   eDl:"No se ha podido descargar", retry:"Reintentar", remove:"Quitar", play:"Reproducir", ago:"hace {x}",
   added:"{n} enlaces en cola" },
 en:{ tool:"Video downloader", kick:"Downloader · Organic × Ads", h1a:"Paste the link.", h1b:"Get it in HD.", langA:"Change language",
-  lead:"<b>TikTok</b> and <b>Instagram</b> videos in the best quality available, in one click. No watermark, with their caption, hashtags and metrics.",
-  pNoWm:"No watermark", ph:"Paste a TikTok or Instagram link here", paste:"Paste", go:"Find video", multi:"You can paste several links at once.",
+  lead:"<b>TikTok</b>, <b>Instagram</b> and <b>YouTube</b> videos in the best quality available, in one click. No watermark, with their caption, hashtags and metrics.",
+  pNoWm:"No watermark", ph:"Paste a TikTok, Instagram or YouTube link here", paste:"Paste", go:"Find video", multi:"You can paste several links at once.",
   hist:"Recent", clear:"Clear", histEmpty:"The videos you download will show up here.",
-  s1t:"Copy the link", s1p:"On TikTok or Instagram tap “Share” → “Copy link”.",
+  s1t:"Copy the link", s1p:"On TikTok, Instagram or YouTube tap “Share” → “Copy link”.",
   s2t:"Paste it here", s2p:"We detect it automatically and show you the qualities that actually exist.",
   s3t:"One click, done", s3p:"It's saved to your device. On iPhone you'll find it in “Files” → “Downloads”.",
   legal:"Public videos only. Use it for research, as a reference or with your own content: reposting other people's videos without permission can get your reach cut.",
@@ -431,19 +437,21 @@ en:{ tool:"Video downloader", kick:"Downloader · Organic × Ads", h1a:"Paste th
   photos:"{n} photos", items:"{n} files", all:"Download all (.zip)", allS:"{n} files in a ZIP", photo:"Photo", video:"Video",
   dl:"Downloading {p}", dlMb:"{a} of {b}", saved:"Downloaded", zipping:"Preparing the ZIP…",
   opened:"Opened in a new tab: long-press or right-click → Save.",
-  eBad:"This isn't a TikTok or Instagram link.", eBadP:"Copy the link from the video's “Share” button and paste it here.",
+  eBad:"This isn't a TikTok, Instagram or YouTube link.", eBadP:"Copy the link from the video's “Share” button and paste it here.",
   eNF:"We couldn't find the video", eNFP:"It may be private, deleted, or the link may be incomplete.",
   eNet:"No connection", eNetP:"Check your internet connection and try again.",
   eBusy:"Too many requests in a row", eBusyP:"Wait a few seconds and try again.",
   eIgOff:"Instagram isn't switched on yet", eIgOffP:"The server function for Instagram still needs to be published. TikTok already works.",
+  eYtOff:"YouTube isn't switched on yet", eYtOffP:"The YouTube API on RapidAPI still needs to be connected. TikTok and Instagram already work.",
+  ytA:"MP4 · with sound", ytNoA:"MP4 · no sound (video only)", audioM4a:"M4A · sound only",
   eAuth:"Your session expired", eAuthP:"Reload the page and sign in again.",
   eDl:"Couldn't download it", retry:"Retry", remove:"Remove", play:"Play", ago:"{x} ago",
   added:"{n} links queued" },
 ro:{ tool:"Descărcător de clipuri", kick:"Descărcător · Organic × Ads", h1a:"Lipește linkul.", h1b:"Ia-l în HD.", langA:"Schimbă limba",
-  lead:"Clipuri de pe <b>TikTok</b> și <b>Instagram</b> la cea mai bună calitate disponibilă, dintr-un clic. Fără watermark, cu textul, hashtagurile și metricile lor.",
-  pNoWm:"Fără watermark", ph:"Lipește aici linkul de TikTok sau Instagram", paste:"Lipește", go:"Caută clipul", multi:"Poți lipi mai multe linkuri deodată.",
+  lead:"Clipuri de pe <b>TikTok</b>, <b>Instagram</b> și <b>YouTube</b> la cea mai bună calitate disponibilă, dintr-un clic. Fără watermark, cu textul, hashtagurile și metricile lor.",
+  pNoWm:"Fără watermark", ph:"Lipește aici linkul de TikTok, Instagram sau YouTube", paste:"Lipește", go:"Caută clipul", multi:"Poți lipi mai multe linkuri deodată.",
   hist:"Recente", clear:"Golește", histEmpty:"Aici vor apărea clipurile pe care le descarci.",
-  s1t:"Copiază linkul", s1p:"Pe TikTok sau Instagram apasă „Distribuie” → „Copiază linkul”.",
+  s1t:"Copiază linkul", s1p:"Pe TikTok, Instagram sau YouTube apasă „Distribuie” → „Copiază linkul”.",
   s2t:"Lipește-l aici", s2p:"Îl detectăm singuri și îți arătăm calitățile care există cu adevărat.",
   s3t:"Un clic și gata", s3p:"Se salvează pe dispozitiv. Pe iPhone îl găsești în „Fișiere” → „Descărcări”.",
   legal:"Doar clipuri publice. Folosește-l pentru research, ca referință sau cu propriul conținut: dacă repostezi clipurile altora fără permisiune, rețelele îți pot tăia reach-ul.",
@@ -454,11 +462,13 @@ ro:{ tool:"Descărcător de clipuri", kick:"Descărcător · Organic × Ads", h1
   photos:"{n} poze", items:"{n} fișiere", all:"Descarcă tot (.zip)", allS:"{n} fișiere într-un ZIP", photo:"Poză", video:"Clip",
   dl:"Se descarcă {p}", dlMb:"{a} din {b}", saved:"Descărcat", zipping:"Se pregătește ZIP-ul…",
   opened:"S-a deschis într-o filă nouă: ține apăsat sau clic dreapta → Salvează.",
-  eBad:"Linkul nu e de pe TikTok sau Instagram.", eBadP:"Copiază linkul din butonul „Distribuie” al clipului și lipește-l aici.",
+  eBad:"Linkul nu e de pe TikTok, Instagram sau YouTube.", eBadP:"Copiază linkul din butonul „Distribuie” al clipului și lipește-l aici.",
   eNF:"Nu am găsit clipul", eNFP:"Poate e privat, a fost șters sau linkul e incomplet.",
   eNet:"Fără conexiune", eNetP:"Verifică conexiunea la internet și încearcă din nou.",
   eBusy:"Prea multe cereri la rând", eBusyP:"Așteaptă câteva secunde și încearcă din nou.",
   eIgOff:"Instagram nu e încă activat", eIgOffP:"Mai trebuie publicată funcția de server pentru Instagram. TikTok funcționează deja.",
+  eYtOff:"YouTube nu e încă activat", eYtOffP:"Mai trebuie conectat API-ul de YouTube din RapidAPI. TikTok și Instagram funcționează deja.",
+  ytA:"MP4 · cu sunet", ytNoA:"MP4 · fără sunet (doar imagine)", audioM4a:"M4A · doar sunetul",
   eAuth:"Sesiunea a expirat", eAuthP:"Reîncarcă pagina și autentifică-te din nou.",
   eDl:"Nu s-a putut descărca", retry:"Reîncearcă", remove:"Elimină", play:"Redă", ago:"acum {x}",
   added:"{n} linkuri în așteptare" }
@@ -509,6 +519,7 @@ const ICON = {
   copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="3"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>',
   hash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></svg>',
   warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg>',
+  yt:'<svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8A26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15.1V8.9l5.4 3.1z"/></svg>',
   wm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 15h5"/></svg>'
 };
 
@@ -519,6 +530,7 @@ const platformOf = u => {
   let h; try { h = new URL(u).hostname.toLowerCase(); } catch (e) { return null; }
   if (/(^|\.)tiktok\.com$/.test(h)) return "tiktok";
   if (/(^|\.)instagram\.com$|(^|\.)instagr\.am$/.test(h)) return "instagram";
+  if (/(^|\.)youtube(-nocookie)?\.com$|(^|\.)youtu\.be$/.test(h)) return "youtube";
   return null;
 };
 const splitLinks = txt => {
@@ -588,7 +600,33 @@ async function instagramInfo(url){
   if (info.cover && !info.items.length) info.extras.push({ kind:"cover", url:info.cover, ext:"jpg" });
   return info;
 }
+/* =========================================================
+   YOUTUBE (misma función de Supabase → API de RapidAPI)
+   ========================================================= */
+async function youtubeInfo(url){
+  let r;
+  try { r = await ZE.callFn(FN, { action:"info", url }); } catch (e) { throw err("net"); }
+  const j = await r.json().catch(() => null);
+  if (r.status === 401) throw err("auth");
+  if (j?.error === "yt_off") throw err("ytoff");
+  // bad_url aquí = función antigua sin YouTube (el enlace ya se validó en la web)
+  if (!r.ok) throw err(j?.error === "bad_url" ? "ytoff" : "nf");
+  const info = {
+    platform:"youtube", id:j.id, url, author:j.author || "", authorName:"", avatar:"",
+    caption:j.caption || "", cover:j.cover || "", date:j.date, duration:j.duration,
+    stats:{ views:j.stats?.views, likes:j.stats?.likes, comments:j.stats?.comments },
+    videos:(j.videos || []).map(v => ({ url:v.url, h:v.width && v.height ? Math.min(v.width, v.height) : v.height || 0, size:v.size, sub:t(v.audio ? "ytA" : "ytNoA") })),
+    extras:[], items:[]
+  };
+  // la vista previa, con sonido si lo hay
+  info.preview = [...(j.videos || [])].reverse().find(v => v.audio)?.url;
+  if (j.audio) info.extras.push({ kind:"audio", url:j.audio.url, ext:j.audio.ext, size:j.audio.size, sub:t(j.audio.ext === "mp3" ? "audioS" : "audioM4a") });
+  if (info.cover) info.extras.push({ kind:"cover", url:info.cover, ext:"jpg" });
+  return info;
+}
 const err = code => Object.assign(new Error(code), { code });
+const PLAT = { tiktok:{ ic:"tt", name:"TikTok", cls:"" }, instagram:{ ic:"ig", name:"Instagram", cls:"ig" }, youtube:{ ic:"yt", name:"YouTube", cls:"yt" } };
+const plat = p => PLAT[p] || PLAT.tiktok;
 
 /* Resolución real de cada vídeo: se leen solo los metadatos (unos KB). */
 function probe(url){
@@ -626,7 +664,7 @@ async function fetchFile(url, platform, onProg){
     if (!r.ok) throw new Error("http");
     return await readBody(r, onProg);
   } catch (e) {
-    if (platform === "instagram") {
+    if (platform === "instagram" || platform === "youtube") {
       const r = await ZE.callFn(FN, { action:"file", url });
       if (!r.ok) throw new Error("dl");
       return readBody(r, onProg);
@@ -684,10 +722,10 @@ const tagsOf = txt => [...new Set((String(txt).match(/#[\p{L}\p{N}_]+/gu) || [])
 function phoneHtml(c, cls = ""){
   const i = c.info || {};
   return `<div class="phone ${cls}" data-act="play">
-    <div class="ph">${c.platform === "instagram" ? ICON.ig : ICON.tt}</div>
+    <div class="ph">${ICON[plat(c.platform).ic]}</div>
     ${i.cover ? `<img src="${esc(i.cover)}" alt="${esc(i.caption?.slice(0, 80) || "")}" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}
     <div class="shade"></div>
-    <span class="badge ${c.platform === "instagram" ? "ig" : ""}">${c.platform === "instagram" ? ICON.ig : ICON.tt}</span>
+    <span class="badge ${plat(c.platform).cls}">${ICON[plat(c.platform).ic]}</span>
     ${i.videos?.length ? `<span class="play" aria-label="${t("play")}">${ICON.play}</span>` : ""}
     ${i.duration ? `<span class="dur">${fmtDur(i.duration)}</span>` : i.items?.length > 1 ? `<span class="dur">${i.items.length}</span>` : ""}
   </div>`;
@@ -705,7 +743,7 @@ function render(c){
     return;
   }
   if (c.state === "error") {
-    const k = { bad:["eBad","eBadP"], nf:["eNF","eNFP"], net:["eNet","eNetP"], busy:["eBusy","eBusyP"], igoff:["eIgOff","eIgOffP"], auth:["eAuth","eAuthP"] }[c.error] || ["eNF","eNFP"];
+    const k = { bad:["eBad","eBadP"], nf:["eNF","eNFP"], net:["eNet","eNetP"], busy:["eBusy","eBusyP"], igoff:["eIgOff","eIgOffP"], ytoff:["eYtOff","eYtOffP"], auth:["eAuth","eAuthP"] }[c.error] || ["eNF","eNFP"];
     el.innerHTML = `${x}<div class="fail-in"><span class="ic">${ICON.warn}</span><div style="min-width:0">
       <b>${t(k[0])}</b><p>${t(k[1])}</p><p class="mono" style="margin-top:6px;font-size:10.5px;text-transform:none;letter-spacing:0">${esc(c.url)}</p>
       ${c.error !== "bad" ? `<button class="ibtn" data-act="retry">${t("retry")}</button>` : ""}</div></div>`;
@@ -736,7 +774,7 @@ function render(c){
   const alts = [
     ...i.videos.slice(1).map((v, k) => ({ act:"video", i:k + 1, ic:"vid", b:qLabel(v.h), s:`${v.sub}${v.size ? " · " + fmtSize(v.size) : ""}` })),
     ...i.extras.map((e, k) => ({ act:"extra", i:k, ic:{ audio:"music", cover:"img", wm:"wm" }[e.kind],
-      b:t({ audio:"audio", cover:"cover", wm:"wm" }[e.kind]), s:e.kind === "wm" ? `${t("wmS")}${e.size ? " · " + fmtSize(e.size) : ""}` : t({ audio:"audioS", cover:"coverS" }[e.kind]) }))
+      b:t({ audio:"audio", cover:"cover", wm:"wm" }[e.kind]), s:e.sub ? `${e.sub}${e.size ? " · " + fmtSize(e.size) : ""}` : e.kind === "wm" ? `${t("wmS")}${e.size ? " · " + fmtSize(e.size) : ""}` : t({ audio:"audioS", cover:"coverS" }[e.kind]) }))
   ];
   if (alts.length) opts += `<div class="alts">${alts.map(a => `<button class="alt" data-act="${a.act}" data-i="${a.i}"><span class="fill"></span><span class="ic">${ICON[a.ic]}</span><span class="t"><b>${esc(a.b)}</b><span>${esc(a.s)}</span></span></button>`).join("")}</div>`;
   if (i.items.length > 1) opts += `<div class="tiles">${i.items.map((m, k) => `<button class="tile" data-act="item" data-i="${k}" aria-label="${t(m.type === "video" ? "video" : "photo")} ${k + 1}">
@@ -747,7 +785,7 @@ function render(c){
   el.innerHTML = `${x}${phoneHtml(c)}
     <div class="r-body">
       <div class="who">${i.avatar ? `<img src="${esc(i.avatar)}" alt="" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'av'}))">` : `<span class="av"></span>`}
-        <div style="min-width:0"><b>${i.author ? "@" + esc(i.author) : esc(i.authorName) || "—"}</b><small>${[i.platform === "tiktok" ? "TikTok" : "Instagram", fmtAgo(i.date)].filter(Boolean).join(" · ")}</small></div></div>
+        <div style="min-width:0"><b>${i.author ? "@" + esc(i.author) : esc(i.authorName) || "—"}</b><small>${[plat(i.platform).name, fmtAgo(i.date)].filter(Boolean).join(" · ")}</small></div></div>
       <p class="cap">${i.caption ? captionHtml(i.caption) : `<i>${t("noCap")}</i>`}</p>
     </div>
     <div class="opts">
@@ -783,7 +821,7 @@ async function analyze(c){
   c.state = "loading"; render(c);
   try {
     if (!c.platform) throw err("bad");
-    c.info = c.platform === "tiktok" ? await tiktokInfo(c.url) : await instagramInfo(c.url);
+    c.info = c.platform === "tiktok" ? await tiktokInfo(c.url) : c.platform === "youtube" ? await youtubeInfo(c.url) : await instagramInfo(c.url);
     c.state = "ready"; render(c);
     addHist(c.info);
     // calidad real de cada vídeo (TikTok no la dice)
@@ -867,7 +905,7 @@ resultsEl.addEventListener("click", e => {
   else if (act === "more") { const cap = $(".cap", c.el); cap.classList.toggle("open"); btn.textContent = t(cap.classList.contains("open") ? "less" : "more"); }
   else if (act === "play" && i?.videos?.length && !btn.classList.contains("playing")) {
     btn.classList.add("playing");
-    const v = Object.assign(document.createElement("video"), { src:i.videos[i.videos.length - 1].url, controls:true, autoplay:true, playsInline:true, poster:i.cover });
+    const v = Object.assign(document.createElement("video"), { src:i.preview || i.videos[i.videos.length - 1].url, controls:true, autoplay:true, playsInline:true, poster:i.cover });
     btn.appendChild(v);
   }
 });
@@ -920,7 +958,7 @@ $("#pasteBtn").onclick = async () => {
 };
 
 /* cinta de detalles */
-$("#marq").innerHTML = [...Array(2)].map(() => ["TikTok","→","1080p","Instagram","→","Reels","Carruseles","→",".zip","Audio","→",".mp3","Hashtags","→","copiar"]
+$("#marq").innerHTML = [...Array(2)].map(() => ["TikTok","→","1080p","Instagram","→","Reels","YouTube","→",".mp4","Carruseles","→",".zip","Audio","→",".mp3","Hashtags","→","copiar"]
   .map(w => `<span class="${w === "→" || /^\./.test(w) || /\d/.test(w) ? "v" : ""}">${w}</span>`).join("")).join("");
 
 /* =========================================================

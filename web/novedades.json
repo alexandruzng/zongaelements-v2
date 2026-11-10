@@ -1,5 +1,29 @@
 [
   {
+    "id": "2026-11-10-descargador-youtube",
+    "date": "2026-11-10",
+    "type": "mejora",
+    "title": {
+      "es": "Descargador: ahora también YouTube",
+      "en": "Downloader: now with YouTube too",
+      "ro": "Descărcător: acum și YouTube"
+    },
+    "items": {
+      "es": [
+        "Pega el enlace de un vídeo o un Short de YouTube y descárgalo en MP4.",
+        "Verás todas las calidades: las que llevan sonido y las que son solo imagen, además del audio y la portada."
+      ],
+      "en": [
+        "Paste a YouTube video or Short link and download it as MP4.",
+        "You'll see every quality: the ones with sound and the video-only ones, plus the audio and the thumbnail."
+      ],
+      "ro": [
+        "Lipește linkul unui clip sau Short de pe YouTube și descarcă-l în MP4.",
+        "Vezi toate calitățile: cele cu sunet și cele doar cu imagine, plus audio și coperta."
+      ]
+    }
+  },
+  {
     "id": "2026-11-01-transcriptor",
     "date": "2026-11-01",
     "type": "nuevo",

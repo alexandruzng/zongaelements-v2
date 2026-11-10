@@ -1,7 +1,7 @@
 /* =========================================================
-   ZongaElements · Descargador de vídeos (parte de Instagram)
-   TikTok va directo desde el navegador (tikwm). Instagram no deja,
-   así que esta función hace de intermediaria:
+   ZongaElements · Descargador de vídeos (Instagram y YouTube)
+   TikTok va directo desde el navegador (tikwm). Instagram y YouTube
+   no dejan, así que esta función hace de intermediaria:
 
    POST { action:"info", url }  → datos del post y enlaces de sus vídeos/fotos
    POST { action:"file", url }  → devuelve el archivo (solo si el navegador
@@ -185,11 +185,120 @@ function deepInfo(j: any, code: string): Info | null {
   };
 }
 
-/* ---------- archivo (solo CDN de Instagram/Facebook) ---------- */
+/* =========================================================
+   YOUTUBE (RapidAPI) → secretos:
+     RAPIDAPI_KEY      la misma clave de RapidAPI de siempre
+     YT_RAPIDAPI_HOST  por defecto youtube-media-downloader.p.rapidapi.com
+     YT_RAPIDAPI_PATH  por defecto /v2/video/details?videoId={id}
+                       ({id} = id del vídeo, {url} = enlace completo)
+   Cada API responde distinto: se recorre toda la respuesta y se
+   quedan los formatos MP4, separando los que llevan sonido.
+   ========================================================= */
+type YtVideo = { url: string; height?: number; width?: number; size?: number; audio: boolean };
+type YtInfo = {
+  platform: "youtube"; id: string; author: string; caption: string; cover: string;
+  stats: { views?: number; likes?: number; comments?: number }; date?: number; duration?: number;
+  short: boolean; videos: YtVideo[]; audio?: { url: string; size?: number; ext: string }; source: string;
+};
+
+function ytIdOf(raw: string) {
+  let u: URL;
+  try { u = new URL(raw.trim()); } catch { return null; }
+  const h = u.hostname.toLowerCase();
+  let id: string | null = null, short = false;
+  if (/(^|\.)youtu\.be$/.test(h)) id = u.pathname.split("/")[1] || null;
+  else if (/(^|\.)youtube(-nocookie)?\.com$/.test(h)) {
+    id = u.searchParams.get("v");
+    const m = u.pathname.match(/^\/(shorts|embed|live|v)\/([\w-]{11})/);
+    if (!id && m) { id = m[2]; short = m[1] === "shorts"; }
+  } else return null;
+  return id && /^[\w-]{11}$/.test(id) ? { id, short } : null;
+}
+
+const num = (v: unknown) => {
+  if (typeof v === "number" && isFinite(v)) return v;
+  if (typeof v === "string" && /^\d[\d,.]*$/.test(v.trim())) return +v.replace(/[,.]/g, "");
+  return undefined;
+};
+
+async function viaYoutube(raw: string, id: string, short: boolean): Promise<YtInfo | "off" | null> {
+  const key = Deno.env.get("RAPIDAPI_KEY");
+  if (!key) return "off";
+  const host = Deno.env.get("YT_RAPIDAPI_HOST") || "youtube-media-downloader.p.rapidapi.com";
+  const path = (Deno.env.get("YT_RAPIDAPI_PATH") || "/v2/video/details?videoId={id}")
+    .replace("{id}", id).replace("{url}", encodeURIComponent(raw));
+  const r = await fetch(`https://${host}${path}`, { headers: { "x-rapidapi-key": key, "x-rapidapi-host": host } }).catch(() => null);
+  if (!r) return null;
+  if (r.status === 403) return "off";            // clave sin suscripción a esta API
+  if (!r.ok) { console.error("yt", r.status, await r.text().catch(() => "")); return null; }
+  const j = await r.json().catch(() => null);
+  if (!j || j.status === false || j.errorId && j.errorId !== "Success") return null;
+
+  const vids: YtVideo[] = [], audios: { url: string; size?: number; ext: string; br: number }[] = [];
+  let title = "", author = "", cover = "", coverW = 0, views: number | undefined, likes: number | undefined,
+    comments: number | undefined, duration: number | undefined, date: number | undefined;
+  const isUrl = (v: unknown): v is string => typeof v === "string" && /^https?:\/\//.test(v);
+
+  (function walk(o: any, path: string) {
+    if (Array.isArray(o)) { o.forEach(v => walk(v, path)); return; }
+    if (!o || typeof o !== "object") return;
+    const link = [o.url, o.link, o.downloadUrl, o.download_url].find(isUrl);
+    const mime = String(o.mimeType || o.mime_type || o.mime || o.type || "").toLowerCase();
+    const ext = String(o.extension || o.ext || o.container || "").toLowerCase();
+    const label = String(o.qualityLabel || o.quality_label || o.quality || o.label || o.resolution || "");
+    const looksFormat = link && (mime || ext || label || o.itag || o.height || "hasAudio" in o);
+    if (looksFormat && !/thumb|image|avatar|storyboard|caption|subtitle/i.test(path)) {
+      const audioOnly = /^audio/.test(mime) || o.hasVideo === false || /\baudio/i.test(path) && !o.height && !/\d{3,4}p/.test(label)
+        || /^(m4a|mp3|weba|opus)$/.test(ext);
+      if (audioOnly) {
+        if (/mp4|m4a|mp3/.test(mime + ext) || /mime=audio%2Fmp4/.test(link))
+          audios.push({ url: link, size: num(o.contentLength ?? o.size ?? o.filesize), ext: /mp3/.test(mime + ext) ? "mp3" : "m4a", br: num(o.bitrate) || 0 });
+      } else if (/mp4/.test(mime + ext) || /\.mp4|mime=video%2Fmp4/.test(link)) {
+        const height = num(o.height) || +(label.match(/(\d{3,4})p/) || [])[1] || undefined;
+        const audio = typeof o.hasAudio === "boolean" ? o.hasAudio
+          : typeof o.audio === "boolean" ? o.audio
+          : /mp4a/.test(mime) || !!o.audioQuality || !!o.audioChannels || /^formats$|muxed|progressive|withaudio/i.test(path.split(".").pop() || "");
+        vids.push({ url: link, height, width: num(o.width), size: num(o.contentLength ?? o.size ?? o.filesize), audio });
+      }
+      return;
+    }
+    for (const [k, v] of Object.entries(o)) {
+      if (typeof v === "string") {
+        if (!title && /^(title|name)$/i.test(k) && !/channel|author|owner/i.test(path) && v.length > 1) title = v;
+        if (!author && (/^(author|channelTitle|channelName|uploader|ownerChannelName)$/i.test(k) || /^name$/i.test(k) && /channel|author|owner/i.test(path))) author = v;
+        if (!date && /^(publishDate|uploadDate|publishedAt|published_at|publishedTime)$/i.test(k)) { const d = Date.parse(v); if (d) date = Math.round(d / 1000); }
+      }
+      if (views === undefined && /^(viewCount|views|view_count)$/i.test(k)) views = num(v);
+      if (likes === undefined && /^(likeCount|likes|like_count)$/i.test(k)) likes = num(v);
+      if (comments === undefined && /^(commentCount|comments|comment_count)$/i.test(k)) comments = num(v);
+      if (duration === undefined && /^(lengthSeconds|duration|length_seconds|durationSeconds)$/i.test(k)) duration = num(v);
+      if (/thumb/i.test(k) && v && typeof v === "object") {
+        const list = Array.isArray(v) ? v : [v];
+        for (const t of list) if (isUrl(t?.url) && (num(t.width) || 1) >= coverW) { cover = t.url; coverW = num(t.width) || 1; }
+      }
+      if (v && typeof v === "object" && !/thumb/i.test(k)) walk(v, path ? `${path}.${k}` : k);
+    }
+  })(j, "");
+
+  if (!vids.length) return null;
+  // con sonido primero, cada grupo de mayor a menor calidad; sin repetir la misma calidad
+  const seen = new Set<string>();
+  const videos = vids.sort((a, b) => Number(b.audio) - Number(a.audio) || (b.height || 0) - (a.height || 0))
+    .filter(v => { const k = `${v.audio}-${v.height || v.url}`; if (seen.has(k)) return false; seen.add(k); return true; });
+  const audio = audios.sort((a, b) => b.br - a.br)[0];
+  return {
+    platform: "youtube", id, source: "rapidapi", short, author, caption: title,
+    cover: cover || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+    stats: { views, likes, comments }, date, duration, videos,
+    audio: audio ? { url: audio.url, size: audio.size, ext: audio.ext } : undefined,
+  };
+}
+
+/* ---------- archivo (solo CDN de Instagram/Facebook/YouTube) ---------- */
 async function file(raw: string) {
   let u: URL;
   try { u = new URL(raw); } catch { return json({ error: "bad_url" }, 400); }
-  if (u.protocol !== "https:" || !/(\.cdninstagram\.com|\.fbcdn\.net)$/.test(u.hostname)) return json({ error: "host" }, 400);
+  if (u.protocol !== "https:" || !/(\.cdninstagram\.com|\.fbcdn\.net|\.googlevideo\.com)$/.test(u.hostname)) return json({ error: "host" }, 400);
   const r = await fetch(u, { headers: { "user-agent": UA } });
   if (!r.ok || !r.body) return json({ error: "upstream", status: r.status }, 502);
   const h = new Headers(CORS);
@@ -205,6 +314,16 @@ Deno.serve(async req => {
   const { action, url } = await req.json().catch(() => ({}));
   if (typeof url !== "string") return json({ error: "bad_url" }, 400);
   if (action === "file") return file(url);
+
+  const yt = ytIdOf(url);
+  if (yt) {
+    try {
+      const info = await viaYoutube(url, yt.id, yt.short);
+      if (info === "off") return json({ error: "yt_off" }, 503);
+      if (info) return json(info);
+    } catch (e) { console.error(e); }
+    return json({ error: "not_found" }, 404);
+  }
 
   const code = await shortcodeOf(url);
   if (!code) return json({ error: "bad_url" }, 400);
