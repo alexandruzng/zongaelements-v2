@@ -419,6 +419,7 @@ es:{ tool:"Descargador de vídeos", kick:"Descargador · Orgánico × Ads", h1a:
   eIgOff:"Instagram aún no está activado", eIgOffP:"Falta publicar la función del servidor para Instagram. TikTok ya funciona.",
   eYtOff:"YouTube aún no está activado", eYtOffP:"Falta conectar la API de YouTube en RapidAPI. TikTok e Instagram ya funcionan.",
   ytA:"MP4 · con sonido", ytNoA:"MP4 · sin sonido (solo imagen)", audioM4a:"M4A · solo el sonido",
+  ytAsk:"Pidiendo el archivo…", ytWait:"Preparando el archivo en el servidor · {s} s (puede tardar hasta 5 min)",
   eAuth:"Tu sesión ha caducado", eAuthP:"Recarga la página y vuelve a iniciar sesión.",
   eDl:"No se ha podido descargar", retry:"Reintentar", remove:"Quitar", play:"Reproducir", ago:"hace {x}",
   added:"{n} enlaces en cola" },
@@ -444,6 +445,7 @@ en:{ tool:"Video downloader", kick:"Downloader · Organic × Ads", h1a:"Paste th
   eIgOff:"Instagram isn't switched on yet", eIgOffP:"The server function for Instagram still needs to be published. TikTok already works.",
   eYtOff:"YouTube isn't switched on yet", eYtOffP:"The YouTube API on RapidAPI still needs to be connected. TikTok and Instagram already work.",
   ytA:"MP4 · with sound", ytNoA:"MP4 · no sound (video only)", audioM4a:"M4A · sound only",
+  ytAsk:"Requesting the file…", ytWait:"Preparing the file on the server · {s} s (can take up to 5 min)",
   eAuth:"Your session expired", eAuthP:"Reload the page and sign in again.",
   eDl:"Couldn't download it", retry:"Retry", remove:"Remove", play:"Play", ago:"{x} ago",
   added:"{n} links queued" },
@@ -469,6 +471,7 @@ ro:{ tool:"Descărcător de clipuri", kick:"Descărcător · Organic × Ads", h1
   eIgOff:"Instagram nu e încă activat", eIgOffP:"Mai trebuie publicată funcția de server pentru Instagram. TikTok funcționează deja.",
   eYtOff:"YouTube nu e încă activat", eYtOffP:"Mai trebuie conectat API-ul de YouTube din RapidAPI. TikTok și Instagram funcționează deja.",
   ytA:"MP4 · cu sunet", ytNoA:"MP4 · fără sunet (doar imagine)", audioM4a:"M4A · doar sunetul",
+  ytAsk:"Cerem fișierul…", ytWait:"Pregătim fișierul pe server · {s} s (poate dura până la 5 min)",
   eAuth:"Sesiunea a expirat", eAuthP:"Reîncarcă pagina și autentifică-te din nou.",
   eDl:"Nu s-a putut descărca", retry:"Reîncearcă", remove:"Elimină", play:"Redă", ago:"acum {x}",
   added:"{n} linkuri în așteptare" }
@@ -608,21 +611,63 @@ async function youtubeInfo(url){
   try { r = await ZE.callFn(FN, { action:"info", url }); } catch (e) { throw err("net"); }
   const j = await r.json().catch(() => null);
   if (r.status === 401) throw err("auth");
+  if (r.status === 429) throw err("busy");
   if (j?.error === "yt_off") throw err("ytoff");
   // bad_url aquí = función antigua sin YouTube (el enlace ya se validó en la web)
   if (!r.ok) throw err(j?.error === "bad_url" ? "ytoff" : "nf");
+  const kind = j.short ? "short" : "video";
   const info = {
     platform:"youtube", id:j.id, url, author:j.author || "", authorName:"", avatar:"",
     caption:j.caption || "", cover:j.cover || "", date:j.date, duration:j.duration,
     stats:{ views:j.stats?.views, likes:j.stats?.likes, comments:j.stats?.comments },
-    videos:(j.videos || []).map(v => ({ url:v.url, h:v.width && v.height ? Math.min(v.width, v.height) : v.height || 0, size:v.size, sub:t(v.audio ? "ytA" : "ytNoA") })),
+    // el MP4 no existe hasta que se pide: cada calidad lleva lo necesario para pedirlo
+    videos:(j.videos || []).map(v => ({ yt:{ quality:v.quality, kind }, h:v.height || 0, size:v.size, sub:t("ytA") })),
     extras:[], items:[]
   };
-  // la vista previa, con sonido si lo hay
-  info.preview = [...(j.videos || [])].reverse().find(v => v.audio)?.url;
-  if (j.audio) info.extras.push({ kind:"audio", url:j.audio.url, ext:j.audio.ext, size:j.audio.size, sub:t(j.audio.ext === "mp3" ? "audioS" : "audioM4a") });
+  if (j.audio) info.extras.push({ kind:"audio", yt:{ quality:j.audio.quality, kind:"audio" }, ext:j.audio.ext || "m4a", size:j.audio.size, sub:t("audioM4a") });
   if (info.cover) info.extras.push({ kind:"cover", url:info.cover, ext:"jpg" });
   return info;
+}
+
+/* YouTube: se pide el archivo, se espera a que el servidor lo tenga listo
+   (de 20 s a 5 min) y se descarga pasando por la función. */
+async function ytDownload(c, btn, yt, name){
+  const prog = $("[data-prog]", c.el), fill = $(".fill", btn);
+  btn.classList.add("busy");
+  prog.className = "prog-txt"; prog.innerHTML = `<span class="spin"></span>${t("ytAsk")}`;
+  let file = "";
+  try {
+    const r = await ZE.callFn(FN, { action:"ytprep", id:c.info.id, quality:yt.quality, kind:yt.kind });
+    const j = await r.json().catch(() => null);
+    if (!r.ok || !j?.file) throw err(r.status === 429 || j?.error === "busy" ? "busy" : "dl");
+    file = j.file;
+    const t0 = Date.now(), LIMIT = 6 * 60e3;
+    for (;;) {
+      const s = Math.round((Date.now() - t0) / 1000);
+      prog.innerHTML = `<span class="spin"></span>${t("ytWait", { s })}`;
+      if (fill) fill.style.width = `${Math.min(90, s / 3)}%`;
+      const k = await ZE.callFn(FN, { action:"ytready", file:j.file, sig:j.sig }).then(x => x.json()).catch(() => null);
+      if (k?.ready) break;
+      if (Date.now() - t0 > LIMIT) throw err("dl");
+      await sleep(5000);
+    }
+    const f = await ZE.callFn(FN, { action:"ytfile", file:j.file, sig:j.sig });
+    if (!f.ok) throw err("dl");
+    const blob = await readBody(f, (p, a, b) => {
+      if (fill) fill.style.width = `${Math.round(p * 100)}%`;
+      prog.innerHTML = `<span class="spin"></span>${t("dl", { p:p ? Math.round(p * 100) + " %" : "" })}${a ? " · " + t("dlMb", { a:fmtSize(a), b:fmtSize(b) || "…" }) : ""}`;
+    });
+    saveBlob(blob, name);
+    prog.innerHTML = `✓ ${t("saved")} · ${fmtSize(blob.size)}`;
+    toast(`${t("saved")} · ${name}`);
+  } catch (e) {
+    // si el archivo ya existe pero no se ha podido pasar por la función, se abre directo
+    if (file && e.code !== "busy") { window.open(file, "_blank", "noopener"); prog.textContent = t("opened"); }
+    else { prog.className = "prog-txt err"; prog.textContent = t(e.code === "busy" ? "eBusy" : "eDl"); }
+  } finally {
+    btn.classList.remove("busy");
+    if (fill) setTimeout(() => fill.style.width = "0", 700);
+  }
 }
 const err = code => Object.assign(new Error(code), { code });
 const PLAT = { tiktok:{ ic:"tt", name:"TikTok", cls:"" }, instagram:{ ic:"ig", name:"Instagram", cls:"ig" }, youtube:{ ic:"yt", name:"YouTube", cls:"yt" } };
@@ -825,7 +870,7 @@ async function analyze(c){
     c.state = "ready"; render(c);
     addHist(c.info);
     // calidad real de cada vídeo (TikTok no la dice)
-    c.info.videos.forEach(async v => { if (!v.h) { v.h = await probe(v.url); if (c.state === "ready") render(c); } });
+    c.info.videos.forEach(async v => { if (!v.h && v.url) { v.h = await probe(v.url); if (c.state === "ready") render(c); } });
   } catch (e) {
     c.state = "error"; c.error = e.code || "nf"; render(c);
   }
@@ -896,13 +941,18 @@ resultsEl.addEventListener("click", e => {
     c.el.classList.add("out"); cards.splice(cards.indexOf(c), 1);
     setTimeout(() => c.el.remove(), 300);
   } else if (act === "retry") { queue.push(c); pump(); }
-  else if (act === "video") download(c, btn, i.videos[k].url, fileName(i, k ? qLabel(i.videos[k].h) : "", "mp4"));
-  else if (act === "extra") { const x = i.extras[k]; download(c, btn, x.url, fileName(i, x.kind === "wm" ? "marca" : x.kind === "audio" ? "audio" : "portada", x.ext)); }
+  else if (act === "video") { const v = i.videos[k], name = fileName(i, k ? qLabel(v.h) : "", "mp4"); v.yt ? ytDownload(c, btn, v.yt, name) : download(c, btn, v.url, name); }
+  else if (act === "extra") { const x = i.extras[k], name = fileName(i, x.kind === "wm" ? "marca" : x.kind === "audio" ? "audio" : "portada", x.ext); x.yt ? ytDownload(c, btn, x.yt, name) : download(c, btn, x.url, name); }
   else if (act === "item") { const m = i.items[k]; download(c, btn, m.url, fileName(i, String(k + 1).padStart(2, "0"), extOfType(m.type, m.url))); }
   else if (act === "all") downloadAll(c, btn);
   else if (act === "copy") copy(i.caption, btn);
   else if (act === "tags") copy(tagsOf(i.caption).join(" "), btn);
   else if (act === "more") { const cap = $(".cap", c.el); cap.classList.toggle("open"); btn.textContent = t(cap.classList.contains("open") ? "less" : "more"); }
+  else if (act === "play" && i?.platform === "youtube" && !btn.classList.contains("playing")) {
+    btn.classList.add("playing");
+    btn.appendChild(Object.assign(document.createElement("iframe"), { src:`https://www.youtube-nocookie.com/embed/${i.id}?autoplay=1&playsinline=1`,
+      allow:"autoplay; encrypted-media; picture-in-picture", allowFullscreen:true, title:i.caption || "YouTube", style:"position:absolute;inset:0;width:100%;height:100%;border:0" }));
+  }
   else if (act === "play" && i?.videos?.length && !btn.classList.contains("playing")) {
     btn.classList.add("playing");
     const v = Object.assign(document.createElement("video"), { src:i.preview || i.videos[i.videos.length - 1].url, controls:true, autoplay:true, playsInline:true, poster:i.cover });

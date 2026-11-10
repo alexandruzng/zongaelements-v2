@@ -13,6 +13,8 @@
      3. RapidAPI (respaldo) → secretos RAPIDAPI_KEY, RAPIDAPI_HOST y
         RAPIDAPI_PATH (ej: "/post?url={url}"; {url} = enlace, {code} = shortcode)
 
+   YouTube: ver la sección YOUTUBE más abajo.
+
    Despliegue: supabase functions deploy descargar-video --no-verify-jwt
    (la sesión se comprueba aquí dentro, así sirve con las claves nuevas).
    ========================================================= */
@@ -186,20 +188,20 @@ function deepInfo(j: any, code: string): Info | null {
 }
 
 /* =========================================================
-   YOUTUBE (RapidAPI) → secretos:
-     RAPIDAPI_KEY      la misma clave de RapidAPI de siempre
-     YT_RAPIDAPI_HOST  por defecto youtube-media-downloader.p.rapidapi.com
-     YT_RAPIDAPI_PATH  por defecto /v2/video/details?videoId={id}
-                       ({id} = id del vídeo, {url} = enlace completo)
-   Cada API responde distinto: se recorre toda la respuesta y se
-   quedan los formatos MP4, separando los que llevan sonido.
+   YOUTUBE → API «YouTube Video FAST Downloader 24/7» (RapidAPI)
+   Usa la misma RAPIDAPI_KEY. Plan gratis: 100 peticiones/mes,
+   vídeos de hasta 50 MB y 1080p.
+   La API genera el MP4 (imagen + sonido) en su propio servidor:
+   tarda de 20 s a 5 min y luego se puede bajar durante 10 min.
+
+   POST { action:"info",    url }                → título, portada y calidades (1 petición)
+   POST { action:"ytprep",  id, quality, kind }  → pide el archivo (1 petición) → { file, alt, sig }
+   POST { action:"ytready", file, sig }          → ¿ya está listo? (gratis)
+   POST { action:"ytfile",  file, sig }          → el archivo, pasando por aquí (gratis)
+   «sig» firma cada enlace que da la API, así esta función solo
+   comprueba y reenvía archivos que ha pedido ella misma.
    ========================================================= */
-type YtVideo = { url: string; height?: number; width?: number; size?: number; audio: boolean };
-type YtInfo = {
-  platform: "youtube"; id: string; author: string; caption: string; cover: string;
-  stats: { views?: number; likes?: number; comments?: number }; date?: number; duration?: number;
-  short: boolean; videos: YtVideo[]; audio?: { url: string; size?: number; ext: string }; source: string;
-};
+const YT_HOST = Deno.env.get("YT_RAPIDAPI_HOST") || "youtube-video-fast-downloader-24-7.p.rapidapi.com";
 
 function ytIdOf(raw: string) {
   let u: URL;
@@ -215,90 +217,76 @@ function ytIdOf(raw: string) {
   return id && /^[\w-]{11}$/.test(id) ? { id, short } : null;
 }
 
-const num = (v: unknown) => {
-  if (typeof v === "number" && isFinite(v)) return v;
-  if (typeof v === "string" && /^\d[\d,.]*$/.test(v.trim())) return +v.replace(/[,.]/g, "");
-  return undefined;
-};
-
-async function viaYoutube(raw: string, id: string, short: boolean): Promise<YtInfo | "off" | null> {
+async function ytApi(path: string) {
   const key = Deno.env.get("RAPIDAPI_KEY");
-  if (!key) return "off";
-  const host = Deno.env.get("YT_RAPIDAPI_HOST") || "youtube-media-downloader.p.rapidapi.com";
-  const path = (Deno.env.get("YT_RAPIDAPI_PATH") || "/v2/video/details?videoId={id}")
-    .replace("{id}", id).replace("{url}", encodeURIComponent(raw));
-  const r = await fetch(`https://${host}${path}`, { headers: { "x-rapidapi-key": key, "x-rapidapi-host": host } }).catch(() => null);
-  if (!r) return null;
-  if (r.status === 403) return "off";            // clave sin suscripción a esta API
-  if (!r.ok) { console.error("yt", r.status, await r.text().catch(() => "")); return null; }
-  const j = await r.json().catch(() => null);
-  if (!j || j.status === false || j.errorId && j.errorId !== "Success") return null;
+  if (!key) return { off: true } as const;
+  const r = await fetch(`https://${YT_HOST}${path}`, { headers: { "x-rapidapi-key": key, "x-rapidapi-host": YT_HOST } }).catch(() => null);
+  if (!r) return { err: "net" } as const;
+  if (r.status === 403) return { off: true } as const;   // clave sin suscripción a esta API
+  if (r.status === 429) return { err: "busy" } as const; // se acabaron las peticiones del mes
+  const txt = await r.text();
+  if (!r.ok) { console.error("yt", r.status, txt.slice(0, 300)); return { err: `${r.status}` } as const; }
+  try { return { data: JSON.parse(txt) } as const; } catch { return { err: "json" } as const; }
+}
 
-  const vids: YtVideo[] = [], audios: { url: string; size?: number; ext: string; br: number }[] = [];
-  let title = "", author = "", cover = "", coverW = 0, views: number | undefined, likes: number | undefined,
-    comments: number | undefined, duration: number | undefined, date: number | undefined;
-  const isUrl = (v: unknown): v is string => typeof v === "string" && /^https?:\/\//.test(v);
+async function sign(s: string) {
+  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(Deno.env.get("RAPIDAPI_KEY") || "x"),
+    { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const b = new Uint8Array(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(s)));
+  return [...b].map(x => x.toString(16).padStart(2, "0")).join("").slice(0, 32);
+}
+const signedOk = async (file: unknown, sig: unknown) =>
+  typeof file === "string" && /^https:\/\//.test(file) && typeof sig === "string" && sig === await sign(file);
 
-  (function walk(o: any, path: string) {
-    if (Array.isArray(o)) { o.forEach(v => walk(v, path)); return; }
-    if (!o || typeof o !== "object") return;
-    const link = [o.url, o.link, o.downloadUrl, o.download_url].find(isUrl);
-    const mime = String(o.mimeType || o.mime_type || o.mime || o.type || "").toLowerCase();
-    const ext = String(o.extension || o.ext || o.container || "").toLowerCase();
-    const label = String(o.qualityLabel || o.quality_label || o.quality || o.label || o.resolution || "");
-    const looksFormat = link && (mime || ext || label || o.itag || o.height || "hasAudio" in o);
-    if (looksFormat && !/thumb|image|avatar|storyboard|caption|subtitle/i.test(path)) {
-      const audioOnly = /^audio/.test(mime) || o.hasVideo === false || /\baudio/i.test(path) && !o.height && !/\d{3,4}p/.test(label)
-        || /^(m4a|mp3|weba|opus)$/.test(ext);
-      if (audioOnly) {
-        if (/mp4|m4a|mp3/.test(mime + ext) || /mime=audio%2Fmp4/.test(link))
-          audios.push({ url: link, size: num(o.contentLength ?? o.size ?? o.filesize), ext: /mp3/.test(mime + ext) ? "mp3" : "m4a", br: num(o.bitrate) || 0 });
-      } else if (/mp4/.test(mime + ext) || /\.mp4|mime=video%2Fmp4/.test(link)) {
-        const height = num(o.height) || +(label.match(/(\d{3,4})p/) || [])[1] || undefined;
-        const audio = typeof o.hasAudio === "boolean" ? o.hasAudio
-          : typeof o.audio === "boolean" ? o.audio
-          : /mp4a/.test(mime) || !!o.audioQuality || !!o.audioChannels || /^formats$|muxed|progressive|withaudio/i.test(path.split(".").pop() || "");
-        vids.push({ url: link, height, width: num(o.width), size: num(o.contentLength ?? o.size ?? o.filesize), audio });
-      }
-      return;
-    }
-    for (const [k, v] of Object.entries(o)) {
-      if (typeof v === "string") {
-        if (!title && /^(title|name)$/i.test(k) && !/channel|author|owner/i.test(path) && v.length > 1) title = v;
-        if (!author && (/^(author|channelTitle|channelName|uploader|ownerChannelName)$/i.test(k) || /^name$/i.test(k) && /channel|author|owner/i.test(path))) author = v;
-        if (!date && /^(publishDate|uploadDate|publishedAt|published_at|publishedTime)$/i.test(k)) { const d = Date.parse(v); if (d) date = Math.round(d / 1000); }
-      }
-      if (views === undefined && /^(viewCount|views|view_count)$/i.test(k)) views = num(v);
-      if (likes === undefined && /^(likeCount|likes|like_count)$/i.test(k)) likes = num(v);
-      if (comments === undefined && /^(commentCount|comments|comment_count)$/i.test(k)) comments = num(v);
-      if (duration === undefined && /^(lengthSeconds|duration|length_seconds|durationSeconds)$/i.test(k)) duration = num(v);
-      if (/thumb/i.test(k) && v && typeof v === "object") {
-        const list = Array.isArray(v) ? v : [v];
-        for (const t of list) if (isUrl(t?.url) && (num(t.width) || 1) >= coverW) { cover = t.url; coverW = num(t.width) || 1; }
-      }
-      if (v && typeof v === "object" && !/thumb/i.test(k)) walk(v, path ? `${path}.${k}` : k);
-    }
-  })(j, "");
+async function ytInfo(id: string, short: boolean) {
+  // título y canal: oEmbed público de YouTube (no gasta peticiones)
+  const meta = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(`https://www.youtube.com/watch?v=${id}`)}`)
+    .then(r => r.ok ? r.json() : null).catch(() => null);
+  const q = await ytApi(`/get_available_quality/${id}`);
+  if ("off" in q) return json({ error: "yt_off" }, 503);
+  if ("err" in q) return json({ error: q.err === "busy" ? "busy" : "not_found", detail: q.err }, q.err === "busy" ? 429 : 404);
+  const list: any[] = Array.isArray(q.data) ? q.data : [];
+  // vídeo: H.264 (avc1) en MP4, el que se ve en cualquier móvil; uno por calidad, el de más bitrate
+  const best = new Map<number, any>();
+  for (const f of list) {
+    if (f?.type !== "video" || !/avc1/i.test(f.mime || "")) continue;
+    const h = +(String(f.quality).match(/(\d{3,4})p/) || [])[1];
+    if (!h || h > 1080) continue;
+    if (!best.has(h) || +f.bitrate > +best.get(h).bitrate) best.set(h, f);
+  }
+  const audio = list.filter(f => f?.type === "audio" && /mp4/.test(f.mime || "")).sort((a, b) => +b.bitrate - +a.bitrate)[0];
+  const aSize = +audio?.size || 0;
+  const videos = [...best.entries()].sort((a, b) => b[0] - a[0])
+    .map(([h, f]) => ({ quality: String(f.id), height: h, size: (+f.size || 0) + aSize || undefined }));
+  if (!videos.length) return json({ error: "not_found", detail: "no_mp4" }, 404);
+  return json({
+    platform: "youtube", id, short, source: "rapidapi",
+    author: meta?.author_name || "", caption: meta?.title || "",
+    cover: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+    stats: {}, videos,
+    audio: audio ? { quality: String(audio.id), size: aSize || undefined, ext: "m4a" } : undefined,
+  });
+}
 
-  if (!vids.length) return null;
-  // con sonido primero, cada grupo de mayor a menor calidad; sin repetir la misma calidad
-  const seen = new Set<string>();
-  const videos = vids.sort((a, b) => Number(b.audio) - Number(a.audio) || (b.height || 0) - (a.height || 0))
-    .filter(v => { const k = `${v.audio}-${v.height || v.url}`; if (seen.has(k)) return false; seen.add(k); return true; });
-  const audio = audios.sort((a, b) => b.br - a.br)[0];
-  return {
-    platform: "youtube", id, source: "rapidapi", short, author, caption: title,
-    cover: cover || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
-    stats: { views, likes, comments }, date, duration, videos,
-    audio: audio ? { url: audio.url, size: audio.size, ext: audio.ext } : undefined,
-  };
+async function ytPrep(id: unknown, quality: unknown, kind: unknown) {
+  if (typeof id !== "string" || !/^[\w-]{11}$/.test(id) || typeof quality !== "string" || !/^\d{1,4}$/.test(quality))
+    return json({ error: "bad_url" }, 400);
+  const ep = kind === "audio" ? "download_audio" : kind === "short" ? "download_short" : "download_video";
+  const r = await ytApi(`/${ep}/${id}?quality=${quality}`);
+  if ("off" in r) return json({ error: "yt_off" }, 503);
+  if ("err" in r || !r.data?.file) return json({ error: r.err === "busy" ? "busy" : "not_found", detail: r.err || "no_file" }, 502);
+  const file = String(r.data.file), alt = r.data.reserved_file ? String(r.data.reserved_file) : "";
+  return json({ file, alt, sig: await sign(file), altSig: alt ? await sign(alt) : "", size: +r.data.size || undefined });
+}
+
+async function ytReady(file: string) {
+  const r = await fetch(file, { headers: { "user-agent": UA, range: "bytes=0-0" } }).catch(() => null);
+  await r?.body?.cancel();
+  return json({ ready: !!r && (r.ok || r.status === 206) });
 }
 
 /* ---------- archivo (solo CDN de Instagram/Facebook/YouTube) ---------- */
-async function file(raw: string) {
-  let u: URL;
-  try { u = new URL(raw); } catch { return json({ error: "bad_url" }, 400); }
-  if (u.protocol !== "https:" || !/(\.cdninstagram\.com|\.fbcdn\.net|\.googlevideo\.com)$/.test(u.hostname)) return json({ error: "host" }, 400);
+async function stream(u: URL | string) {
   const r = await fetch(u, { headers: { "user-agent": UA } });
   if (!r.ok || !r.body) return json({ error: "upstream", status: r.status }, 502);
   const h = new Headers(CORS);
@@ -306,24 +294,29 @@ async function file(raw: string) {
   const len = r.headers.get("content-length"); if (len) h.set("content-length", len);
   return new Response(r.body, { headers: h });
 }
+async function file(raw: string) {
+  let u: URL;
+  try { u = new URL(raw); } catch { return json({ error: "bad_url" }, 400); }
+  if (u.protocol !== "https:" || !/(\.cdninstagram\.com|\.fbcdn\.net)$/.test(u.hostname)) return json({ error: "host" }, 400);
+  return stream(u);
+}
 
 Deno.serve(async req => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "method" }, 405);
   if (!(await userOk(req))) return json({ error: "auth" }, 401);
-  const { action, url } = await req.json().catch(() => ({}));
+  const body = await req.json().catch(() => ({}));
+  const { action, url } = body;
+  if (action === "ytprep") return ytPrep(body.id, body.quality, body.kind);
+  if (action === "ytready" || action === "ytfile") {
+    if (!(await signedOk(body.file, body.sig))) return json({ error: "sig" }, 403);
+    return action === "ytready" ? ytReady(body.file) : stream(body.file);
+  }
   if (typeof url !== "string") return json({ error: "bad_url" }, 400);
   if (action === "file") return file(url);
 
   const yt = ytIdOf(url);
-  if (yt) {
-    try {
-      const info = await viaYoutube(url, yt.id, yt.short);
-      if (info === "off") return json({ error: "yt_off" }, 503);
-      if (info) return json(info);
-    } catch (e) { console.error(e); }
-    return json({ error: "not_found" }, 404);
-  }
+  if (yt) return ytInfo(yt.id, yt.short);
 
   const code = await shortcodeOf(url);
   if (!code) return json({ error: "bad_url" }, 400);
