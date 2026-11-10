@@ -419,7 +419,7 @@ es:{ tool:"Descargador de vídeos", kick:"Descargador · Orgánico × Ads", h1a:
   eIgOff:"Instagram aún no está activado", eIgOffP:"Falta publicar la función del servidor para Instagram. TikTok ya funciona.",
   eYtOff:"YouTube aún no está activado", eYtOffP:"Falta conectar la API de YouTube en RapidAPI. TikTok e Instagram ya funcionan.",
   ytA:"MP4 · con sonido", ytNoA:"MP4 · sin sonido (solo imagen)", audioM4a:"M4A · solo el sonido",
-  ytAsk:"Pidiendo el archivo…", ytWait:"Preparando el archivo en el servidor · {s} s (puede tardar hasta 5 min)",
+  ytAsk:"Pidiendo el archivo… (puede tardar un minuto)", ytWait:"Preparando el archivo en el servidor · {s} s (puede tardar hasta 5 min)",
   eAuth:"Tu sesión ha caducado", eAuthP:"Recarga la página y vuelve a iniciar sesión.",
   eDl:"No se ha podido descargar", retry:"Reintentar", remove:"Quitar", play:"Reproducir", ago:"hace {x}",
   added:"{n} enlaces en cola" },
@@ -445,7 +445,7 @@ en:{ tool:"Video downloader", kick:"Downloader · Organic × Ads", h1a:"Paste th
   eIgOff:"Instagram isn't switched on yet", eIgOffP:"The server function for Instagram still needs to be published. TikTok already works.",
   eYtOff:"YouTube isn't switched on yet", eYtOffP:"The YouTube API on RapidAPI still needs to be connected. TikTok and Instagram already work.",
   ytA:"MP4 · with sound", ytNoA:"MP4 · no sound (video only)", audioM4a:"M4A · sound only",
-  ytAsk:"Requesting the file…", ytWait:"Preparing the file on the server · {s} s (can take up to 5 min)",
+  ytAsk:"Requesting the file… (can take a minute)", ytWait:"Preparing the file on the server · {s} s (can take up to 5 min)",
   eAuth:"Your session expired", eAuthP:"Reload the page and sign in again.",
   eDl:"Couldn't download it", retry:"Retry", remove:"Remove", play:"Play", ago:"{x} ago",
   added:"{n} links queued" },
@@ -471,7 +471,7 @@ ro:{ tool:"Descărcător de clipuri", kick:"Descărcător · Organic × Ads", h1
   eIgOff:"Instagram nu e încă activat", eIgOffP:"Mai trebuie publicată funcția de server pentru Instagram. TikTok funcționează deja.",
   eYtOff:"YouTube nu e încă activat", eYtOffP:"Mai trebuie conectat API-ul de YouTube din RapidAPI. TikTok și Instagram funcționează deja.",
   ytA:"MP4 · cu sunet", ytNoA:"MP4 · fără sunet (doar imagine)", audioM4a:"M4A · doar sunetul",
-  ytAsk:"Cerem fișierul…", ytWait:"Pregătim fișierul pe server · {s} s (poate dura până la 5 min)",
+  ytAsk:"Cerem fișierul… (poate dura un minut)", ytWait:"Pregătim fișierul pe server · {s} s (poate dura până la 5 min)",
   eAuth:"Sesiunea a expirat", eAuthP:"Reîncarcă pagina și autentifică-te din nou.",
   eDl:"Nu s-a putut descărca", retry:"Reîncearcă", remove:"Elimină", play:"Redă", ago:"acum {x}",
   added:"{n} linkuri în așteptare" }
@@ -657,7 +657,8 @@ async function ytDownload(c, btn, yt, name){
       if (fill) fill.style.width = `${Math.round(p * 100)}%`;
       prog.innerHTML = `<span class="spin"></span>${t("dl", { p:p ? Math.round(p * 100) + " %" : "" })}${a ? " · " + t("dlMb", { a:fmtSize(a), b:fmtSize(b) || "…" }) : ""}`;
     });
-    saveBlob(blob, name);
+    // el servidor lo manda como «octet-stream»: se marca como vídeo/audio para que el móvil lo abra bien
+    saveBlob(new Blob([blob], { type:/\.m4a$/.test(name) ? "audio/mp4" : "video/mp4" }), name);
     prog.innerHTML = `✓ ${t("saved")} · ${fmtSize(blob.size)}`;
     toast(`${t("saved")} · ${name}`);
   } catch (e) {
