@@ -1,5 +1,32 @@
 [
   {
+    "id": "2026-11-19-calidad-visual",
+    "date": "2026-11-19",
+    "type": "mejora",
+    "title": {
+      "es": "Nuevo ajuste: calidad visual",
+      "en": "New setting: visual quality",
+      "ro": "Setare nouă: calitate vizuală"
+    },
+    "items": {
+      "es": [
+        "Pulsa el botón de ajustes de arriba y elige calidad Alta, Media o Baja.",
+        "Media quita los efectos más pesados y Baja deja lo mínimo: ideal si en tu ordenador la web va a tirones.",
+        "Se aplica también en todas las herramientas y se queda guardado en tu dispositivo."
+      ],
+      "en": [
+        "Tap the settings button at the top and choose High, Medium or Low quality.",
+        "Medium removes the heaviest effects and Low keeps the bare minimum: ideal if the site stutters on your computer.",
+        "It also applies to every tool and stays saved on your device."
+      ],
+      "ro": [
+        "Apasă butonul de setări de sus și alege calitate Înaltă, Medie sau Scăzută.",
+        "Medie elimină efectele cele mai grele, iar Scăzută păstrează minimul: ideal dacă site-ul merge sacadat pe calculatorul tău.",
+        "Se aplică și în toate instrumentele și rămâne salvată pe dispozitivul tău."
+      ]
+    }
+  },
+  {
     "id": "2026-11-10-descargador-youtube",
     "date": "2026-11-10",
     "type": "mejora",
